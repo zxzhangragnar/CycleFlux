@@ -38,7 +38,7 @@ find_net_cycle <- function(input_net_file, output_path) {
 
 
 # test
-# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/part_subnet.RData'
+# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/hsa_subnet.RData'
 # output_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/output_files"
 # find_net_cycle(input_net_file, output_path)
 

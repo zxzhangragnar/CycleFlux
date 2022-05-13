@@ -12,11 +12,11 @@
 
 def write_directed(input_net_file, output_path):
     ### init ###
-    #input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData'
+    #input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData'
     #output_path = "RData_output"
 
     import get_pathway_subnet
-    #cyc_res = get_pathway_subnet.get_pathway_subnet_info_directed('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData')
+    #cyc_res = get_pathway_subnet.get_pathway_subnet_info_directed('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData')
     cyc_res = get_pathway_subnet.get_pathway_subnet_info_directed(input_net_file)
     G = cyc_res[0]
     cycles_arr = cyc_res[1]
@@ -65,7 +65,7 @@ def write_directed(input_net_file, output_path):
 
     
 # test
-# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/part_subnet.RData'
+# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/hsa_subnet.RData'
 # output_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/output_files"
 # write_directed(input_net_file, output_path)
 
@@ -79,14 +79,14 @@ def write_directed(input_net_file, output_path):
 # def write_undirected():
 #     ### init ###
 #     import get_pathway_subnet
-#     cyc_res = get_pathway_subnet.get_pathway_subnet_info_undirected('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData')
+#     cyc_res = get_pathway_subnet.get_pathway_subnet_info_undirected('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData')
 #     G = cyc_res[0]
 #     cycles_arr = cyc_res[1]
 
 #     ### 1 ###
 #     import get_pathway_subnet
-#     get_pathway_subnet.write_undirected_list_main('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData', "compound")
-#     get_pathway_subnet.write_undirected_list_main('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData', "cycle")
+#     get_pathway_subnet.write_undirected_list_main('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData', "compound")
+#     get_pathway_subnet.write_undirected_list_main('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData', "cycle")
 
 #     ### 2 ###
 #     import cycle_degnode_successors

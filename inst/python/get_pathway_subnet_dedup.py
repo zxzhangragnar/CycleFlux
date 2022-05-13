@@ -54,7 +54,7 @@ def reserve_2d_array_by_index(reserve_index, a):
 
 #test dedup_get_diff_index
 # import get_pathway_subnet
-# cyc_res = get_pathway_subnet.get_pathway_subnet_info_directed('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData')
+# cyc_res = get_pathway_subnet.get_pathway_subnet_info_directed('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData')
 # G = cyc_res[0]
 # merge_cycle_arr = cyc_res[1]
 

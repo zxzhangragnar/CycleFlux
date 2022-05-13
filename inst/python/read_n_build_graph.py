@@ -182,7 +182,7 @@ def build_graph_core(input_df):
 #test
 #问题：运行两次print(G.nodes)发现每次输出结果也不一样
 #已解决：原因直接用set去重顺序会乱
-# graph_res = read_n_build_graph_func('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData','dp_part_net')
+# graph_res = read_n_build_graph_func('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData','hsa_net')
 # G = graph_res[0]
 # cin_arr = graph_res[1]
 # cout_arr = graph_res[2]

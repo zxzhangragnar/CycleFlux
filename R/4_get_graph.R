@@ -34,7 +34,7 @@ get_graph_basic <- function(input_net_file, output_path, res_path, input_tumor_n
 
 
 # test
-# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/part_subnet.RData'
+# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/hsa_subnet.RData'
 # output_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/output_files"
 # res_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/res_files"
 # input_tumor_name = "COAD"
@@ -86,7 +86,7 @@ get_graph_single_cycle <- function(input_net_file, output_path, res_path, graph_
 }
 
 # test
-# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/part_subnet.RData'
+# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/hsa_subnet.RData'
 # output_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/output_files"
 # res_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/res_files"
 # graph_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/graph_files"
@@ -143,7 +143,7 @@ get_graph_single_cycle_degree_1 <- function(input_net_file, output_path, res_pat
 
 
 # test
-# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/part_subnet.RData'
+# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/hsa_subnet.RData'
 # output_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/output_files"
 # res_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/res_files"
 # graph_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/graph_files"
@@ -199,7 +199,7 @@ get_cycle_shift <- function(input_net_file, output_path, res_path, graph_path, i
 
 
 # test
-# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/part_subnet.RData'
+# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/hsa_subnet.RData'
 # output_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/output_files"
 # res_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/res_files"
 # graph_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/graph_files"
@@ -261,7 +261,7 @@ get_graph_single_cycle_degree_2 <- function(input_net_file, output_path, res_pat
 
 
 # test
-# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/part_subnet.RData'
+# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/hsa_subnet.RData'
 # output_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/output_files"
 # res_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/res_files"
 # graph_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/graph_files"
@@ -317,7 +317,7 @@ get_graph_subnet <- function(input_net_file, output_path, res_path, graph_path, 
 
 
 # test
-# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/part_subnet.RData'
+# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/hsa_subnet.RData'
 # output_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/output_files"
 # res_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/res_files"
 # graph_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/graph_files"
@@ -372,7 +372,7 @@ get_graph_topology_struct <- function(input_net_file, output_path, res_path, gra
 
 
 # test
-# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/part_subnet.RData'
+# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/hsa_subnet.RData'
 # output_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/output_files"
 # res_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/res_files"
 # graph_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/graph_files"

@@ -124,6 +124,6 @@ print(len(cycles_arr))
 # test 9.26
 # import get_pathway_subnet
 # import get_pathway_subnet
-# cyc_res = get_pathway_subnet.get_pathway_subnet_info_undirected('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData')
+# cyc_res = get_pathway_subnet.get_pathway_subnet_info_undirected('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData')
 # G = cyc_res[0]
 # cycles_arr = cyc_res[1]

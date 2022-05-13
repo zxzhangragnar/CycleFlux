@@ -300,7 +300,7 @@ def get_directed_incyc_rids(G, cycles_arr):
 #########
 #9.25 test
 # import get_pathway_subnet
-# cyc_res = get_pathway_subnet.get_pathway_subnet_info_directed('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData')
+# cyc_res = get_pathway_subnet.get_pathway_subnet_info_directed('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData')
 # G = cyc_res[0]
 # cycles_arr = cyc_res[1]
 # incyc_rid = get_undirected_incyc_rids(G, cycles_arr)
@@ -312,7 +312,7 @@ def get_directed_incyc_rids(G, cycles_arr):
 #########
 ##debug 3.24
 # import get_pathway_subnet
-# cyc_res = get_pathway_subnet.get_pathway_subnet_info_directed('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData')
+# cyc_res = get_pathway_subnet.get_pathway_subnet_info_directed('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData')
 # G = cyc_res[0]
 # cycles_arr = cyc_res[1]
 

@@ -44,7 +44,7 @@ get_basic_gene_info <- function(input_net_file, output_path, res_path, input_tum
 
 
 # test
-# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/part_subnet.RData'
+# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/hsa_subnet.RData'
 # output_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/output_files"
 # res_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/res_files"
 # input_tumor_name = "COAD"
@@ -96,7 +96,7 @@ get_subnet_edge_info <- function(input_net_file, output_path, res_path, input_tu
 
 
 # test
-# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/part_subnet.RData'
+# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/hsa_subnet.RData'
 # output_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/output_files"
 # res_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/res_files"
 # input_tumor_name = "COAD"
@@ -125,13 +125,27 @@ get_subnet_edge_info <- function(input_net_file, output_path, res_path, input_tu
 #' This function for cycle get_cycle_edge_info
 #'
 #' @param get_cycle_edge_info input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data
+#' par_up1 = 1
+#' par_up2 = 10
+#' par_gap1 = -2
+#' par_gap2 = 1.71
 #' @keywords get_cycle_edge_info
 #' @export
 #' @examples
-#' get_cycle_edge_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data)
+#' get_cycle_edge_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data, par_up1, par_up2, par_gap1, par_gap2)
+#'
+#' (max gene foldchange>(par_up1))&(max gene meanval>par_up2) -> up
+#' (max gene foldchange<(par_gap1))|(max gene meanval<par_gap2) -> gap
+#'
+#'
+#'
+#'
+#'
 #'
 
-get_cycle_edge_info <- function(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data) {
+
+
+get_cycle_edge_info <- function(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data, par_up1, par_up2, par_gap1, par_gap2) {
   ENV = new.env()
   attach(ENV)
 
@@ -147,7 +161,8 @@ get_cycle_edge_info <- function(input_net_file, output_path, res_path, input_tum
   }
 
   source(system.file("rscript/4_flux_edge/1_funcs/4_add_gap.R", package = "CycleFlux"), local=ENV)
-  ENV$cycle_edge_flux_list_main(output_path, res_path, package_path, input_tumor_name)
+  ENV$cycle_edge_flux_list_main(output_path, res_path, package_path, input_tumor_name, par_up1, par_up2, par_gap1, par_gap2)
+
   source(system.file("rscript/4_flux_edge/1_funcs/5_get_cycle_chain_list.r", package = "CycleFlux"), local=ENV)
   ENV$get_cycle_chain_list_main(output_path, res_path, package_path, input_tumor_name)
   # source(system.file("rscript/4_flux_edge/1_funcs/6_add_cycleother_metric.R", package = "CycleFlux"), local=ENV)
@@ -159,12 +174,19 @@ get_cycle_edge_info <- function(input_net_file, output_path, res_path, input_tum
 }
 
 # test
-# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/part_subnet.RData'
+# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/hsa_subnet.RData'
 # output_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/output_files"
 # res_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/res_files"
 # input_tumor_name = "COAD"
 # input_tumor_data = "E:/scFEA_universal/Data/TCGA_data/TCGA_convolution/TCGA_data/TCGA-COAD.RData"
 # input_normal_data = "E:/scFEA_universal/Data/TCGA_data/TCGA_convolution/TCGA_data/TCGA-COAD_N.RData"
-# get_cycle_edge_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data)
+#
+# par_up1 = 1
+# par_up2 = 10
+# par_gap1 = -2
+# par_gap2 = 1.71
+#
+# get_cycle_edge_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data, par_up1, par_up2, par_gap1, par_gap2)
+
 
 

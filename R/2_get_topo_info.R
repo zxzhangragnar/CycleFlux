@@ -20,7 +20,7 @@ get_topology_info <- function(input_net_file, output_path, res_path) {
   ##new wd
   setwd(system.file("rscript/", package = "CycleFlux"))
 
-  if(!file.exists(file.path(output_path, "res_allpathway_cycle_union_directed.RData"))) {
+  if(!file.exists(file.path(output_path, "cycle_directed.RData"))) {
     find_net_cycle(input_net_file, output_path)
   }
 
@@ -39,7 +39,7 @@ get_topology_info <- function(input_net_file, output_path, res_path) {
 }
 
 # test
-# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/part_subnet.RData'
+# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/hsa_subnet.RData'
 # output_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/output_files"
 # res_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/res_files"
 # get_topology_info(input_net_file, output_path, res_path)
@@ -129,7 +129,7 @@ get_struct_sort_info <- function(
 
 
 # test
-# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/part_subnet.RData'
+# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/hsa_subnet.RData'
 # output_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/output_files"
 # res_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/res_files"
 # get_struct_sort_info(input_net_file, output_path, res_path)

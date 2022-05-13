@@ -59,9 +59,9 @@ def write_edgesucs_out(G, cycles_arr, output_path, direct):
     #写入文件.RData
     import pyreadr as pyreadr
     if direct == "directed":
-        pyreadr.write_rdata(output_path + "/res_cycle_edgesucs_out.RData", list_df, df_name=str("cycle_edgesucs_out"))
+        pyreadr.write_rdata(output_path + "/cycle_edgesucs_out.RData", list_df, df_name=str("cycle_edgesucs_out"))
     else:
-        pyreadr.write_rdata(output_path + "/res_cycle_edgesucs_out.RData", list_df, df_name=str("cycle_edgesucs_out"))
+        pyreadr.write_rdata(output_path + "/cycle_edgesucs_out.RData", list_df, df_name=str("cycle_edgesucs_out"))
 
 
 
@@ -95,9 +95,9 @@ def write_edgesucs_in(G, cycles_arr, output_path, direct):
     #写入文件.RData
     import pyreadr as pyreadr
     if direct == "directed":
-        pyreadr.write_rdata(output_path + "/res_cycle_edgesucs_in.RData", list_df, df_name=str("cycle_edgesucs_in"))
+        pyreadr.write_rdata(output_path + "/cycle_edgesucs_in.RData", list_df, df_name=str("cycle_edgesucs_in"))
     else:
-        pyreadr.write_rdata(output_path + "/res_cycle_edgesucs_in.RData", list_df, df_name=str("cycle_edgesucs_in"))
+        pyreadr.write_rdata(output_path + "/cycle_edgesucs_in.RData", list_df, df_name=str("cycle_edgesucs_in"))
 
 
 
@@ -105,7 +105,7 @@ def write_edgesucs_in(G, cycles_arr, output_path, direct):
 # test
 
 # import get_pathway_subnet
-# cyc_res = get_pathway_subnet.get_pathway_subnet_info_directed('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData')
+# cyc_res = get_pathway_subnet.get_pathway_subnet_info_directed('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData')
 # G = cyc_res[0]
 # cycles_arr = cyc_res[1]
 

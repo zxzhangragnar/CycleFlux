@@ -70,7 +70,7 @@ get_temp_frame <- function(i, cpdnames) {
 }
 
 
-load("E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_output/res_allpathway_compound_union_directed.RData")
+load("E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_output/compound_directed.RData")
 load("E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/1_cycle_topology/result_topo/cpd_all_distance_df.RData")
 cpd_all_distance_df = unique(cpd_all_distance_df)
 cpdnames = compound_directed$cpdname

@@ -1,12 +1,12 @@
-#   
+#
 ############################### 在以下计算中，将"环"看成网络中的节点 ####################################
-# 
-# 
+#
+#
 # 以"环"为点  思想 的延伸
-# 
+#
 # 如何能plot出 以环作为点 的图像?
-#   
-# 求 环 和 环 之间的距离 distance 
+#
+# 求 环 和 环 之间的距离 distance
 #
 #
 # 环的距离数据 from python Functions_new/cycle_distance.py
@@ -33,7 +33,7 @@ get_cyc_all_distance_df <- function(cycle_directed) {
       temp_distance_cycid = temp_distance_str_cyc_val[1]
       temp_distance_val = temp_distance_str_cyc_val[2]
       temp_df = data.frame(
-        from = c(temp_cycid), 
+        from = c(temp_cycid),
         to = c(temp_distance_cycid),
         distance = c(temp_distance_val)
       )
@@ -47,17 +47,17 @@ get_cyc_all_distance_df <- function(cycle_directed) {
 #############################################################################################
 # test
 cycle_plot_and_distance_main <- function(output_path, res_path) {
-  load(file.path(output_path, "res_allpathway_cycle_union_directed.RData"))
+  load(file.path(output_path, "cycle_directed.RData"))
   cyc_all_distance_df = get_cyc_all_distance_df(cycle_directed)
-  
+
   # save
   res_sub_path = "1_cycle_topology/result_topo"
   dir.create(file.path(res_path, res_sub_path), recursive = TRUE, showWarnings = FALSE)
   res_file_path = file.path(res_path, res_sub_path, "cyc_all_distance_df.RData")
-  
+
   #save(cyc_all_distance_df, file="E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/1_cycle_topology/result_topo/cyc_all_distance_df.RData")
   save(cyc_all_distance_df, file=res_file_path)
-  
+
 }
 
 
@@ -65,7 +65,7 @@ cycle_plot_and_distance_main <- function(output_path, res_path) {
 # test
 # output_path = "E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_output"
 # res_path = "E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/"
-# cycle_plot_and_distance_main(output_path, res_path) 
+# cycle_plot_and_distance_main(output_path, res_path)
 
 
 

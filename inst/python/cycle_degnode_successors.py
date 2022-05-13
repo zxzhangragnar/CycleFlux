@@ -264,9 +264,9 @@ def write_situation_1(G, cycles_arr, output_path, direct):
     #写入文件.RData
     import pyreadr as pyreadr
     if direct == "directed":
-        pyreadr.write_rdata(output_path + "/res_cycle_successors_1.RData", list_df, df_name=str("cycle_degnode_situation_1"))
+        pyreadr.write_rdata(output_path + "/cycle_successors_1.RData", list_df, df_name=str("cycle_degnode_situation_1"))
     else:
-        pyreadr.write_rdata(output_path + "/res_cycle_successors_1.RData", list_df, df_name=str("cycle_degnode_situation_1"))
+        pyreadr.write_rdata(output_path + "/cycle_successors_1.RData", list_df, df_name=str("cycle_degnode_situation_1"))
 
 #情况2
 def write_situation_2(G, cycles_arr, output_path, direct):
@@ -306,9 +306,9 @@ def write_situation_2(G, cycles_arr, output_path, direct):
     #写入文件.RData
     import pyreadr as pyreadr
     if direct == "directed":
-        pyreadr.write_rdata(output_path + "/res_cycle_successors_2.RData", list_df, df_name=str("cycle_degnode_situation_2"))
+        pyreadr.write_rdata(output_path + "/cycle_successors_2.RData", list_df, df_name=str("cycle_degnode_situation_2"))
     else:
-        pyreadr.write_rdata(output_path + "/res_cycle_successors_2.RData", list_df, df_name=str("cycle_degnode_situation_2"))
+        pyreadr.write_rdata(output_path + "/cycle_successors_2.RData", list_df, df_name=str("cycle_degnode_situation_2"))
 
 
 
@@ -353,9 +353,9 @@ def write_situation_3(G, cycles_arr, output_path, direct):
     #写入文件.RData
     import pyreadr as pyreadr
     if direct == "directed":
-        pyreadr.write_rdata(output_path + "/res_cycle_successors_3.RData", list_df, df_name=str("cycle_degnode_situation_3"))
+        pyreadr.write_rdata(output_path + "/cycle_successors_3.RData", list_df, df_name=str("cycle_degnode_situation_3"))
     else:
-        pyreadr.write_rdata(output_path + "/res_cycle_successors_3.RData", list_df, df_name=str("cycle_degnode_situation_3"))
+        pyreadr.write_rdata(output_path + "/cycle_successors_3.RData", list_df, df_name=str("cycle_degnode_situation_3"))
 
 
 
@@ -363,7 +363,7 @@ def write_situation_3(G, cycles_arr, output_path, direct):
 # test
 
 # import get_pathway_subnet
-# cyc_res = get_pathway_subnet.get_pathway_subnet_info_directed('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData')
+# cyc_res = get_pathway_subnet.get_pathway_subnet_info_directed('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData')
 # G = cyc_res[0]
 # cycles_arr = cyc_res[1]
 

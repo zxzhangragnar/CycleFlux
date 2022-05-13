@@ -7,7 +7,7 @@ get_compoundsVer <- function(compoundsVer) {
   }
   rownames(compoundsVer120921)<-compoundsVer120921[,1]
   compoundsVer120921 = as.data.frame(compoundsVer120921)
-  
+
   return(compoundsVer120921)
 }
 
@@ -29,7 +29,7 @@ get_all_chain_list_cid<-function(tumor_name, cycle_edge_flux_list, cycle_directe
     for (j in 1:length(chain_str)) {
       tmp_chain_str = chain_str[j]
       tmp_chain_str = substring(tmp_chain_str, 2,nchar(tmp_chain_str)-1)
-      
+
       tmp_chain_arr = unlist(strsplit(tmp_chain_str,split = "->"))
       #2.判断是否为up或gapp
       #开始处理
@@ -42,7 +42,7 @@ get_all_chain_list_cid<-function(tumor_name, cycle_edge_flux_list, cycle_directe
           # tmp_ifup = tmp_cyc_metric[which(((tmp_cyc_metric$c_in == tmp_cin)|(tmp_cyc_metric$c_in == tmp_cout)) & ((tmp_cyc_metric$c_out == tmp_cin)|(tmp_cyc_metric$c_out == tmp_cout))), "ifup"]
           tmp_ifgap = tmp_cyc_metric[which((tmp_cyc_metric$c_in == tmp_cin) & (tmp_cyc_metric$c_out == tmp_cout)), "ifgap"]
           tmp_ifup = tmp_cyc_metric[which((tmp_cyc_metric$c_in == tmp_cin) & (tmp_cyc_metric$c_out == tmp_cout)), "ifup"]
-          
+
           if(tmp_ifgap == "gap") {
             tmp_chain_arr[k] = "G"
           }else if(tmp_ifup == "up") {
@@ -58,7 +58,7 @@ get_all_chain_list_cid<-function(tumor_name, cycle_edge_flux_list, cycle_directe
     }
     all_chain_cyc[[i]] = tmp_cyc_chain
   }
-  
+
   return(all_chain_cyc)
 }
 
@@ -77,7 +77,7 @@ get_all_chain_list<-function(tumor_name, cycle_edge_flux_list, cycle_directed, c
     for (j in 1:length(chain_str)) {
       tmp_chain_str = chain_str[j]
       tmp_chain_str = substring(tmp_chain_str, 2,nchar(tmp_chain_str)-1)
-      
+
       tmp_chain_arr = unlist(strsplit(tmp_chain_str,split = "->"))
       #2.判断是否为up或gapp
       #开始处理
@@ -91,7 +91,7 @@ get_all_chain_list<-function(tumor_name, cycle_edge_flux_list, cycle_directed, c
           # tmp_ifup = tmp_cyc_metric[which(((tmp_cyc_metric$c_in == tmp_cin)|(tmp_cyc_metric$c_in == tmp_cout)) & ((tmp_cyc_metric$c_out == tmp_cin)|(tmp_cyc_metric$c_out == tmp_cout))), "ifup"]
           tmp_ifgap = tmp_cyc_metric[which((tmp_cyc_metric$c_in == tmp_cin) & (tmp_cyc_metric$c_out == tmp_cout)), "ifgap"]
           tmp_ifup = tmp_cyc_metric[which((tmp_cyc_metric$c_in == tmp_cin) & (tmp_cyc_metric$c_out == tmp_cout)), "ifup"]
-          
+
           if(tmp_ifgap == "gap") {
             tmp_chain_arr[k] = "G"
           }else if(tmp_ifup == "up") {
@@ -108,14 +108,14 @@ get_all_chain_list<-function(tumor_name, cycle_edge_flux_list, cycle_directed, c
         }
       }
 
-      
+
       tmp_chain_result = paste(tmp_chain_arr, collapse = " -> ")
       #处理完毕
       tmp_cyc_chain = append(tmp_cyc_chain, tmp_chain_result)
     }
     all_chain_cyc[[i]] = tmp_cyc_chain
   }
-  
+
   return(all_chain_cyc)
 }
 
@@ -123,39 +123,39 @@ get_all_chain_list<-function(tumor_name, cycle_edge_flux_list, cycle_directed, c
 ##############################################################################
 get_cycle_chain_list_main <- function(output_path, res_path, package_path, input_tumor_name) {
   #init
-  load(file.path(output_path, "res_allpathway_cycle_union_directed.RData"))
+  load(file.path(output_path, "cycle_directed.RData"))
   load(file.path(res_path, "4_flux_edge/result_final/cycle_edge_flux_list.RData"))
-  
-  
+
+
   library(readr)
   compoundsVer = read_csv(file.path(package_path, "tool_data/compoundsVer120921.csv"))
-  
+
 
   compounds_dict = get_compoundsVer(compoundsVer)
   tumors_array = c(input_tumor_name)
-  
+
   ## cname
   all_chain_list = list()
   for (i in 1:length(tumors_array)) {
     temp_chain_list =  get_all_chain_list(tumors_array[i], cycle_edge_flux_list, cycle_directed, compounds_dict)
     all_chain_list[[tumors_array[i]]] = temp_chain_list
   }
-  
+
   ## cid
   all_chain_list_cid = list()
   for (i in 1:length(tumors_array)) {
     temp_chain_list_cid =  get_all_chain_list_cid(tumors_array[i], cycle_edge_flux_list, cycle_directed)
     all_chain_list_cid[[tumors_array[i]]] = temp_chain_list_cid
   }
-  
-  
+
+
   #save
   res_sub_path = "4_flux_edge/result_final"
   dir.create(file.path(res_path, res_sub_path), recursive = TRUE, showWarnings = FALSE)
   res_file_path = file.path(res_path, res_sub_path, "TCGA_gap_all_chain_list.RData")
   res_file_path_cid = file.path(res_path, res_sub_path, "TCGA_gap_all_chain_list_cid.RData")
   res_file_path_compound_dict = file.path(res_path, res_sub_path, "compounds_dict.RData")
-  
+
   # save(all_chain_list, file="E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/4_flux_edge/result_final/TCGA_gap_all_chain_list.RData")
   # save(all_chain_list_cid, file="E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/4_flux_edge/result_final/TCGA_gap_all_chain_list_cid.RData")
   save(all_chain_list, file=res_file_path)
@@ -170,7 +170,7 @@ get_cycle_chain_list_main <- function(output_path, res_path, package_path, input
 # res_path = "E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/"
 # package_path = "E:/R/R-4.1.2/library/CycleFlux/rscript"
 # input_tumor_name = "COAD"
-# 
+#
 # get_cycle_chain_list_main(output_path, res_path, package_path, input_tumor_name)
 
 

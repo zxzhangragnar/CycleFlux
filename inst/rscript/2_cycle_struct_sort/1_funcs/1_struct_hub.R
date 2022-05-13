@@ -1,8 +1,8 @@
-# 
+#
 # 思路：
-# 
+#
 # 1.找到这些枢纽节点 这些节点同时属于很多环
-# 
+#
 #
 #
 
@@ -19,18 +19,18 @@ get_cpd_hubnode <- function(frequency, compound_directed) {
     cpd_part_df = unique(cpd_part_df)
     cpd_part_df = aggregate(cpd_part_df, list(cpd_part_df$cpdname), paste, collapse = " ; ")
     cpd_part_df = cpd_part_df[,-2]
-    colnames(cpd_part_df)[1] <- 'cpdname' 
+    colnames(cpd_part_df)[1] <- 'cpdname'
     return(cpd_part_df)
   }
-  
+
   cpd_part_df = merge_cpd_cycle(compound_directed)
   cpd_cyc_fre = cbind(cpd_table, cpd_part_df[,"cycle"])
   colnames(cpd_cyc_fre) = c("cpdname", "fre", "cycle")
-  
+
 
   cpd_hubnode = cpd_cyc_fre[which(cpd_cyc_fre$fre >= frequency),]
 
-  
+
   return(cpd_hubnode)
 }
 
@@ -59,7 +59,7 @@ get_cyc_shared_cyc <- function(cycle_directed) {
     temp_cyc_compounds = paste(temp_cyc_compounds[1:length(temp_cyc_compounds)], collapse = ";")
     cyc_shared_cyc[i, "cpds"] = temp_cyc_compounds
   }
-  
+
   #wash sharedcycs
   for (i in 1:length(rownames(cyc_shared_cyc))) {
     temp_cyc_compounds = cyc_shared_cyc[i, "sharedcycs"]
@@ -89,12 +89,12 @@ remove_cpd_in_cyc_shared_cyc <- function(cpd_to_be_rm, cyc_shared_cyc) {
         #pass
       }else {
         after_rm_temp_cyc_compounds = append(after_rm_temp_cyc_compounds, temp_cyc_compounds[j])
-      } 
+      }
     }
     after_rm_temp_cyc_compounds = paste(after_rm_temp_cyc_compounds[1:length(after_rm_temp_cyc_compounds)], collapse = ";")
-    cyc_shared_cyc[i, "aft_rm_cpds"] = after_rm_temp_cyc_compounds    
+    cyc_shared_cyc[i, "aft_rm_cpds"] = after_rm_temp_cyc_compounds
   }
-  
+
   return(cyc_shared_cyc)
 }
 
@@ -110,13 +110,13 @@ judge_cycle_have_intersection <- function(cyc_shared_cyc, cycid_A, cycid_B) {
   cycle_B_cpd = cyc_shared_cyc[which(cyc_shared_cyc$cycid == cycid_B), "aft_rm_cpds"]
   cycle_A_cpd <- unlist(strsplit(cycle_A_cpd, split = ";"))
   cycle_B_cpd <- unlist(strsplit(cycle_B_cpd, split = ";"))
-  
+
   interaction_bet_cycles = intersect(cycle_A_cpd, cycle_B_cpd)
   has_interaction = FALSE
   if(length(interaction_bet_cycles) >= 1) {
     has_interaction = TRUE
   }
-  return(has_interaction)  
+  return(has_interaction)
 }
 
 
@@ -152,13 +152,13 @@ deg_wilcox_test <- function(data_new, data_old) {
   wilcox_res = wilcox.test(data_new, data_old, exact = FALSE, alternative = "less")
   # if alternative = "greater" pvalue = 1
   pvalue = wilcox_res[["p.value"]]
-  
+
   if(pvalue < 0.05){
     if_obvious_different = TRUE
   }else {
     if_obvious_different = FALSE
   }
-  
+
   res_if_obvious_different = list()
   res_if_obvious_different[["pvalue"]] = pvalue
   res_if_obvious_different[["judge"]] = if_obvious_different
@@ -173,26 +173,26 @@ get_cpd_to_be_rm_judge_list_tool <- function(cpd_to_be_rm, cpd_hubnode, cycle_di
   cyc_shared_cyc = calculate_new_hubdeg(cyc_shared_cyc)
   #compare
   #cyc_shared_cyc[, "old_hubdegs"] == cyc_shared_cyc[, "new_hubdegs"]
-  
+
   ### 看看这些环在去掉枢纽节点后，连通性是否变化很大
   temp_hubcpd_cycs = cpd_hubnode[which(cpd_hubnode$cpdname == cpd_to_be_rm), "cycle"]
   temp_hubcpd_cycs <- unlist(strsplit(temp_hubcpd_cycs, split = " ; "))
   #去掉枢纽节点后，连通性对比
   temp_hubcpd_changed_compared = cyc_shared_cyc[which(cyc_shared_cyc$cycid %in% temp_hubcpd_cycs), c("cycid", "old_hubdeg", "new_hubdeg")]
   cyc_shared_df = cyc_shared_cyc[which(cyc_shared_cyc$cycid %in% temp_hubcpd_cycs), ]
-  
+
   # hub_node: 50% cycle changed amplitude > 50%
   # test diff
   # using wilcox.test
   data_old = temp_hubcpd_changed_compared[,"old_hubdeg"]
   data_new = temp_hubcpd_changed_compared[,"new_hubdeg"]
-  res_if_obvious_different = deg_wilcox_test(data_new, data_old) 
-  
+  res_if_obvious_different = deg_wilcox_test(data_new, data_old)
+
   temp_cpd_to_be_rm_judge_list = list()
   temp_cpd_to_be_rm_judge_list[["cyc_shared_df"]] = as.data.frame(cyc_shared_df)
   temp_cpd_to_be_rm_judge_list[["compared"]] = as.data.frame(temp_hubcpd_changed_compared)
   temp_cpd_to_be_rm_judge_list[["judge"]] = res_if_obvious_different
-  
+
   return(temp_cpd_to_be_rm_judge_list)
 }
 
@@ -205,7 +205,7 @@ get_cpd_to_be_rm_judge_list <- function(cpd_hubnode, cycle_directed) {
       cpd_to_be_rm = as.character(cpd_hubnode[c,"cpdname"])
       temp_list = get_cpd_to_be_rm_judge_list_tool(cpd_to_be_rm, cpd_hubnode, cycle_directed)
       cpd_to_be_rm_judge_list[[cpd_to_be_rm]] = temp_list
-    }    
+    }
   }
   return(cpd_to_be_rm_judge_list)
 }
@@ -215,7 +215,7 @@ get_cpd_to_be_rm_judge_list <- function(cpd_hubnode, cycle_directed) {
 
 ############################################################
 #枢纽节点h 所属的环中 哪些环属于 hub-linking结构？
-#对于cpd_hubnode某个cpd所属的某个环cycn 其 old_hubdeg/new_hubdeg > 3 
+#对于cpd_hubnode某个cpd所属的某个环cycn 其 old_hubdeg/new_hubdeg > 3
 #则这个环为 这个枢纽节点h的 hub-linking 环
 
 ############################################################
@@ -243,19 +243,19 @@ get_hubcpd_cycno_list_df <- function(cpd_to_be_rm_judge_list, fc_threshold) {
     }
     hubcpd_cycno_list[[temp_hubcpd ]] = temp_part_df
     hubcpd_cycno_list_df = rbind(hubcpd_cycno_list_df, temp_part_df)
-  }  
-  
+  }
+
   return(hubcpd_cycno_list_df)
 }
 
 ###
-# 一个枢纽节点h 最终确定的属于hub-linking结构的环的数量一定要大于 10 
+# 一个枢纽节点h 最终确定的属于hub-linking结构的环的数量一定要大于 10
 # 否则 这个枢纽节点和其所确定的环 无效
 filter_hub_num_under10 <- function(cpd_to_be_rm_judge_list, frequency, fc_threshold) {
   hub_struct_cycid = c()
   if (length(cpd_to_be_rm_judge_list) > 0) {
     hubcpd_cycno_list_df = get_hubcpd_cycno_list_df(cpd_to_be_rm_judge_list, fc_threshold)
-    
+
     hub_cycids = hubcpd_cycno_list_df[,"cycid"]
     #final result: hub linking struct
     hub_cycids = unique(hub_cycids)
@@ -267,7 +267,7 @@ filter_hub_num_under10 <- function(cpd_to_be_rm_judge_list, frequency, fc_thresh
         hubcpd_cycno_list_df = hubcpd_cycno_list_df[-which(hubcpd_cycno_list_df$hubcpd == hn),]
       }
     }
-    #table(hubcpd_cycno_list_df[,"hubcpd"])    
+    #table(hubcpd_cycno_list_df[,"hubcpd"])
     hub_struct_cycid = hubcpd_cycno_list_df[, "cycid"]
   }
 
@@ -280,29 +280,29 @@ filter_hub_num_under10 <- function(cpd_to_be_rm_judge_list, frequency, fc_thresh
 #############################################################################################
 # test
 struct_hub_main <- function(output_path, res_path, para1=5, para2=5, para3=3) {
-  
-  load(file.path(output_path, "res_allpathway_cycle_union_directed.RData"))
-  load(file.path(output_path, "res_allpathway_compound_union_directed.RData"))
-  
-  
+
+  load(file.path(output_path, "cycle_directed.RData"))
+  load(file.path(output_path, "compound_directed.RData"))
+
+
   ##可疑hub-node
   cpd_hubnode = get_cpd_hubnode(para1, compound_directed)
-  
+
   cpd_to_be_rm_judge_list = get_cpd_to_be_rm_judge_list(cpd_hubnode, cycle_directed)
-  
+
   #Final result:36
   hub_struct_cycid = filter_hub_num_under10(cpd_to_be_rm_judge_list, para2, para3)
-  
+
   hub_struct_cycid = as.numeric(hub_struct_cycid)
-  
+
   #save
   res_sub_path = "2_cycle_struct_sort/result_struct"
   dir.create(file.path(res_path, res_sub_path), recursive = TRUE, showWarnings = FALSE)
   res_file_path = file.path(res_path, res_sub_path, "hub_struct_cycid.RData")
-  
+
   #save(hub_struct_cycid, file="E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/2_cycle_struct_sort/result_struct/hub_struct_cycid.RData")
   save(hub_struct_cycid, file=res_file_path)
-  
+
 }
 
 
@@ -343,7 +343,7 @@ struct_hub_main <- function(output_path, res_path, para1=5, para2=5, para3=3) {
 #########################################################################################
 #########################################################################################
 #debug
-##### 
+#####
 # cyc_shared_oldnew_list = list()
 # cyc_shared_oldnew_vector = c()
 # for (i in 1:length(rownames(cyc_shared_cyc))) {
@@ -354,11 +354,11 @@ struct_hub_main <- function(output_path, res_path, para1=5, para2=5, para3=3) {
 #     cyc_shared_oldnew_list[[cycid]] = as.data.frame(cyc_shared_cyc[i, c("old_hubdeg", "new_hubdeg")])
 #   }
 # }
-# 
+#
 # temp_hubcpd_cycs = cpd_hubnode[which(cpd_hubnode$cpdname == cpd_to_be_rm), "cycle"]
 # temp_hubcpd_cycs <- unlist(strsplit(temp_hubcpd_cycs, split = " ; "))
 # temp_hubcpd_changed_compared = cyc_shared_cyc[which(cyc_shared_cyc$cycid %in% temp_hubcpd_cycs), c("cycid", "old_hubdeg", "new_hubdeg")]
-# 
+#
 # #compare
 # temp_hubcpd_cycs == cyc_shared_oldnew_vector
 # #all true
@@ -376,13 +376,13 @@ struct_hub_main <- function(output_path, res_path, para1=5, para2=5, para3=3) {
 
 ####################################### 获取所有化合物 ######################################
 
-# all cpd of dp_part_net 
+# all cpd of hsa_net
 # get_all_node_of_input_net <- function() {
 #   load("E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/partnet.RData")
-#   dp_part_net = dp_part_net
-#   all_cpd_in = unique(dp_part_net[,c("C_in")])
+#   hsa_net = hsa_net
+#   all_cpd_in = unique(hsa_net[,c("C_in")])
 #   colnames(all_cpd_in) = c("cpd")
-#   all_cpd_out = unique(dp_part_net[,c("C_out")])
+#   all_cpd_out = unique(hsa_net[,c("C_out")])
 #   colnames(all_cpd_out) = c("cpd")
 #   all_cpd = rbind(all_cpd_in, all_cpd_out)
 #   all_cpd = unique(all_cpd)
@@ -392,7 +392,7 @@ struct_hub_main <- function(output_path, res_path, para1=5, para2=5, para3=3) {
 # all_cpd = get_all_node_of_input_net
 
 
-#############################################################                 
+#############################################################
 #bar
 #绘制cycle_inout_rate图
 # sort_bind <- sort(cycle_inout_rate)

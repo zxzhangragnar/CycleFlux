@@ -19,18 +19,18 @@
 #数据 from get_pathway_subnet.R
 
 ## 用于在python中生成 all_pathway_partnet_rowidx_df
-def get_all_pathway_partnet_rowidx(dp_part_net):
+def get_all_pathway_partnet_rowidx(hsa_net):
   #1.pathway_arr
-  pathway_arr = list(dp_part_net["Pathway"].array)
+  pathway_arr = list(hsa_net["Pathway"].array)
   pathway_arr = list(set(pathway_arr))
 
   if '' in pathway_arr:
     pathway_arr.remove('')
 
-  #2.标记每个pathway对应dp_part_net行号
+  #2.标记每个pathway对应hsa_net行号
   all_pathway_partnet_rowidx = list()
   for p in pathway_arr:
-    temp_pathway_index = list(dp_part_net.query("Pathway == '" + p + "'").index)
+    temp_pathway_index = list(hsa_net.query("Pathway == '" + p + "'").index)
     all_pathway_partnet_rowidx.append(temp_pathway_index)
 
   #3.pathway_subnet_arr
@@ -39,7 +39,7 @@ def get_all_pathway_partnet_rowidx(dp_part_net):
       this_pth_rowinx = all_pathway_partnet_rowidx[i]
       for j in range(len(this_pth_rowinx)):
           this_pth_rowinx[j] = int(this_pth_rowinx[j])
-      sdf = dp_part_net.loc[this_pth_rowinx,] 
+      sdf = hsa_net.loc[this_pth_rowinx,] 
       pathway_subnet_arr.append(sdf)
 
   return pathway_arr,pathway_subnet_arr
@@ -154,9 +154,9 @@ def get_pathway_subnet_info_directed(input_rdata):
     import pyreadr as pyreadr
     result = pyreadr.read_r(input_rdata)
 
-    dp_part_net = result["dp_part_net"]
+    hsa_net = result["hsa_net"]
 
-    res_all_pathway_partnet_rowidx = get_all_pathway_partnet_rowidx(dp_part_net)
+    res_all_pathway_partnet_rowidx = get_all_pathway_partnet_rowidx(hsa_net)
     pathway_arr = res_all_pathway_partnet_rowidx[0]
     pathway_subnet_arr = res_all_pathway_partnet_rowidx[1]
 
@@ -168,7 +168,7 @@ def get_pathway_subnet_info_directed(input_rdata):
 
     #1
     import read_n_build_graph
-    graph_res = read_n_build_graph.read_n_build_subnet_graph_func(dp_part_net)
+    graph_res = read_n_build_graph.read_n_build_subnet_graph_func(hsa_net)
     G = graph_res[0]
 
 
@@ -219,7 +219,7 @@ def get_pathway_subnet_info_directed(input_rdata):
 
     # 此后3行因为bug 不加这三行 G 会找不到C00018
     import read_n_build_graph
-    graph_res = read_n_build_graph.read_n_build_subnet_graph_func(dp_part_net)
+    graph_res = read_n_build_graph.read_n_build_subnet_graph_func(hsa_net)
     G = graph_res[0]
 
     return G, merge_cycle_arr, merge_ord_cpds_arr, merge_ridord_cpds_arr
@@ -352,9 +352,9 @@ def get_pathway_subnet_info_undirected(input_rdata):
     import pyreadr as pyreadr
     result = pyreadr.read_r(input_rdata)
 
-    dp_part_net = result["dp_part_net"]
+    hsa_net = result["hsa_net"]
 
-    res_all_pathway_partnet_rowidx = get_all_pathway_partnet_rowidx(dp_part_net)
+    res_all_pathway_partnet_rowidx = get_all_pathway_partnet_rowidx(hsa_net)
     pathway_arr = res_all_pathway_partnet_rowidx[0]
     pathway_subnet_arr = res_all_pathway_partnet_rowidx[1]
 
@@ -366,7 +366,7 @@ def get_pathway_subnet_info_undirected(input_rdata):
 
     #1
     import read_n_build_graph
-    graph_res = read_n_build_graph.read_n_build_subnet_graph_func(dp_part_net)
+    graph_res = read_n_build_graph.read_n_build_subnet_graph_func(hsa_net)
     G = graph_res[0]
  
     import find_cycles
@@ -413,7 +413,7 @@ def get_pathway_subnet_info_undirected(input_rdata):
     # 此后3行因为bug 不加这三行 G 会找不到C00018
     import read_n_build_graph
     
-    graph_res = read_n_build_graph.read_n_build_subnet_graph_func(dp_part_net)
+    graph_res = read_n_build_graph.read_n_build_subnet_graph_func(hsa_net)
     G = graph_res[0]
 
     return G, merge_cycle_arr, merge_ord_cpds_arr
@@ -446,10 +446,10 @@ def write_directed_list_main(input_rdata, output_path, result_type):
     #### 完整版信息
     if result_type == "cycle":
         import write_cycle_list
-        write_cycle_list.write_complete_pathway_subnet_directed_cycle_df(G, merge_cycle_arr, merge_ord_cpds_arr, merge_ridord_cpds_arr, "directed", output_path+"/res_allpathway_cycle_union_directed.RData")
+        write_cycle_list.write_complete_pathway_subnet_directed_cycle_df(G, merge_cycle_arr, merge_ord_cpds_arr, merge_ridord_cpds_arr, "directed", output_path+"/cycle_directed.RData")
     else: # "compound"
         import write_compound_list
-        write_compound_list.write_complete_compound_df(G, merge_cycle_arr, "directed", output_path+"/res_allpathway_compound_union_directed.RData")
+        write_compound_list.write_complete_compound_df(G, merge_cycle_arr, "directed", output_path+"/compound_directed.RData")
 
 #write undirected
 def write_undirected_list_main(input_rdata, output_path, result_type):
@@ -461,10 +461,10 @@ def write_undirected_list_main(input_rdata, output_path, result_type):
     #### 完整版信息
     if result_type == "cycle":
         import write_cycle_list
-        write_cycle_list.write_complete_pathway_subnet_undirected_cycle_df(G, merge_cycle_arr, merge_ord_cpds_arr, "undirected", output_path+"/res_allpathway_cycle_union_undirected.RData")
+        write_cycle_list.write_complete_pathway_subnet_undirected_cycle_df(G, merge_cycle_arr, merge_ord_cpds_arr, "undirected", output_path+"/cycle_undirected.RData")
     else: # "compound"
         import write_compound_list
-        write_compound_list.write_complete_compound_df(G, merge_cycle_arr, "undirected", output_path+"/res_allpathway_compound_union_undirected.RData")
+        write_compound_list.write_complete_compound_df(G, merge_cycle_arr, "undirected", output_path+"/compound_undirected.RData")
 
 
 
@@ -472,25 +472,25 @@ def write_undirected_list_main(input_rdata, output_path, result_type):
 
 #######################
 #test 9.25
-# get_pathway_subnet_info_undirected('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData')
-# get_pathway_subnet_info_directed('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData')
+# get_pathway_subnet_info_undirected('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData')
+# get_pathway_subnet_info_directed('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData')
 
 
 #############################################################################################
 
 #### 完整版信息
 #import write_cycle_list
-#write_cycle_list.write_complete_pathway_subnet_directed_cycle_df(G, merge_cycle_arr, merge_ord_cpds_arr, merge_ridord_cpds_arr, "directed", "res_allpathway_cycle_union_directed.RData")
-#write_cycle_list.write_complete_pathway_subnet_undirected_cycle_df(G, merge_cycle_arr, merge_ord_cpds_arr, "undirected", "res_allpathway_cycle_union_undirected.RData")
+#write_cycle_list.write_complete_pathway_subnet_directed_cycle_df(G, merge_cycle_arr, merge_ord_cpds_arr, merge_ridord_cpds_arr, "directed", "cycle_directed.RData")
+#write_cycle_list.write_complete_pathway_subnet_undirected_cycle_df(G, merge_cycle_arr, merge_ord_cpds_arr, "undirected", "cycle_undirected.RData")
 
 
 ####################################################################################
 #### 生成完整版信息
-# write_directed_list_main('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData', "compound")
-# write_undirected_list_main('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData', "compound")
+# write_directed_list_main('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData', "compound")
+# write_undirected_list_main('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData', "compound")
 
-# write_directed_list_main('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData', "cycle")
-# write_undirected_list_main('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData', "cycle")
+# write_directed_list_main('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData', "cycle")
+# write_undirected_list_main('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData', "cycle")
 
 
 

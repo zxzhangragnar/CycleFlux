@@ -1,5 +1,5 @@
 
-#1.21 joint meeting 
+#1.21 joint meeting
 
 #cycle_edge_flux_list
 #load("E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/4_flux_edge/result_final/cycle_edge_flux_list.RData")
@@ -16,11 +16,11 @@
 # R中主要是两个rdata文件:
 # 1. 每一列为环中的1个反应  (cycle_edge_flux_list)
 # 2.每一列为1个环 (cycle_flux_list)
-# 
+#
 # (始终保持这两个文件为最新，并用最新的这两个文件做分析 即可)
 
 ###############################################
-#1.看有gap的环,除了gap以外的rct是否为up 
+#1.看有gap的环,除了gap以外的rct是否为up
 #2.重新做boxplot等图分析(用cycle_flux_list)
 #3.使用genecards.org更新缺失的基因value
 ###############################################
@@ -38,7 +38,7 @@ get_never_considered_comp<-function(never_considered_comp, compounds_dict) {
   compounds_dict_cids = compounds_dict$ENTRY
   never_considered_comp_arr_cids = intersect(never_considered_comp_arr, compounds_dict_cids)
   never_considered_comp_names = never_considered_comp_arr_cids
-  
+
   return(never_considered_comp_names)
 }
 
@@ -58,14 +58,14 @@ get_ug_chain_list<-function(tumors_array, cycle_edge_flux_list, all_chain_list_c
     gap_c = unique(temp_tumor_df[which(temp_tumor_df$ifgap == "gap"),'cycid'])
     up_c = unique(temp_tumor_df[which(temp_tumor_df$ifup == "up"),'cycid'])
     ug_c = intersect(gap_c, up_c)
-    
+
     temp_chain_list = all_chain_list_cid[[tumor_name]]
     cycle_len = length(temp_chain_list)
     #names(temp_chain_list) = c(0:247)
     names(temp_chain_list) = c(0:(cycle_len-1))
     ug_c = as.integer(ug_c)
     ug_chain_list = temp_chain_list[ug_c+1]
-    
+
     ug_chain_list_dict[[tumor_name]] = ug_chain_list
   }
   return(ug_chain_list_dict)
@@ -75,11 +75,11 @@ get_ug_chain_list<-function(tumors_array, cycle_edge_flux_list, all_chain_list_c
 
 ##############################################################################
 single_cycle_gap_analysis_main <- function(output_path, res_path, package_path, input_tumor_name) {
-  
+
   # init
   library(readr)
   never_considered_comp = read_csv(file.path(package_path, "tool_data/never_considered_comp.csv"))
-  
+
   load(file.path(res_path, "4_flux_edge/result_final/compounds_dict.RData"))
   load(file.path(res_path, "4_flux_edge/result_final/TCGA_gap_all_chain_list_cid.RData"))
   load(file.path(res_path, "4_flux_edge/result_final/cycle_edge_flux_list.RData"))
@@ -88,19 +88,19 @@ single_cycle_gap_analysis_main <- function(output_path, res_path, package_path, 
   never_considered_comp_names = get_never_considered_comp(never_considered_comp, compounds_dict)
   tumors_array = c(input_tumor_name)
   gapup_cycle_chain_list = get_ug_chain_list(tumors_array, cycle_edge_flux_list, all_chain_list_cid)
-  
-  
+
+
   #save
   res_sub_path = "6_graph_single_cycle/result_analysis"
   dir.create(file.path(res_path, res_sub_path), recursive = TRUE, showWarnings = FALSE)
   res_file_path_nc = file.path(res_path, res_sub_path, "never_considered_compounds.RData")
   res_file_path_chain = file.path(res_path, res_sub_path, "gapup_cycle_chain_list.RData")
-  
+
   # save(never_considered_comp_arr,never_considered_comp_names, file="E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/6_graph_single_cycle/result_analysis/never_considered_compounds.RData")
   # save(gapup_cycle_chain_list, file="E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/6_graph_single_cycle/result_analysis/gapup_cycle_chain_list.RData")
   save(never_considered_comp_names, file=res_file_path_nc)
   save(gapup_cycle_chain_list, file=res_file_path_chain)
-  
+
 }
 
 
@@ -111,6 +111,6 @@ single_cycle_gap_analysis_main <- function(output_path, res_path, package_path, 
 # res_path = "E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/"
 # package_path = "E:/R/R-4.1.2/library/CycleFlux/rscript"
 # input_tumor_name = "COAD"
-# 
+#
 # single_cycle_gap_analysis_main(output_path, res_path, package_path, input_tumor_name)
 

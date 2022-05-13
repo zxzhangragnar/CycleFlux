@@ -360,7 +360,7 @@ def get_undirected_cpd_degree(G, compound):
 #test
 
 # import get_pathway_subnet
-# cyc_res = get_pathway_subnet.get_pathway_subnet_info_undirected('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData')
+# cyc_res = get_pathway_subnet.get_pathway_subnet_info_undirected('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData')
 # G = cyc_res[0]
 # cycles_arr = cyc_res[1]
 
@@ -473,7 +473,7 @@ print(undirected_cycle_ngbnode_dict)
 #####################################################
 ## 2022.4.2
 # import get_pathway_subnet
-# cyc_res = get_pathway_subnet.get_pathway_subnet_info_directed('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData')
+# cyc_res = get_pathway_subnet.get_pathway_subnet_info_directed('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData')
 # G = cyc_res[0]
 # cycles_arr = cyc_res[1]
 

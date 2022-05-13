@@ -234,7 +234,7 @@ def get_new_G(G, merge_cycle_arr):
 ###
 
 # import get_pathway_subnet
-# undirected_info = get_pathway_subnet.get_pathway_subnet_info_undirected('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/all_pathway_subnet.RData')
+# undirected_info = get_pathway_subnet.get_pathway_subnet_info_undirected('E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData')
 # G = undirected_info[0]
 
 # G_node_num = nx.number_of_nodes(G)

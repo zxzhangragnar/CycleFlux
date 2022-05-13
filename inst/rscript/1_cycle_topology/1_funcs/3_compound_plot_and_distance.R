@@ -9,7 +9,7 @@
 
 
 # cycle_directed
-load("E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_output/res_allpathway_compound_union_directed.RData")
+load("E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_output/compound_directed.RData")
 compound_distance = as.data.frame(compound_directed[,c("cpdname", "distance")])
 cpd_all_distance_df = data.frame()
 for (i in 1:length(rownames(compound_distance))) {
@@ -33,7 +33,7 @@ for (i in 1:length(rownames(compound_distance))) {
 
 
 # save 
-# save(cpd_all_distance_df, file="E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/1_cycle_topology/result_topo/cpd_all_distance_df.RData")
+save(cpd_all_distance_df, file="E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/1_cycle_topology/result_topo/cpd_all_distance_df.RData")
 
 
 
