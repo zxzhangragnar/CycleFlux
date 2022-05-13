@@ -78,14 +78,14 @@ get_cycle_gapup_info <- function(input_net_file, output_path, res_path, input_tu
 
 
 # test
-input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/hsa_subnet.RData'
-output_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/output_files"
-res_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/res_files"
-input_tumor_name = "COAD"
-input_tumor_data = "E:/scFEA_universal/Data/TCGA_data/TCGA_convolution/TCGA_data/TCGA-COAD.RData"
-input_normal_data = "E:/scFEA_universal/Data/TCGA_data/TCGA_convolution/TCGA_data/TCGA-COAD_N.RData"
-
-get_enzyme_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data)
-get_cycle_gapup_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data)
-
+# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/hsa_subnet.RData'
+# output_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/output_files"
+# res_path = "E:/scFEA_universal/my_R/Rpackage/cycle_flux/res_files"
+# input_tumor_name = "COAD"
+# input_tumor_data = "E:/scFEA_universal/Data/TCGA_data/TCGA_convolution/TCGA_data/TCGA-COAD.RData"
+# input_normal_data = "E:/scFEA_universal/Data/TCGA_data/TCGA_convolution/TCGA_data/TCGA-COAD_N.RData"
+#
+# get_enzyme_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data)
+# get_cycle_gapup_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data)
+#
 
