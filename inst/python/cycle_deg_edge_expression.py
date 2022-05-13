@@ -71,7 +71,7 @@ def write_situation_comps_1(G, cycles_arr, output_path, direct):
 
                         #添加行
                         tmp_row_df_2 = pd.DataFrame([[cyc, pre_cpd, rid, now_cpd, ec_express, gene_express, pathway_express]], columns=["cycid", "od", "rid", "suc", "enzyme", "gene_symbol", "pathway"])
-                        list_df_2 = list_df_2.append(tmp_row_df_2, ignore_index=True)
+                        list_df_2 = pd.concat((list_df_2, tmp_row_df_2), ignore_index=True)
 
     #写入文件.RData
     import pyreadr as pyreadr
@@ -139,7 +139,7 @@ def write_situation_comps_2(G, cycles_arr, output_path, direct):
 
                     #添加行
                     tmp_row_df_2 = pd.DataFrame([[cyc, pre_cpd, rid, now_cpd, ec_express, gene_express, pathway_express]], columns=["cycid", "od", "rid", "suc", "enzyme", "gene_symbol", "pathway"])
-                    list_df_2 = list_df_2.append(tmp_row_df_2, ignore_index=True)
+                    list_df_2 = pd.concat((list_df_2, tmp_row_df_2), ignore_index=True)
 
     #写入文件.RData
     import pyreadr as pyreadr
@@ -213,7 +213,7 @@ def write_situation_comps_3(G, cycles_arr, output_path, direct):
 
                     #添加行
                     tmp_row_df_2 = pd.DataFrame([[cyc, now_cpd, rid, pre_cpd, ec_express, gene_express, pathway_express]], columns=["cycid", "ind", "rid", "presuc", "enzyme", "gene_symbol", "pathway"])
-                    list_df_2 = list_df_2.append(tmp_row_df_2, ignore_index=True)
+                    list_df_2 = pd.concat((list_df_2, tmp_row_df_2), ignore_index=True)
     
     #写入文件.RData
     import pyreadr as pyreadr
