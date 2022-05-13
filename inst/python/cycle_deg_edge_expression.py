@@ -46,7 +46,7 @@ def write_situation_comps_1(G, cycles_arr, output_path, direct):
 
                         #添加行
                         tmp_row_df_1 = pd.DataFrame([[cyc, pre_cpd, rid, now_cpd, ec_express, gene_express, pathway_express]], columns=["cycid", "node", "rid", "od", "enzyme", "gene_symbol", "pathway"])
-                        list_df_1 = list_df_1.append(tmp_row_df_1, ignore_index=True)
+                        list_df_1 = pd.concat((list_df_1, tmp_row_df_1), ignore_index=True)
 
     # 输出数据
     list_df_2 = pd.DataFrame()  #得到的列表
@@ -116,7 +116,7 @@ def write_situation_comps_2(G, cycles_arr, output_path, direct):
 
                     #添加行
                     tmp_row_df_1 = pd.DataFrame([[cyc, pre_cpd, rid, now_cpd, ec_express, gene_express, pathway_express]], columns=["cycid", "node", "rid", "od", "enzyme", "gene_symbol", "pathway"])
-                    list_df_1 = list_df_1.append(tmp_row_df_1, ignore_index=True)
+                    list_df_1 = pd.concat((list_df_1, tmp_row_df_1), ignore_index=True)
 
     # 输出数据
     list_df_2 = pd.DataFrame()  #得到的列表
@@ -189,7 +189,7 @@ def write_situation_comps_3(G, cycles_arr, output_path, direct):
 
                     #添加行
                     tmp_row_df_1 = pd.DataFrame([[cyc, now_cpd, rid, pre_cpd, ec_express, gene_express, pathway_express]], columns=["cycid", "node", "rid", "ind", "enzyme", "gene_symbol", "pathway"])
-                    list_df_1 = list_df_1.append(tmp_row_df_1, ignore_index=True)
+                    list_df_1 = pd.concat((list_df_1, tmp_row_df_1), ignore_index=True)
 
     # 输出数据
     list_df_2 = pd.DataFrame()  #得到的列表
@@ -264,7 +264,7 @@ def write_edgesucs_out_comps(G, cycles_arr, output_path, direct):
                 pathway_express = SG[pre_cpd][now_cpd]['Pathway']
                 #添加行
                 tmp_row_df_1 = pd.DataFrame([[cyc, pre_cpd, rid, now_cpd, ec_express, gene_express, pathway_express]], columns=["cycid", "node", "rid", "od", "enzyme", "gene_symbol", "pathway"])
-                list_df_1 = list_df_1.append(tmp_row_df_1, ignore_index=True)
+                list_df_1 = pd.concat((list_df_1, tmp_row_df_1), ignore_index=True)
 
     #写入文件.RData
     import pyreadr as pyreadr
@@ -307,7 +307,7 @@ def write_edgesucs_in_comps(G, cycles_arr, output_path, direct):
 
                 #添加行
                 tmp_row_df_1 = pd.DataFrame([[cyc, now_cpd, rid, pre_cpd, ec_express, gene_express, pathway_express]], columns=["cycid", "node", "rid", "ind", "enzyme", "gene_symbol", "pathway"])
-                list_df_1 = list_df_1.append(tmp_row_df_1, ignore_index=True)
+                list_df_1 = pd.concat((list_df_1, tmp_row_df_1), ignore_index=True)
 
     #写入文件.RData
     import pyreadr as pyreadr
