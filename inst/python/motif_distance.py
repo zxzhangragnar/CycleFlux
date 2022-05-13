@@ -45,7 +45,7 @@ def write_complete_compound_df(G, output_file_name):
 
         cyc_df = pd.DataFrame([[cpdname, distance]], columns=["cpdname", "distance"])
 
-        list_df = list_df.append(cyc_df, ignore_index=True)
+        list_df = pd.concat((list_df, cyc_df), ignore_index=True)
 
     #写入文件.RData
     import pyreadr as pyreadr

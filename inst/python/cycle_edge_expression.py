@@ -32,7 +32,7 @@ def write_cycle_edge_expression(G, cycles_arr, output_path, direct):
 
                 #添加行
                 cyc_df = pd.DataFrame([[cycid, pre_cpd, rid, now_cpd, ec_express, gene_express, pathway_express]], columns=["cycid", "c_in", "rid", "c_out", "enzyme", "gene_symbol", "pathway"])
-                list_df = list_df.append(cyc_df, ignore_index=True)
+                list_df = pd.concat((list_df, cyc_df), ignore_index=True)
     
     #写入文件.RData
     import pyreadr as pyreadr

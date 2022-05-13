@@ -22,7 +22,7 @@ def write_subnet_edge_expression(G, output_path, direct):
 
         #添加行
         cyc_df = pd.DataFrame([[pre_cpd, rid, now_cpd, ec_express, gene_express, pathway_express]], columns=["c_in", "rid", "c_out", "enzyme", "gene_symbol", "pathway"])
-        list_df = list_df.append(cyc_df, ignore_index=True)
+        list_df = pd.concat((list_df, cyc_df), ignore_index=True)
         
 
     #写入文件.RData

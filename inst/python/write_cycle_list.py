@@ -226,7 +226,7 @@ def write_complete_pathway_subnet_directed_cycle_df(G, cycles_arr, ord_cpds_arr,
         distance = distance_arr[cyno]
 
         cyc_df = pd.DataFrame([[cycid, cpds, num, ord_cpds, ord_cpds_str, prts_unprts, Rids, incyc_rids, neighcyc, neighcyc_detail, deg, deg_det, indeg, indeg_det, outdeg, outdeg_det, sig, sigdet, distance]], columns=["cycid", "cpds",  "len", "ord_cpds", "ord_cpds_str", "prts_unprts", "Rids", "incyc_rids", "neighcyc", "neighcycs", "deg", "degs", "indeg", "indegs", "outdeg", "outdegs", "sharedcyc", "sharedcycs", "distance"])
-        list_df = list_df.append(cyc_df, ignore_index=True)
+        list_df = pd.concat((list_df, cyc_df), ignore_index=True)
     #写入文件.RData
     import pyreadr as pyreadr
     pyreadr.write_rdata(output_file_name, list_df, df_name=str("cycle_"+direct))
@@ -292,7 +292,7 @@ def write_complete_pathway_subnet_undirected_cycle_df(G, cycles_arr, ord_cpds_ar
         distance = distance_arr[cyno]
 
         cyc_df = pd.DataFrame([[cycid, cpds, num, ord_cpds, prts_unprts, Rids, incyc_rids, neighcyc, neighcyc_detail, undegree, sig, sigdet, distance]], columns=["cycid", "cpds",  "len", "ord_cpds", "prts_unprts", "Rids", "incyc_rids", "neighcyc", "neighcycs", "degree", "sharedcyc", "sharedcycs", "distance"])
-        list_df = list_df.append(cyc_df, ignore_index=True)
+        list_df = pd.concat((list_df, cyc_df), ignore_index=True)
     #写入文件.RData
     import pyreadr as pyreadr
     pyreadr.write_rdata(output_file_name, list_df, df_name=str("cycle_"+direct))

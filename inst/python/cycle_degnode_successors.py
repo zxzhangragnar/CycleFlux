@@ -259,7 +259,7 @@ def write_situation_1(G, cycles_arr, output_path, direct):
                             reverse_edge_incycle = get_edge_incycles(cycles_arr, od, suc)
 
                         cyc_df = pd.DataFrame([[cycid, node, node_od_edge_Rid, od, od_suc_edge_Rid, suc, od_reverse_judge, reverse_edge_incycle]], columns=["cycid", "node", "rid1", "od", "rid2", "suc_incyc", "is_reverse", "reverse_edge_incycle"])
-                        list_df = list_df.append(cyc_df, ignore_index=True)
+                        list_df = pd.concat((list_df, cyc_df), ignore_index=True)
 
     #写入文件.RData
     import pyreadr as pyreadr
@@ -301,7 +301,7 @@ def write_situation_2(G, cycles_arr, output_path, direct):
                         ifrid2_inothcyc = 1
                     #添加行
                     cyc_df = pd.DataFrame([[cycid, node, node_od_edge_Rid, od, od_suc_edge_Rid, suc, ifrid2_inothcyc, rid2_inothcyc_no]], columns=["cycid", "node", "rid1", "od", "rid2", "suc", "ifrid2_inothcyc", "rid2_inothcyc_no"])
-                    list_df = list_df.append(cyc_df, ignore_index=True)
+                    list_df = pd.concat((list_df, cyc_df), ignore_index=True)
 
     #写入文件.RData
     import pyreadr as pyreadr
@@ -348,7 +348,7 @@ def write_situation_3(G, cycles_arr, output_path, direct):
                         ifrid2_inothcyc = 1
                     #添加行
                     cyc_df = pd.DataFrame([[cycid, node, node_ind_edge_Rid, ind, ind_suc_edge_Rid, suc, ifrid2_inothcyc, rid2_inothcyc_no]], columns=["cycid", "node", "rid1", "ind", "rid2", "presuc", "ifrid2_inothcyc", "rid2_inothcyc_no"])
-                    list_df = list_df.append(cyc_df, ignore_index=True)
+                    list_df = pd.concat((list_df, cyc_df), ignore_index=True)
 
     #写入文件.RData
     import pyreadr as pyreadr

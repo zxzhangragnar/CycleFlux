@@ -200,7 +200,7 @@ def get_complete_compound_df(G, cycles_arr, direct):
 
             cyc_df = pd.DataFrame([[cpdname, cycle, Rid, deg, degnodes, prts_unprts, distance, indeg_nodes, indeg_num, outdeg_nodes, outdeg_num]], columns=["cpdname", "cycle", "Rid", "deg", "degnodes", "prts_unprts", "distance", "indeg_nodes", "indeg_num", "outdeg_nodes", "outdeg_num"])
 
-            list_df = list_df.append(cyc_df, ignore_index=True)
+            list_df = pd.concat((list_df, cyc_df), ignore_index=True)
     
     return list_df
 

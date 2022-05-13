@@ -54,7 +54,7 @@ def write_edgesucs_out(G, cycles_arr, output_path, direct):
 
                 #添加行
                 cyc_df = pd.DataFrame([[cycid, node, node_od_edge_Rid, od]], columns=["cycid", "node", "rid1", "od"])
-                list_df = list_df.append(cyc_df, ignore_index=True)
+                list_df = pd.concat((list_df, cyc_df), ignore_index=True)
 
     #写入文件.RData
     import pyreadr as pyreadr
@@ -89,7 +89,7 @@ def write_edgesucs_in(G, cycles_arr, output_path, direct):
 
                 #添加行
                 cyc_df = pd.DataFrame([[cycid, node, node_ind_edge_Rid, ind]], columns=["cycid", "node", "rid1", "ind"])
-                list_df = list_df.append(cyc_df, ignore_index=True)
+                list_df = pd.concat((list_df, cyc_df), ignore_index=True)
 
 
     #写入文件.RData

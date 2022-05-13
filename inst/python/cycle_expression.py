@@ -190,7 +190,7 @@ def write_cycle_expression(G, cycles_arr, output_path, direct):
         ec_express = cycles_ec_dict[cyc]
         #添加行
         cyc_df = pd.DataFrame([[cycid, gene_express, ec_express, pathway_express]], columns=["cycid", "gene_express", "ec_express", "pathway_express"])
-        list_df = list_df.append(cyc_df, ignore_index=True)
+        list_df = pd.concat((list_df, cyc_df), ignore_index=True)
 
     #写入文件.RData
     import pyreadr as pyreadr
