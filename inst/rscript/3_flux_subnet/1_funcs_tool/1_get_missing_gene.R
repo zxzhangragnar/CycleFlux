@@ -21,7 +21,7 @@ get_gene_expressinfo<-function(subnet_edge_expression){
 
 
 ####################################################################################################
-get_cyc_gene_not_in_tgca<-function(cyc_gene_expressinfo, gene_foldchange_list, to_find_correct_symbol_v1_1){
+get_cyc_gene_not_in_tgca<-function(cyc_gene_expressinfo, all_gene_stat, to_find_correct_symbol_v1_1){
   cyc_gene_kegg = c()
   cyc_gene_tcga = c()
   for (i in 1:length(rownames(to_find_correct_symbol_v1_1))) {
@@ -37,7 +37,7 @@ get_cyc_gene_not_in_tgca<-function(cyc_gene_expressinfo, gene_foldchange_list, t
   
   cyc_gene_not_in_tgca = c()
   cyc_gene_in_tgca = c()
-  tcga_gene_list = rownames(gene_foldchange_list[[1]])
+  tcga_gene_list = rownames(all_gene_stat[[1]])
   cyc_gene_expressinfo = unique(cyc_gene_expressinfo)
   for (i in 1:length(cyc_gene_expressinfo)) {
     gene = cyc_gene_expressinfo[i]
@@ -52,9 +52,9 @@ get_cyc_gene_not_in_tgca<-function(cyc_gene_expressinfo, gene_foldchange_list, t
 }
 
 
-get_gene_missing_list<-function(cyc_gene_expressinfo, gene_foldchange_list, to_find_correct_symbol_v1_1){
+get_gene_missing_list<-function(cyc_gene_expressinfo, all_gene_stat, to_find_correct_symbol_v1_1){
   #test
-  cyc_gene_not_in_tgca = get_cyc_gene_not_in_tgca(cyc_gene_expressinfo, gene_foldchange_list, to_find_correct_symbol_v1_1)
+  cyc_gene_not_in_tgca = get_cyc_gene_not_in_tgca(cyc_gene_expressinfo, all_gene_stat, to_find_correct_symbol_v1_1)
   cyc_gene_not_in_tgca_but_in_tofind = intersect(cyc_gene_not_in_tgca,to_find_correct_symbol_v1_1$X1)
   cyc_gene_not_in_tgca_not_in_tofind = setdiff(cyc_gene_not_in_tgca, cyc_gene_not_in_tgca_but_in_tofind)
   
@@ -75,14 +75,14 @@ get_gene_missing_list<-function(cyc_gene_expressinfo, gene_foldchange_list, to_f
 get_gene_and_tofind_list_main <- function(output_path, res_path, package_path) {
 
   load(file.path(output_path, "subnet_edge_expression.RData"))
-  load(file.path(res_path, "3_flux_subnet/result_tool/gene_foldchange_list.RData"))
+  load(file.path(res_path, "/tool_data/TCGA_upgap_genes.RData"))
   
   cyc_gene_expressinfo = get_gene_expressinfo(subnet_edge_expression)
   
   library(readr)
   to_find_correct_symbol_v1_1 = read_csv(file.path(package_path, "tool_data/to_find_correct_symbol_v1.1.csv"), col_names = FALSE)
   
-  gene_missing_list = get_gene_missing_list(cyc_gene_expressinfo, gene_foldchange_list, to_find_correct_symbol_v1_1)
+  gene_missing_list = get_gene_missing_list(cyc_gene_expressinfo, stat_all, to_find_correct_symbol_v1_1)
   
   # save
   res_sub_path = "3_flux_subnet/result_tool"
