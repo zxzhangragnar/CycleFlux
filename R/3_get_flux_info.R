@@ -10,7 +10,6 @@
 #'
 
 
-
 get_basic_gene_info <- function(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data) {
   ENV = new.env()
   attach(ENV)
