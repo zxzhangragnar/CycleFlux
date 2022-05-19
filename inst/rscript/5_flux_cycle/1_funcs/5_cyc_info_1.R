@@ -7,7 +7,7 @@ get_cycle_sum_stat <- function(tumor_name, all_gene_stat, cycle_expression, gene
   missing_genes = gene_missing_list[["cyc_gene_not_in_tgca"]]
   temp_all_gene_stat = all_gene_stat[[paste0("TCGA-",tumor_name)]]
 
-  cyc_up_down = as.data.frame(cbind(cycle_expression[,"cycid"],0))
+  cycle_stat = as.data.frame(cbind(cycle_expression[,"cycid"],0))
   for (i in 1:length(cycle_expression[,"cycid"])) {
     gene_num_arr = cycle_expression[i,"gene_express"]
     gene_num_arr = substring(gene_num_arr, 2,nchar(gene_num_arr)-1)
@@ -22,21 +22,44 @@ get_cycle_sum_stat <- function(tumor_name, all_gene_stat, cycle_expression, gene
         temp_genesign = as.double(temp_all_gene_stat[temp_str_gene,"sign"])*as.double(temp_str_num)
         temp_cyc_allgenenum_sum = temp_cyc_allgenenum_sum + temp_str_num
         temp_cyc_genesign_sum = as.double(temp_cyc_genesign_sum) + temp_genesign #temp_genesign
-        if (j == 1) {
-          cyc_up_down[i,3] = as.character(temp_all_gene_stat[temp_str_gene,"p.value"])
-        }else {
-          cyc_up_down[i,3] = paste0(cyc_up_down[i,3],";",temp_all_gene_stat[temp_str_gene,"p.value"])  
-        }
       }
       
     }
-    cyc_up_down[i,2] = temp_cyc_genesign_sum/temp_cyc_allgenenum_sum #各个基因的sign总和/基因出现的总次数
+    cycle_stat[i,2] = round(temp_cyc_genesign_sum/temp_cyc_allgenenum_sum, 2) #各个基因的sign总和/基因出现的总次数
   }
-  colnames(cyc_up_down) = c("cycid", "updownsign", "pvalue")
+  colnames(cycle_stat) = c("cycid", "updownsign")
   
-  return(cyc_up_down)
+  return(cycle_stat)
 }
 
+
+get_cycle_obvs <- function(tumor_name, cycle_edge_flux_list) {
+  temp_cycle_edge_obvs = cycle_edge_flux_list[[tumor_name]]
+  
+  for (i in 1:length(temp_cycle_edge_obvs[,"cycid"])) {
+    if (temp_cycle_edge_obvs[i,"DE_cof"] > 0) {
+      temp_cycle_edge_obvs[i,"ifDE"] = 1
+    }else {
+      temp_cycle_edge_obvs[i,"ifDE"] = 0
+    }
+  }
+  
+  cycle_obvs = aggregate(temp_cycle_edge_obvs$ifDE, list(temp_cycle_edge_obvs$cycid), mean)
+  colnames(cycle_obvs) = c("cycid", "DE_cof")
+  cycle_obvs[,"DE_cof"] = round(cycle_obvs[,"DE_cof"], 2)
+  
+  #obvs_cycid = cycle_obvs[which(cycle_obvs$DE_cof>0.5), "cycid"]
+  
+  return(cycle_obvs)
+}
+
+
+merge_obvs<-function(tumor_name, cycle_merge_stat, cycle_edge_flux_list) {
+  temp_tumor_df = cycle_merge_stat[[tumor_name]]
+  cycle_obvs = get_cycle_obvs(tumor_name, cycle_edge_flux_list)
+  temp_tumor_df[,"DE_cof"] = cycle_obvs$DE_cof
+  return(temp_tumor_df)
+}
 
 merge_struct<-function(tumor_name, cycle_merge_stat, struct_cycle_sort_list) {
   #struct
@@ -55,20 +78,23 @@ merge_struct<-function(tumor_name, cycle_merge_stat, struct_cycle_sort_list) {
 cyc_info_1_main <- function(output_path, res_path, package_path, input_tumor_name) {
   
   load(file.path(output_path, "cycle_expression.RData"))
-  load(file.path(res_path, "/tool_data/TCGA_upgap_genes.RData"))
+  load(file.path(package_path, "/tool_data/TCGA_upgap_genes.RData"))
   load(file.path(res_path, "3_flux_subnet/result_tool/gene_missing_list.RData"))
   load(file.path(res_path, "2_cycle_struct_sort/result_struct/struct_cycle_sort_list.RData"))
-  
+  load(file.path(res_path, "4_flux_edge/result_final/cycle_edge_flux_list.RData"))
   
   #merge
   cycle_merge_stat = list()
   tumors_array = c(input_tumor_name)
   for (i in 1:length(tumors_array)) {
     tumor_name = tumors_array[i]
-    cyc_up_down = get_cycle_sum_stat(tumor_name, stat_all, cycle_expression, gene_missing_list)
-    cycle_merge_stat[[tumors_array[i]]] = cyc_up_down
-
-    temp_tumor_df = as.data.frame(merge_struct(tumors_array[i], cycle_merge_stat, struct_cycle_sort_list))
+    temp_cycle_stat = get_cycle_sum_stat(tumor_name, stat_all, cycle_expression, gene_missing_list)
+    cycle_merge_stat[[tumors_array[i]]] = temp_cycle_stat
+    
+    temp_tumor_df = merge_obvs(tumor_name, cycle_merge_stat, cycle_edge_flux_list)
+    cycle_merge_stat[[tumors_array[i]]] = temp_tumor_df
+    
+    temp_tumor_df = merge_struct(tumors_array[i], cycle_merge_stat, struct_cycle_sort_list)
     cycle_merge_stat[[tumors_array[i]]] = temp_tumor_df
   }
   

@@ -75,7 +75,7 @@ get_gene_missing_list<-function(cyc_gene_expressinfo, all_gene_stat, to_find_cor
 get_gene_and_tofind_list_main <- function(output_path, res_path, package_path) {
 
   load(file.path(output_path, "subnet_edge_expression.RData"))
-  load(file.path(res_path, "/tool_data/TCGA_upgap_genes.RData"))
+  load(file.path(package_path, "/tool_data/TCGA_upgap_genes.RData"))
   
   cyc_gene_expressinfo = get_gene_expressinfo(subnet_edge_expression)
   

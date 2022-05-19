@@ -80,7 +80,7 @@ get_subnet_edge_info <- function(input_net_file, output_path, res_path, input_tu
   }
 
   source(system.file("rscript/3_flux_subnet/2_funcs/4_add_gap.R", package = "CycleFlux"), local=ENV)
-  ENV$subnet_edge_flux_list_main(output_path, res_path, input_tumor_name)
+  ENV$subnet_edge_flux_list_main(output_path, res_path, package_path, input_tumor_name)
 
   setwd(ENV$old_wd)
 
@@ -154,7 +154,7 @@ get_cycle_edge_info <- function(input_net_file, output_path, res_path, input_tum
   }
 
   source(system.file("rscript/4_flux_edge/1_funcs/4_add_gap.R", package = "CycleFlux"), local=ENV)
-  ENV$cycle_edge_flux_list_main(output_path, res_path, input_tumor_name)
+  ENV$cycle_edge_flux_list_main(output_path, res_path, package_path, input_tumor_name)
 
   source(system.file("rscript/4_flux_edge/1_funcs/5_get_cycle_chain_list.r", package = "CycleFlux"), local=ENV)
   ENV$get_cycle_chain_list_main(output_path, res_path, package_path, input_tumor_name)

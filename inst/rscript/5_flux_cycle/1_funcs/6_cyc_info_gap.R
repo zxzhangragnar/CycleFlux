@@ -8,8 +8,8 @@ refesh_cycle_flux_list<-function(tumor_name, cycle_flux_list, cycle_edge_flux_li
   up_c = unique(temp_df[which(temp_df$ifup=="up"), "cycid"])
 
   temp_stat_df = temp_df[,c("cycid","mean_fc")]
-  updownsign_df_mean = aggregate(temp_stat_df$mean_fc, list(temp_stat_df$cycid), mean)
-  cycle_flux_list[[tumor_name]][, "mean_fc"] = updownsign_df_mean$mean_fc
+  temp_mean_fc = aggregate(temp_stat_df$mean_fc, list(temp_stat_df$cycid), mean)
+  cycle_flux_list[[tumor_name]][, "mean_fc"] = temp_mean_fc$mean_fc
   
   cycle_flux_list[[tumor_name]][, "ifup"] = "normal"
   cycle_flux_list[[tumor_name]][, "ifgap"] = "normal"

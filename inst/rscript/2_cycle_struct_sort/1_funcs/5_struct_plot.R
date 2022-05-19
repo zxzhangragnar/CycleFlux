@@ -11,7 +11,7 @@ get_distance_matrix_compound <- function(cpd_num) {
   #距离矩阵
   #distance_matrix =matrix(distance_scale, nr=652, byrow=TRUE, dimnames=list(c(0:651), c(0:651)))
   distance_matrix =matrix(distance_scale, nr=cpd_num, byrow=TRUE, dimnames=list(c(0:(cpd_num-1)), c(0:(cpd_num-1))))
-  
+
   return(distance_matrix)
 }
 
@@ -31,7 +31,7 @@ build_coor_by_distance <- function(distance_matrix) {
   text(jitter(mds.coor[,1]), jitter(mds.coor[,2]),
        rownames(mds.coor), cex=0.8)
   abline(h=0,v=0,col="gray75")
-  
+
   return(mds.coor)
 }
 
@@ -49,23 +49,23 @@ get_temp_frame <- function(i, cpdnames) {
   temp_frame = as.data.frame(cpdnames)
   temp_frame = cbind(temp_frame, c(NA))
   colnames(temp_frame) = c("to", "distance")
-  
+
   part_df = cpd_all_distance_df[which(cpd_all_distance_df$from == cpdnames[i]), c("to","distance")]
   part_df = unique(part_df)
   temp_frame = rbind(part_df, temp_frame)
-  
+
   temp_df = as.data.frame(cpdnames)
   temp_df[,"temp"] = 1 #any value not useful
   colnames(temp_df) = c("to", "temp")
-  
+
   require(data.table)
   setDT(temp_frame)
-  setDT(temp_df); 
+  setDT(temp_df);
   temp_frame = temp_frame[temp_df, mult = "first", on = "to", nomatch=0L]
   temp_frame = temp_frame[, c("to","distance")]
   temp_frame = cbind(cpdnames[i], temp_frame)
   colnames(temp_frame) = c("from", "to", "distance")
-  
+
   return(temp_frame)
 }
 
@@ -88,11 +88,11 @@ save(all_cpd_distance_frame, file="E:/scFEA_universal/my_R/aimA/rdata_cycle_dete
 
 ##############
 ## plot compound
-cpd_num = length(cpdnames)
-distance_matrix = get_distance_matrix_compound(cpd_num)
-coor_by_distance_matrix = build_coor_by_distance(distance_matrix)
-plot(distance_matrix)
-#plot(coor_by_distance_matrix, col = struct_vector)
+# cpd_num = length(cpdnames)
+# distance_matrix = get_distance_matrix_compound(cpd_num)
+# coor_by_distance_matrix = build_coor_by_distance(distance_matrix)
+# plot(distance_matrix)
+# #plot(coor_by_distance_matrix, col = struct_vector)
 
 
 
@@ -121,7 +121,7 @@ plot(distance_matrix)
 #                   state = c("KS","MN","AL","FL","CA"))
 # scores = data.frame(id = c(1,1,1,2,2,3,3,3),
 #                     score = c(66,75,78,86,85,76,75,90))
-# 
+#
 # require(data.table)
 # setDT(scores);
 # setDT(data) # convert to data.tables by reference

@@ -165,7 +165,7 @@ get_enzyme_info_1_main <- function(input_net_file, output_path, res_path, packag
   load(file.path(output_path, "cycle_edge_expression.RData"))
   load(file.path(input_net_file))
   load(file.path(res_path, "3_flux_subnet/result_tool/gene_missing_list.RData"))
-  load(file.path(res_path, "/tool_data/TCGA_upgap_genes.RData"))
+  load(file.path(package_path, "/tool_data/TCGA_upgap_genes.RData"))
   
   # test
   tumors_array = c(input_tumor_name)

@@ -166,10 +166,10 @@ get_cycle_edge_flux_list <- function(edge_expression, tumors_array, all_gene_sta
 
 #####################################################################################
 # subnet_edge_expression
-subnet_edge_flux_list_main <- function(output_path, res_path, input_tumor_name) {
+subnet_edge_flux_list_main <- function(output_path, res_path, package_path, input_tumor_name) {
   #init
   load(file.path(output_path, "subnet_edge_expression.RData"))
-  load(file.path(res_path, "/tool_data/TCGA_upgap_genes.RData"))
+  load(file.path(package_path, "/tool_data/TCGA_upgap_genes.RData"))
   load(file.path(res_path, "3_flux_subnet/result_tool/gene_missing_list.RData"))
   
   tumors_array = c(input_tumor_name)
@@ -189,8 +189,8 @@ subnet_edge_flux_list_main <- function(output_path, res_path, input_tumor_name) 
 # test
 # output_path = "E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_output"
 # res_path = "E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/"
+# package_path = "E:/R/R-4.1.2/library/CycleFlux/rscript"
 # input_tumor_name = "COAD"
-# 
-# subnet_edge_flux_list_main(output_path, res_path, input_tumor_name)
+# subnet_edge_flux_list_main(output_path, res_path, package_path, input_tumor_name)
 
 
