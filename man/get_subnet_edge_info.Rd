@@ -13,7 +13,8 @@ get_subnet_edge_info(
   input_normal_data,
   prm_1 = 0.05,
   prm_2 = 1,
-  prm_3 = 1
+  prm_3 = 1,
+  prm_4 = 2
 )
 }
 \arguments{

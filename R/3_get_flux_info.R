@@ -64,7 +64,7 @@ get_basic_gene_info <- function(input_net_file, output_path, res_path, input_tum
 #'
 
 
-get_subnet_edge_info <- function(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data, prm_1=0.05, prm_2=1, prm_3=1) {
+get_subnet_edge_info <- function(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data, prm_1=0.05, prm_2=1, prm_3=1, prm_4=2) {
   ENV = new.env()
   attach(ENV)
 
@@ -80,7 +80,7 @@ get_subnet_edge_info <- function(input_net_file, output_path, res_path, input_tu
   }
 
   source(system.file("rscript/3_flux_subnet/2_funcs/4_add_gap.R", package = "CycleFlux"), local=ENV)
-  ENV$subnet_edge_flux_list_main(output_path, res_path, package_path, input_tumor_name, prm_1, prm_2, prm_3)
+  ENV$subnet_edge_flux_list_main(output_path, res_path, package_path, input_tumor_name, prm_1, prm_2, prm_3, prm_4)
 
   setwd(ENV$old_wd)
 

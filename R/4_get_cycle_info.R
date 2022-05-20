@@ -42,10 +42,15 @@ get_enzyme_info <- function(input_net_file, output_path, res_path, input_tumor_n
 #' This function for cycle get_cycle_gapup_info
 #'
 #' @param get_cycle_gapup_info input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data
+#' prm_1=0.5
 #' @keywords get_cycle_gapup_info
 #' @export
 #' @examples
 #' get_cycle_gapup_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data, prm_1=0.5)
+#'
+#' if DE_cof > prm_1
+#' -> DE = "obvious
+#' else DE = "normal
 #'
 
 get_cycle_gapup_info <- function(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data, prm_1=0.5) {
