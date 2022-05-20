@@ -1,10 +1,10 @@
 # 判断标准：
 # hub 在去掉1个(泛化成2个3个) 枢纽节点后，很多环就不相连了(泛化成连通性大幅度减少了)
 # web 去掉1个枢纽节点后 仍然成环，有很多overlap相连的点
-#
-#
+# 
+# 
 # 先找到 Hub  ---> 去掉(不考虑)这些环 ---> 再找 web
-#
+# 
 #
 # （根据距离distance分布进行聚类）
 #
@@ -12,8 +12,8 @@
 # 根据距离聚类筛选出来的 结果clus_cluster
 # 筛选出可疑的web结构的聚簇   （fre>=20）
 # 筛选出可疑的idv结构的聚簇   (fre<=2)
-#
-#
+# 
+# 
 # 【判断标准】
 # 根据 distance 等指标 找到可疑 Web 结构聚簇
 # 【标准】对网内每一个环判断标准：
@@ -33,7 +33,7 @@ get_distance_matrix <- function(cycle_num, cyc_all_distance_df) {
   #距离矩阵
   #distance_matrix =matrix(distance_scale, nr=248, byrow=TRUE, dimnames=list(c(0:651), c(0:651)))
   distance_matrix =matrix(distance_scale, nr=cycle_num, byrow=TRUE, dimnames=list(c(0:(cycle_num-1)), c(0:(cycle_num-1))))
-
+  
   return(distance_matrix)
 }
 
@@ -51,7 +51,7 @@ build_coor_by_distance <- function(distance_matrix) {
   # text(jitter(mds.coor[,1]), jitter(mds.coor[,2]),
   #      rownames(mds.coor), cex=0.8)
   # abline(h=0,v=0,col="gray75")
-
+  
   return(mds.coor)
 }
 
@@ -71,7 +71,7 @@ cluster_by_dbscan_for_web <- function(input_data, p_eps, p_minpts) {
   clus_cluster = clus$cluster
   #names(clus_cluster) = c(0:651)
   names(clus_cluster) = c(rownames(input_data))
-
+  
   table(clus_cluster)
   return(clus_cluster)
 }
@@ -96,7 +96,7 @@ filter_suspicious_web_struct <- function(clus_cluster, filter_cluster_size, if_p
       index_tobe_remove = append(index_tobe_remove, names(clus_cluster[i]))
     }
   }
-
+  
   if(!if_plot) {
     clus_cluster = clus_cluster[-which(names(clus_cluster) %in% index_tobe_remove)]
   }
@@ -125,7 +125,7 @@ get_suspicious_web_table_list <- function(suspicious_web_struct_cluster) {
         }
       }
       suspicious_web_table_list[[i]] = temp_df
-    }
+    }    
   }
 
   return(suspicious_web_table_list)
@@ -143,7 +143,7 @@ get_far_cycid_pairs_df_list <- function(suspicious_web_table_list, threshold, cy
     for (k in 1:length(suspicious_web_table_list)) {
       suspicious_web_table = suspicious_web_table_list[[k]]
       suspicious_web_cycids = suspicious_web_table$cycid
-
+      
       far_cycid_pairs_df = data.frame()
       df_row_index = 1
       for (i in 1:length(suspicious_web_cycids)) {
@@ -160,9 +160,9 @@ get_far_cycid_pairs_df_list <- function(suspicious_web_table_list, threshold, cy
           }
         }
       }
-
+      
       far_cycid_pairs_df_list[[k]] = far_cycid_pairs_df
-    }
+    }    
   }
 
   return(far_cycid_pairs_df_list)
@@ -177,7 +177,7 @@ get_sumdist_df_list <- function(suspicious_web_table_list, cycle_directed, cyc_a
     for (k in 1:length(suspicious_web_table_list)) {
       suspicious_web_table = suspicious_web_table_list[[k]]
       suspicious_web_cycids = suspicious_web_table$cycid
-
+      
       sumdist_df = as.data.frame(suspicious_web_cycids)
       sumdist_df[,"sumdist"] = 0
       for (i in 1:length(suspicious_web_cycids)) {
@@ -187,12 +187,12 @@ get_sumdist_df_list <- function(suspicious_web_table_list, cycle_directed, cyc_a
           cyc_b = as.character(suspicious_web_cycids[j])
           temp_distance = as.integer(distance_matrix[cyc_a, cyc_b])
           sumdist_df[which(sumdist_df$suspicious_web_cycids == cyc_a),"sumdist"] = sumdist_df[which(sumdist_df$suspicious_web_cycids == cyc_a),"sumdist"] + temp_distance
-
+          
         }
       }
-
+      
       sumdist_df_list[[k]] = sumdist_df
-    }
+    }    
   }
 
   return(sumdist_df_list)
@@ -219,14 +219,14 @@ get_outlier_list <- function(far_cycid_pairs_df_list, sumdist_df_list) {
           }else {
             outlier_list = append(outlier_list, to_cycid)
           }
-        }
+        } 
       }
-    }
+    }    
   }
   #remove离群点
   outlier_list = unique(outlier_list)
   return(outlier_list)
-
+  
 }
 
 
@@ -254,79 +254,69 @@ filter_neighcyc_bigger <- function(suspicious_web_cycids, threshold, cycle_direc
 
 #############################################################################################
 # test
-struct_web_main <- function(output_path, res_path, par1=.18, par2=3, par3=7, par4=2, par5=10) {
+struct_web_main <- function(output_path, res_path, prm_1=.18, prm_2=3, prm_3=7, prm_4=2, prm_5=10) {
 
   load(file.path(output_path, "cycle_directed.RData"))
   load(file.path(res_path, "2_cycle_struct_sort/result_struct/hub_struct_cycid.RData"))
   load(file.path(res_path, "1_cycle_topology/result_topo/cyc_all_distance_df.RData"))
-
+  
   cycle_num = length(cycle_directed[,1])
   distance_matrix = get_distance_matrix(cycle_num, cyc_all_distance_df)
   coor_by_distance_matrix = build_coor_by_distance(distance_matrix)
-  clus_cluster = cluster_by_dbscan_for_web(coor_by_distance_matrix, par1, par2)
+  clus_cluster = cluster_by_dbscan_for_web(coor_by_distance_matrix, prm_1, prm_2)
   #plot_cluster_with_color(coor_by_distance_matrix, clus_cluster)
   # plot(coor_by_distance_matrix, col = clus_cluster+1L)
   # table(clus_cluster)
-
+  
   #suspicious_web_struct
   #suspicious_web_struct_cluster = filter_suspicious_web_struct(clus_cluster, 15, FALSE)
-  suspicious_web_struct_cluster = filter_suspicious_web_struct(clus_cluster, par3, FALSE)
-
+  suspicious_web_struct_cluster = filter_suspicious_web_struct(clus_cluster, prm_3, FALSE)
+  
   table(suspicious_web_struct_cluster)
   # plot(coor_by_distance_matrix, col = suspicious_web_struct_cluster+1L)
   #plot_cluster_with_color(coor_by_distance_matrix, suspicious_web_struct_cluster)
-
-
+  
+  
   #test
-  suspicious_web_table_list = get_suspicious_web_table_list(suspicious_web_struct_cluster)
-  far_cycid_pairs_df_list = get_far_cycid_pairs_df_list(suspicious_web_table_list, par4, cycle_directed, cyc_all_distance_df)
-
-
+  suspicious_web_table_list = get_suspicious_web_table_list(suspicious_web_struct_cluster) 
+  far_cycid_pairs_df_list = get_far_cycid_pairs_df_list(suspicious_web_table_list, prm_4, cycle_directed, cyc_all_distance_df)
+  
+  
   #test
-  suspicious_web_table_list = get_suspicious_web_table_list(suspicious_web_struct_cluster)
+  suspicious_web_table_list = get_suspicious_web_table_list(suspicious_web_struct_cluster) 
   sumdist_df_list = get_sumdist_df_list(suspicious_web_table_list, cycle_directed, cyc_all_distance_df)
-
-
+  
+  
   outlier_list = get_outlier_list(far_cycid_pairs_df_list, sumdist_df_list)
   ###
   suspicious_web_cycids = names(suspicious_web_struct_cluster)
   ### remove 离群点
   suspicious_web_cycids = setdiff(suspicious_web_cycids, outlier_list)
-
-
+  
+  
   #test
   #suspicious_web_cycids = filter_neighcyc_bigger(suspicious_web_cycids, 25)
-  suspicious_web_cycids = filter_neighcyc_bigger(suspicious_web_cycids, par5, cycle_directed)
-
-
+  suspicious_web_cycids = filter_neighcyc_bigger(suspicious_web_cycids, prm_5, cycle_directed)
+  
+  
   # 【去掉hub环】
   # 得到 Hub结构及其所属的环
-  ### remove Hub struct
+  ### remove Hub struct 
   suspicious_web_cycids = setdiff(suspicious_web_cycids, hub_struct_cycid)
-
+  
   #Final result:
   web_struct_cycid = suspicious_web_cycids
-
-
+  
+  
   #save
   res_sub_path = "2_cycle_struct_sort/result_struct"
   dir.create(file.path(res_path, res_sub_path), recursive = TRUE, showWarnings = FALSE)
   res_file_path = file.path(res_path, res_sub_path, "web_struct_cycid.RData")
-
+  
   #save(web_struct_cycid, file="E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/2_cycle_struct_sort/result_struct/web_struct_cycid.RData")
   save(web_struct_cycid, file=res_file_path)
-
+  
 }
-
-
-
-
-# test
-# output_path = "E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_output"
-# res_path = "E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/"
-# struct_web_main(output_path, res_path, .18, 3, 7, 2, 10)
-
-
 
 
 
@@ -344,9 +334,22 @@ struct_web_main <- function(output_path, res_path, par1=.18, par2=3, par3=7, par
 #   }
 #   plot(coor_by_distance_matrix, col = plot_web_cycids+1L)
 # }
-#
+# 
 # #plot
 # plot_the_web_cycids(clus_cluster, suspicious_web_cycids)
+
+
+
+
+
+#######################################################################################################################                 
+# test
+# output_path = "E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_output"
+# res_path = "E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/"
+# struct_web_main(output_path, res_path, .18, 3, 7, 2, 10)
+
+
+
 
 
 

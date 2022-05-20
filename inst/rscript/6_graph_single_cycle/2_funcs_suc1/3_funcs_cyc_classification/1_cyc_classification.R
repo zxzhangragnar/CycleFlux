@@ -287,11 +287,10 @@ cyc_classification_main <- function(res_path, input_tumor_name) {
   }
   
   # save
-  res_sub_path = "6_graph_single_cycle/2_funcs_suc1/3_funcs_cyc_classification"
+  res_sub_path = "6_graph_single_cycle/2_funcs_suc1/cyc_successors_data"
   dir.create(file.path(res_path, res_sub_path), recursive = TRUE, showWarnings = FALSE)
   res_file_path = file.path(res_path, res_sub_path, "cycle_upgap_class_list.RData")
   
-  #save(cycle_upgap_class_list, file="E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/6_graph_single_cycle/2_funcs_suc1/3_funcs_cyc_classification/cycle_upgap_class_list.RData")
   save(cycle_upgap_class_list, file=res_file_path)
 }
 

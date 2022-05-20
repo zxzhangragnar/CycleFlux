@@ -111,7 +111,7 @@ get_graph_single_cycle <- function(input_net_file, output_path, res_path, graph_
 #' get_graph_single_cycle_degree_1(input_net_file, output_path, res_path, graph_path, input_tumor_name, input_tumor_data, input_normal_data)
 #'
 
-get_graph_single_cycle_degree_1 <- function(input_net_file, output_path, res_path, graph_path, input_tumor_name, input_tumor_data, input_normal_data) {
+get_graph_single_cycle_degree_1 <- function(input_net_file, output_path, res_path, graph_path, input_tumor_name, input_tumor_data, input_normal_data, prm_1=0.05, prm_2=1, prm_3=1, prm_4=2) {
   ENV = new.env()
   attach(ENV)
 
@@ -127,7 +127,7 @@ get_graph_single_cycle_degree_1 <- function(input_net_file, output_path, res_pat
   }
 
   source(system.file("rscript/6_graph_single_cycle/2_funcs_suc1/1_funcs/4_add_gap.R", package = "CycleFlux"), local=ENV)
-  ENV$cycle_edge_flux_list_inout_main(output_path, res_path, package_path, input_tumor_name)
+  ENV$cycle_edge_flux_list_inout_main(output_path, res_path, package_path, input_tumor_name, prm_1, prm_2, prm_3, prm_4)
 
   source(system.file("rscript/6_graph_single_cycle/2_funcs_suc1/2_funcs_draw/6_my_ug_degnode_1.R", package = "CycleFlux"), local=ENV)
   ENV$my_ug_degnode_1_main(output_path, res_path, input_tumor_name)
@@ -229,7 +229,7 @@ get_cycle_shift <- function(input_net_file, output_path, res_path, graph_path, i
 #' get_graph_single_cycle_degree_2(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data)
 #'
 
-get_graph_single_cycle_degree_2 <- function(input_net_file, output_path, res_path, graph_path, input_tumor_name, input_tumor_data, input_normal_data) {
+get_graph_single_cycle_degree_2 <- function(input_net_file, output_path, res_path, graph_path, input_tumor_name, input_tumor_data, input_normal_data, prm_1=0.05, prm_2=1, prm_3=1, prm_4=2) {
   ENV = new.env()
   attach(ENV)
 
@@ -245,7 +245,7 @@ get_graph_single_cycle_degree_2 <- function(input_net_file, output_path, res_pat
   }
 
   source(system.file("rscript/6_graph_single_cycle/2_funcs_suc2/1_funcs/4_add_gap.R", package = "CycleFlux"), local=ENV)
-  ENV$cycle_successors_expression_main(output_path, res_path, package_path, input_tumor_name)
+  ENV$cycle_successors_expression_main(output_path, res_path, package_path, input_tumor_name, prm_1, prm_2, prm_3, prm_4)
 
   source(system.file("rscript/6_graph_single_cycle/2_funcs_suc2/1_funcs_draw/6_my_ug_degnode_1.R", package = "CycleFlux"), local=ENV)
   ENV$suc2_my_ug_degnode_1_main(output_path, res_path, input_tumor_name)

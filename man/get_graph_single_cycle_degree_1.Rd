@@ -11,7 +11,11 @@ get_graph_single_cycle_degree_1(
   graph_path,
   input_tumor_name,
   input_tumor_data,
-  input_normal_data
+  input_normal_data,
+  prm_1 = 0.05,
+  prm_2 = 1,
+  prm_3 = 1,
+  prm_4 = 2
 )
 }
 \arguments{

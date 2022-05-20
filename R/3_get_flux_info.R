@@ -64,7 +64,7 @@ get_basic_gene_info <- function(input_net_file, output_path, res_path, input_tum
 #'
 
 
-get_subnet_edge_info <- function(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data) {
+get_subnet_edge_info <- function(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data, prm_1=0.05, prm_2=1, prm_3=1) {
   ENV = new.env()
   attach(ENV)
 
@@ -80,7 +80,7 @@ get_subnet_edge_info <- function(input_net_file, output_path, res_path, input_tu
   }
 
   source(system.file("rscript/3_flux_subnet/2_funcs/4_add_gap.R", package = "CycleFlux"), local=ENV)
-  ENV$subnet_edge_flux_list_main(output_path, res_path, package_path, input_tumor_name)
+  ENV$subnet_edge_flux_list_main(output_path, res_path, package_path, input_tumor_name, prm_1, prm_2, prm_3)
 
   setwd(ENV$old_wd)
 
@@ -118,27 +118,33 @@ get_subnet_edge_info <- function(input_net_file, output_path, res_path, input_tu
 #' This function for cycle get_cycle_edge_info
 #'
 #' @param get_cycle_edge_info input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data
-#' par_up1 = 1
-#' par_up2 = 10
-#' par_gap1 = -2
-#' par_gap2 = 1.71
+#' prm_1=0.05
+#' prm_2=1
+#' prm_3=1
+#' prm_4=2
 #' @keywords get_cycle_edge_info
 #' @export
 #' @examples
-#' get_cycle_edge_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data, par_up1, par_up2, par_gap1, par_gap2)
+#' get_cycle_edge_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data, prm_1=0.05, prm_2=1, prm_3=1, prm_4=2)
 #'
-#' (max gene foldchange>(par_up1))&(max gene meanval>par_up2) -> up
-#' (max gene foldchange<(par_gap1))|(max gene meanval<par_gap2) -> gap
+#' DE_cof:
+#' (gene pvalue < prm_1) & (abs(gene fc) > prm_2)
+#' -> DE num ++
+#' -> DE_cof = DE num/gene num
 #'
+#' prm_3=1
+#' For an edge, if any gene on the edge is up, the edge is up
+#' prm_3=2
+#' For an edge, if the gene with the largest mean of tumor value is up, then the edge is up
 #'
-#'
-#'
-#'
-#'
+#' prm_4=1
+#' For an edge, if any gene on the edge is gap, the edge is gap
+#' prm_4=2
+#' For an edge, if the gene with the largest mean of tumor value is gap, then the edge is gap
 
 
 
-get_cycle_edge_info <- function(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data) {
+get_cycle_edge_info <- function(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data, prm_1=0.05, prm_2=1, prm_3=1, prm_4=2) {
   ENV = new.env()
   attach(ENV)
 
@@ -154,7 +160,7 @@ get_cycle_edge_info <- function(input_net_file, output_path, res_path, input_tum
   }
 
   source(system.file("rscript/4_flux_edge/1_funcs/4_add_gap.R", package = "CycleFlux"), local=ENV)
-  ENV$cycle_edge_flux_list_main(output_path, res_path, package_path, input_tumor_name)
+  ENV$cycle_edge_flux_list_main(output_path, res_path, package_path, input_tumor_name, prm_1, prm_2, prm_3, prm_4)
 
   source(system.file("rscript/4_flux_edge/1_funcs/5_get_cycle_chain_list.r", package = "CycleFlux"), local=ENV)
   ENV$get_cycle_chain_list_main(output_path, res_path, package_path, input_tumor_name)
@@ -175,12 +181,11 @@ get_cycle_edge_info <- function(input_net_file, output_path, res_path, input_tum
 # input_tumor_data = "E:/scFEA_universal/Data/TCGA_data/TCGA_convolution/TCGA_data/TCGA-COAD.RData"
 # input_normal_data = "E:/scFEA_universal/Data/TCGA_data/TCGA_convolution/TCGA_data/TCGA-COAD_N.RData"
 #
-# par_up1 = 1
-# par_up2 = 10
-# par_gap1 = -2
-# par_gap2 = 1.71
-#
-# get_cycle_edge_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data, par_up1, par_up2, par_gap1, par_gap2)
+# prm_1=0.05
+# prm_2=1
+# prm_3=1
+# prm_4=2
+# get_cycle_edge_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data, prm_1, prm_2, prm_3, prm_4)
 
 
 

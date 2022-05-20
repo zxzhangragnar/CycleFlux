@@ -45,10 +45,10 @@ get_enzyme_info <- function(input_net_file, output_path, res_path, input_tumor_n
 #' @keywords get_cycle_gapup_info
 #' @export
 #' @examples
-#' get_cycle_gapup_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data)
+#' get_cycle_gapup_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data, prm_1=0.5)
 #'
 
-get_cycle_gapup_info <- function(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data) {
+get_cycle_gapup_info <- function(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data, prm_1=0.5) {
   ENV = new.env()
   attach(ENV)
 
@@ -64,7 +64,7 @@ get_cycle_gapup_info <- function(input_net_file, output_path, res_path, input_tu
   }
 
   source(system.file("rscript/5_flux_cycle/1_funcs/5_cyc_info_1.R", package = "CycleFlux"), local=ENV)
-  ENV$cyc_info_1_main(output_path, res_path, package_path, input_tumor_name)
+  ENV$cyc_info_1_main(output_path, res_path, package_path, input_tumor_name, prm_1)
 
   source(system.file("rscript/5_flux_cycle/1_funcs/5_cyc_info_2.R", package = "CycleFlux"), local=ENV)
   ENV$cyc_info_2_main(res_path, input_tumor_name)
@@ -85,7 +85,8 @@ get_cycle_gapup_info <- function(input_net_file, output_path, res_path, input_tu
 # input_tumor_data = "E:/scFEA_universal/Data/TCGA_data/TCGA_convolution/TCGA_data/TCGA-COAD.RData"
 # input_normal_data = "E:/scFEA_universal/Data/TCGA_data/TCGA_convolution/TCGA_data/TCGA-COAD_N.RData"
 #
+# prm_1=0.5
 # get_enzyme_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data)
-# get_cycle_gapup_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data)
+# get_cycle_gapup_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data, prm_1)
 #
 

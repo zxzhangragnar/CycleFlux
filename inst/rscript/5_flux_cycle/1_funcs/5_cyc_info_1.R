@@ -33,7 +33,7 @@ get_cycle_sum_stat <- function(tumor_name, all_gene_stat, cycle_expression, gene
 }
 
 
-get_cycle_obvs <- function(tumor_name, cycle_edge_flux_list) {
+get_cycle_obvs <- function(tumor_name, cycle_edge_flux_list, prm_1) {
   temp_cycle_edge_obvs = cycle_edge_flux_list[[tumor_name]]
   
   for (i in 1:length(temp_cycle_edge_obvs[,"cycid"])) {
@@ -48,16 +48,18 @@ get_cycle_obvs <- function(tumor_name, cycle_edge_flux_list) {
   colnames(cycle_obvs) = c("cycid", "DE_cof")
   cycle_obvs[,"DE_cof"] = round(cycle_obvs[,"DE_cof"], 2)
   
-  #obvs_cycid = cycle_obvs[which(cycle_obvs$DE_cof>0.5), "cycid"]
+  cycle_obvs[,"DE"] = "normal"
+  cycle_obvs[which(cycle_obvs$DE_cof>prm_1),"DE"] = "obvious"
   
   return(cycle_obvs)
 }
 
 
-merge_obvs<-function(tumor_name, cycle_merge_stat, cycle_edge_flux_list) {
+merge_obvs<-function(tumor_name, cycle_merge_stat, cycle_edge_flux_list, prm_1) {
   temp_tumor_df = cycle_merge_stat[[tumor_name]]
-  cycle_obvs = get_cycle_obvs(tumor_name, cycle_edge_flux_list)
+  cycle_obvs = get_cycle_obvs(tumor_name, cycle_edge_flux_list, prm_1)
   temp_tumor_df[,"DE_cof"] = cycle_obvs$DE_cof
+  temp_tumor_df[,"DE"] = cycle_obvs$DE
   return(temp_tumor_df)
 }
 
@@ -75,12 +77,12 @@ merge_struct<-function(tumor_name, cycle_merge_stat, struct_cycle_sort_list) {
 
 
 
-cyc_info_1_main <- function(output_path, res_path, package_path, input_tumor_name) {
+cyc_info_1_main <- function(output_path, res_path, package_path, input_tumor_name, prm_1) {
   
   load(file.path(output_path, "cycle_expression.RData"))
   load(file.path(package_path, "/tool_data/TCGA_upgap_genes.RData"))
   load(file.path(res_path, "3_flux_subnet/result_tool/gene_missing_list.RData"))
-  load(file.path(res_path, "2_cycle_struct_sort/result_struct/struct_cycle_sort_list.RData"))
+  #load(file.path(res_path, "2_cycle_struct_sort/result_struct/struct_cycle_sort_list.RData"))
   load(file.path(res_path, "4_flux_edge/result_final/cycle_edge_flux_list.RData"))
   
   #merge
@@ -91,11 +93,11 @@ cyc_info_1_main <- function(output_path, res_path, package_path, input_tumor_nam
     temp_cycle_stat = get_cycle_sum_stat(tumor_name, stat_all, cycle_expression, gene_missing_list)
     cycle_merge_stat[[tumors_array[i]]] = temp_cycle_stat
     
-    temp_tumor_df = merge_obvs(tumor_name, cycle_merge_stat, cycle_edge_flux_list)
+    temp_tumor_df = merge_obvs(tumor_name, cycle_merge_stat, cycle_edge_flux_list, prm_1)
     cycle_merge_stat[[tumors_array[i]]] = temp_tumor_df
     
-    temp_tumor_df = merge_struct(tumors_array[i], cycle_merge_stat, struct_cycle_sort_list)
-    cycle_merge_stat[[tumors_array[i]]] = temp_tumor_df
+    # temp_tumor_df = merge_struct(tumors_array[i], cycle_merge_stat, struct_cycle_sort_list)
+    # cycle_merge_stat[[tumors_array[i]]] = temp_tumor_df
   }
   
   #save
@@ -115,8 +117,8 @@ cyc_info_1_main <- function(output_path, res_path, package_path, input_tumor_nam
 # res_path = "E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/"
 # package_path = "E:/R/R-4.1.2/library/CycleFlux/rscript"
 # input_tumor_name = "COAD"
-# 
-# cyc_info_1_main(output_path, res_path, package_path, input_tumor_name)
+# prm_1=0.5
+# cyc_info_1_main(output_path, res_path, package_path, input_tumor_name, prm_1)
 
 
 

@@ -10,7 +10,8 @@ get_cycle_gapup_info(
   res_path,
   input_tumor_name,
   input_tumor_data,
-  input_normal_data
+  input_normal_data,
+  prm_1 = 0.5
 )
 }
 \arguments{
@@ -20,7 +21,7 @@ get_cycle_gapup_info(
 This function for cycle get_cycle_gapup_info
 }
 \examples{
-get_cycle_gapup_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data)
+get_cycle_gapup_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data, prm_1=0.5)
 
 }
 \keyword{get_cycle_gapup_info}

@@ -161,7 +161,7 @@ get_cyc_shift_formula <- function(tumor_name, cycle_upgap_class_list, cycle_edge
 cyc_shift_main <- function(res_path, input_tumor_name) {
   
   # init
-  load(file.path(res_path, "6_graph_single_cycle/2_funcs_suc1/3_funcs_cyc_classification/cycle_upgap_class_list.RData"))
+  load(file.path(res_path, "6_graph_single_cycle/2_funcs_suc1/cyc_successors_data/cycle_upgap_class_list.RData"))
   load(file.path(res_path, "6_graph_single_cycle/2_funcs_suc1/cyc_successors_data/cycle_edge_flux_list_in.RData"))
   load(file.path(res_path, "6_graph_single_cycle/2_funcs_suc1/cyc_successors_data/cycle_edge_flux_list_out.RData"))
   load(file.path(res_path, "4_flux_edge/result_final/cycle_edge_flux_list.RData"))
@@ -178,12 +178,11 @@ cyc_shift_main <- function(res_path, input_tumor_name) {
   }
   
   # save
-  res_sub_path = "6_graph_single_cycle/2_funcs_suc1/3_funcs_cyc_classification"
+  res_sub_path = "6_graph_single_cycle/2_funcs_suc1/cyc_successors_data"
   dir.create(file.path(res_path, res_sub_path), recursive = TRUE, showWarnings = FALSE)
   res_file_path = file.path(res_path, res_sub_path, "cycle_shift_path_df_list.RData")
   
-  save(cycle_shift_path_df_list, file="E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/6_graph_single_cycle/2_funcs_suc1/3_funcs_cyc_classification/cycle_shift_path_df_list.RData")
-  
+  save(cycle_shift_path_df_list, file=res_file_path)
 }
 
 
