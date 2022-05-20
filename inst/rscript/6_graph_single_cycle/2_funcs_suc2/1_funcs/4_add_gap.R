@@ -231,8 +231,8 @@ get_cycle_edge_obvs <- function(tumor_name, all_gene_stat, cycle_edge_expression
   missing_genes = gene_missing_list[["cyc_gene_not_in_tgca"]]
   temp_all_gene_stat = all_gene_stat[[paste0("TCGA-",tumor_name)]]
   
-  cycle_edge_obvs = as.data.frame(cycle_edge_expression[,"cycid"])
-  colnames(cycle_edge_obvs) = c("cycid")
+  cycle_edge_obvs = data.frame()
+  
   for (i in 1:length(cycle_edge_expression[,"cycid"])) {
     gene_str = cycle_edge_expression[i,"gene_symbol"]
     gene_arr = unlist(strsplit(gene_str,split = ";"))
