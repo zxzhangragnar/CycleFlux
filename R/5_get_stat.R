@@ -31,3 +31,6 @@ get_freq_stat <- function(input_net_file, output_path, res_path, graph_path, inp
 
   rm(ENV)
 }
+
+
+# get_freq_stat(input_net_file, output_path, res_path, graph_path, input_tumor_name, input_tumor_data, input_normal_data)

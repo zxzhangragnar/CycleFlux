@@ -63,14 +63,13 @@ loadRData <- function(fileName){
 #########################################################################
 get_gene_foldchange_main <- function(output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data) {
   
-  data_tumor = loadRData(input_tumor_data)
-  data_normal = loadRData(input_normal_data)
-  
   #tumors_array = c("COAD", "ESCA","BLCA","BRCA","CESC","LUAD","LUSC","PRAD","STAD","THCA","GBM","HNSC","KICH","KIRC","KIRP","LIHC")
   tumors_array = c(input_tumor_name)
   
   gene_foldchange_list = list()
   for (i in 1:length(tumors_array)) {
+    data_tumor = loadRData(input_tumor_data[i])
+    data_normal = loadRData(input_normal_data[i])
     #保存到tumor字典
     deg_foldchange = as.data.frame(my_FoldChange_func(data_tumor, data_normal))
     gene_foldchange_list[[tumors_array[i]]] = deg_foldchange

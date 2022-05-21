@@ -41,13 +41,13 @@ loadRData <- function(fileName){
 #########################################################################
 get_gene_count_main <- function(output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data) {
   
-  data_tumor = loadRData(input_tumor_data)
-  data_normal = loadRData(input_normal_data)
   tumors_array = c(input_tumor_name)
   
   gene_meanval_list = list()
   # old statr
   for (i in 1:length(tumors_array)) {
+    data_tumor = loadRData(input_tumor_data[i])
+    data_normal = loadRData(input_normal_data[i])
     statr = as.data.frame(get_pct_statr_info(data_tumor, data_normal))
     gene_meanval_list[[tumors_array[i]]] = statr
   }
