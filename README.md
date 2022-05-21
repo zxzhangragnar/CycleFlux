@@ -21,13 +21,14 @@ res_path = "your_path/res_files"
 
 graph_path = "your_path/graph_files"
 
-input_tumor_name = "COAD"
+input_tumor_name = c("COAD", "ESCA")
 
 input_pathway_name = "all"
 
-input_tumor_data = "your_path/TCGA-COAD.RData"
+input_tumor_data = c("your_path/TCGA-COAD.RData", "your_path/TCGA-ESCA.RData")
 
-input_normal_data = "your_path/TCGA-COAD_N.RData"
+input_normal_data = c("your_path/TCGA-COAD_N.RData", "your_path/TCGA-ESCA_N.RData")
+
 
 prm_1=0.05
 
