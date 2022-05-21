@@ -26,9 +26,6 @@ get_enzyme_info <- function(input_net_file, output_path, res_path, input_tumor_n
     get_basic_gene_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data)
   }
 
-  source(system.file("rscript/5_flux_cycle/1_funcs/4_get_enzyme_info_0.R", package = "CycleFlux"), local=ENV)
-  ENV$get_enzyme_info_0_main(res_path, input_tumor_name, input_tumor_data, input_normal_data)
-
   source(system.file("rscript/5_flux_cycle/1_funcs/4_get_enzyme_info_1.R", package = "CycleFlux"), local=ENV)
   ENV$get_enzyme_info_1_main(input_net_file, output_path, res_path, package_path, input_tumor_name)
 
