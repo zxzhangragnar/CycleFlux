@@ -1,27 +1,40 @@
 # cycle_flux
 cycle demo for test
 
+# download
+
+library(devtools)
+
+install_github("zxzhangragnar/CycleFlux")
 
 # load
 
 library(CycleFlux)
-?get_cycle_edge_info
 
 
 # parameters
 input_net_file = 'your_path/hsa_net.RData'
+
 output_path = "your_path/output_files"
+
 res_path = "your_path/res_files"
+
 graph_path = "your_path/graph_files"
 
 input_tumor_name = "COAD"
+
 input_pathway_name = "all"
+
 input_tumor_data = "your_path/TCGA-COAD.RData"
+
 input_normal_data = "your_path/TCGA-COAD_N.RData"
 
 prm_1=0.05
+
 prm_2=1
+
 prm_3=1
+
 prm_4=2
 
 prm_5=0.5
@@ -48,7 +61,7 @@ get_subnet_edge_info(input_net_file, output_path, res_path, input_tumor_name, in
 get_cycle_edge_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data, prm_1, prm_2, prm_3, prm_4)
 
 
-############################################################################
+
 # 4.
 
 get_enzyme_info(input_net_file, output_path, res_path, input_tumor_name, input_tumor_data, input_normal_data)
