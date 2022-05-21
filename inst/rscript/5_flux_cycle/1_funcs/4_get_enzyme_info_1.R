@@ -8,7 +8,7 @@ get_enzyme_stat <- function(tumor_name, all_gene_stat, hsa_net, cycle_edge_expre
   missing_genes = gene_missing_list[["cyc_gene_not_in_tgca"]]
   
   cyc_enzyme_genecount = data.frame()
-  for (i in 1:length(cycle_edge_expression[,1])) {
+  for (i in 1:length(rownames(cycle_edge_expression))) {
     #这个环的这条边(相同cin,cout)所对应的所有酶
     temp_cin = cycle_edge_expression[i,"c_in"]
     temp_cout = cycle_edge_expression[i,"c_out"]
