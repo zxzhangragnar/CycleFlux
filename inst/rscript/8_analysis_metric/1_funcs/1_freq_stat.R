@@ -28,14 +28,17 @@ get_shift_node_freq_list <- function(input_tumor_name, cycle_shift_path_df_list)
     shift_node_freq = shift_node_freq[order(shift_node_freq$Freq, decreasing = T),]
     
     shift_node_df = cycle_shift_path_df_list[[tumor_name]]
-    cycle_ids =  aggregate(shift_node_df$cycle_id, list(shift_node_df$shift_node), paste, collapse = ";")
-    rownames(cycle_ids) = cycle_ids[,1]
-    
-    colnames(shift_node_freq) = c("node", "shift_freq")
-    
-    for (j in 1:length(shift_node_freq[,1])) {
-      shift_node_freq[j,"cycle_id"] = cycle_ids[shift_node_freq[j,"node"],2]
+    if (length(rownames(shift_node_df)) != 0) {
+      cycle_ids =  aggregate(shift_node_df$cycle_id, list(shift_node_df$shift_node), paste, collapse = ";")
+      rownames(cycle_ids) = cycle_ids[,1]
+      
+      colnames(shift_node_freq) = c("node", "shift_freq")
+      
+      for (j in 1:length(shift_node_freq[,1])) {
+        shift_node_freq[j,"cycle_id"] = cycle_ids[shift_node_freq[j,"node"],2]
+      }      
     }
+
     shift_node_freq_list[[tumor_name]] = shift_node_freq
   }
   return(shift_node_freq_list)
