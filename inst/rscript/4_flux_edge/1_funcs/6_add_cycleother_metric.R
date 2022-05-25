@@ -19,10 +19,11 @@
 
 #######################################################################################  
 get_new_temp_part_cyc_df_situation1 <- function(cycle_directed, temp_cycle_edge_flux_list) {
+  new_temp_part_cyc_df = data.frame()
   for (i in 1:length(cycle_directed[,1])) {
-    cycid = cycle_directed[i,"cycid"]
+    cycle_id = cycle_directed[i,"cycle_id"]
     
-    temp_part_cyc_df = temp_cycle_edge_flux_list[temp_cycle_edge_flux_list$cycid == cycid,]
+    temp_part_cyc_df = temp_cycle_edge_flux_list[temp_cycle_edge_flux_list$cycle_id == cycle_id,]
     #set new columns
     temp_part_cyc_df[, "other_up_rct_num"] = NA
     temp_part_cyc_df[, "other_normal_rct_num"] = NA
@@ -36,9 +37,9 @@ get_new_temp_part_cyc_df_situation1 <- function(cycle_directed, temp_cycle_edge_
     # gap part
     temp_gap_part_cyc_df = temp_part_cyc_df[temp_part_cyc_df$ifgap == "gap",]
     if (NA %in% temp_part_cyc_df$mean_fc) {
-      print(cycid)
+      print(cycle_id)
     }else if (length(temp_gap_part_cyc_df[,1]) == 0) {
-      print(cycid)
+      print(cycle_id)
     }else {
       for (j in 1:length(temp_part_cyc_df[,1])) {
         if (temp_part_cyc_df[j,"ifgap"] == "gap") {
@@ -100,11 +101,7 @@ get_new_temp_part_cyc_df_situation1 <- function(cycle_directed, temp_cycle_edge_
     }
     
     
-    if(cycid == 0) {
-      new_temp_part_cyc_df = as.data.frame(temp_part_cyc_df)
-    }else {
-      new_temp_part_cyc_df = rbind(new_temp_part_cyc_df,temp_part_cyc_df)
-    }
+    new_temp_part_cyc_df = rbind(new_temp_part_cyc_df, temp_part_cyc_df)
     
   }
   

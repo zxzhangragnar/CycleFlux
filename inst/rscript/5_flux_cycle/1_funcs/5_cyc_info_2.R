@@ -8,22 +8,22 @@
 
 ######################################################################################################
 # 第一列:maxmin by count
-# highest count of rct, smallest rct of cycid 
+# highest count of rct, smallest rct of cycle_id 
 get_cyc_rid_maxmin_bycount <- function(tumor_name, cycle_enzyme_stat) {
 
   temp_ec_count = cycle_enzyme_stat[[tumor_name]]
-  cycid_arr = unique(temp_ec_count$cycid)
+  cycle_id_arr = unique(temp_ec_count$cycle_id)
   
   #result list
-  temp_cycid_maxmin_bycount_df = as.data.frame(unique(temp_ec_count[,1]))
-  names(temp_cycid_maxmin_bycount_df) = c("cycid")
+  temp_cycle_id_maxmin_bycount_df = as.data.frame(unique(temp_ec_count[,1]))
+  names(temp_cycle_id_maxmin_bycount_df) = c("cycle_id")
   
-  for (i in 1:length(cycid_arr)) {
-    cycid = cycid_arr[i]
-    part_ec_count = temp_ec_count[which(temp_ec_count$cycid == cycid),]
+  for (i in 1:length(cycle_id_arr)) {
+    cycle_id = cycle_id_arr[i]
+    part_ec_count = temp_ec_count[which(temp_ec_count$cycle_id == cycle_id),]
     rid_types = unique(part_ec_count$rid)
     
-    # rid_count for cycid=0
+    # rid_count for cycle_id=0
     rid_count_list = list()
     for (r in 1:length(rid_types)) {
       rid_name = rid_types[r]
@@ -57,21 +57,21 @@ get_cyc_rid_maxmin_bycount <- function(tumor_name, cycle_enzyme_stat) {
     }
     min_rct_idx = which(rid_count_list_value== min(rid_count_list_value), arr.ind = TRUE)[1]  
     
-    #highest count of rct, smallest rct of cycid 
+    #highest count of rct, smallest rct of cycle_id 
     cyc_selected_rct_name = ridnames[min_rct_idx]
     cyc_selected_rct_count_val = rid_count_list_value[min_rct_idx]
     #new
     cyc_selected_rct_count_ec = rid_count_list_ec[min_rct_idx]
     cyc_selected_rct_count_gene = rid_count_list_gene[min_rct_idx]
     
-    temp_cycid_maxmin_bycount_df[i,"sel_rct"] = cyc_selected_rct_name
-    temp_cycid_maxmin_bycount_df[i,"count"] = cyc_selected_rct_count_val
+    temp_cycle_id_maxmin_bycount_df[i,"sel_rct"] = cyc_selected_rct_name
+    temp_cycle_id_maxmin_bycount_df[i,"count"] = cyc_selected_rct_count_val
     #new
-    temp_cycid_maxmin_bycount_df[i,"sel_ec"] = cyc_selected_rct_count_ec
-    temp_cycid_maxmin_bycount_df[i,"sel_gene"] = cyc_selected_rct_count_gene
+    temp_cycle_id_maxmin_bycount_df[i,"sel_ec"] = cyc_selected_rct_count_ec
+    temp_cycle_id_maxmin_bycount_df[i,"sel_gene"] = cyc_selected_rct_count_gene
   }
   
-  return(temp_cycid_maxmin_bycount_df)
+  return(temp_cycle_id_maxmin_bycount_df)
 }
 
 
@@ -80,22 +80,22 @@ get_cyc_rid_maxmin_bycount <- function(tumor_name, cycle_enzyme_stat) {
 
 ######################################################################################################
 # 第二列:maxmin by count_N
-# highest count_N of rct, smallest rct of cycid 
+# highest count_N of rct, smallest rct of cycle_id 
 get_cyc_rid_maxmin_bycount_N <- function(tumor_name, cycle_enzyme_stat, normal_gene_count) {
 
   temp_ec_count = cycle_enzyme_stat[[tumor_name]]
-  cycid_arr = unique(temp_ec_count$cycid)
+  cycle_id_arr = unique(temp_ec_count$cycle_id)
   
   #result list
-  temp_cycid_maxmin_bycount_df_N = as.data.frame(unique(temp_ec_count[,1]))
-  names(temp_cycid_maxmin_bycount_df_N) = c("cycid")
+  temp_cycle_id_maxmin_bycount_df_N = as.data.frame(unique(temp_ec_count[,1]))
+  names(temp_cycle_id_maxmin_bycount_df_N) = c("cycle_id")
   
-  for (i in 1:length(cycid_arr)) {
-    cycid = cycid_arr[i]
-    part_ec_count = temp_ec_count[which(temp_ec_count$cycid == cycid),]
+  for (i in 1:length(cycle_id_arr)) {
+    cycle_id = cycle_id_arr[i]
+    part_ec_count = temp_ec_count[which(temp_ec_count$cycle_id == cycle_id),]
     rid_types = unique(part_ec_count$rid)
     
-    # rid_count for cycid=0
+    # rid_count for cycle_id=0
     rid_count_list = list()
     for (r in 1:length(rid_types)) {
       rid_name = rid_types[r]
@@ -130,22 +130,22 @@ get_cyc_rid_maxmin_bycount_N <- function(tumor_name, cycle_enzyme_stat, normal_g
     }
     min_rct_idx = which(rid_count_list_value== min(rid_count_list_value), arr.ind = TRUE)[1]  
     
-    #highest count of rct, smallest rct of cycid
+    #highest count of rct, smallest rct of cycle_id
     cyc_selected_rct_name = ridnames[min_rct_idx]
     cyc_selected_rct_count_val = rid_count_list_value[min_rct_idx]
     #new
     cyc_selected_rct_count_ec = rid_count_list_ec[min_rct_idx]
     cyc_selected_rct_count_gene = rid_count_list_gene[min_rct_idx]
     
-    temp_cycid_maxmin_bycount_df_N[i,"sel_rct"] = cyc_selected_rct_name
-    temp_cycid_maxmin_bycount_df_N[i,"count"] = cyc_selected_rct_count_val
+    temp_cycle_id_maxmin_bycount_df_N[i,"sel_rct"] = cyc_selected_rct_name
+    temp_cycle_id_maxmin_bycount_df_N[i,"count"] = cyc_selected_rct_count_val
     #new
-    temp_cycid_maxmin_bycount_df_N[i,"sel_ec"] = cyc_selected_rct_count_ec
-    temp_cycid_maxmin_bycount_df_N[i,"sel_gene"] = cyc_selected_rct_count_gene
+    temp_cycle_id_maxmin_bycount_df_N[i,"sel_ec"] = cyc_selected_rct_count_ec
+    temp_cycle_id_maxmin_bycount_df_N[i,"sel_gene"] = cyc_selected_rct_count_gene
     
   }
   
-  return(temp_cycid_maxmin_bycount_df_N)
+  return(temp_cycle_id_maxmin_bycount_df_N)
 }
 
 
@@ -154,23 +154,23 @@ get_cyc_rid_maxmin_bycount_N <- function(tumor_name, cycle_enzyme_stat, normal_g
 
 ######################################################################################################
 # 第三列:maxmin by FC
-# highest FC of rct, smallest rct of cycid 
+# highest FC of rct, smallest rct of cycle_id 
 
 get_cyc_rid_maxmin_byFC <- function(tumor_name, cycle_enzyme_stat) {
 
   temp_ec_count = cycle_enzyme_stat[[tumor_name]]
-  cycid_arr = unique(temp_ec_count$cycid)
+  cycle_id_arr = unique(temp_ec_count$cycle_id)
   
   #result list
-  temp_cycid_maxmin_byFC_df = as.data.frame(unique(temp_ec_count[,1]))
-  names(temp_cycid_maxmin_byFC_df) = c("cycid")
+  temp_cycle_id_maxmin_byFC_df = as.data.frame(unique(temp_ec_count[,1]))
+  names(temp_cycle_id_maxmin_byFC_df) = c("cycle_id")
   
-  for (i in 1:length(cycid_arr)) {
-    cycid = cycid_arr[i]
-    part_ec_count = temp_ec_count[which(temp_ec_count$cycid == cycid),]
+  for (i in 1:length(cycle_id_arr)) {
+    cycle_id = cycle_id_arr[i]
+    part_ec_count = temp_ec_count[which(temp_ec_count$cycle_id == cycle_id),]
     rid_types = unique(part_ec_count$rid)
     
-    # rid_count for cycid=0
+    # rid_count for cycle_id=0
     rid_count_list = list()
     for (r in 1:length(rid_types)) {
       rid_name = rid_types[r]
@@ -205,21 +205,21 @@ get_cyc_rid_maxmin_byFC <- function(tumor_name, cycle_enzyme_stat) {
     }
     min_rct_idx = which(rid_count_list_value== min(rid_count_list_value), arr.ind = TRUE)[1]  
     
-    #highest count of rct, smallest rct of cycid 
+    #highest count of rct, smallest rct of cycle_id 
     cyc_selected_rct_name = ridnames[min_rct_idx]
     cyc_selected_rct_FC_val = rid_count_list_value[min_rct_idx]
     #new
     cyc_selected_rct_FC_ec = rid_count_list_ec[min_rct_idx]
     cyc_selected_rct_FC_gene = rid_count_list_gene[min_rct_idx]
     
-    temp_cycid_maxmin_byFC_df[i,"sel_rct"] = cyc_selected_rct_name
-    temp_cycid_maxmin_byFC_df[i,"FC"] = cyc_selected_rct_FC_val
+    temp_cycle_id_maxmin_byFC_df[i,"sel_rct"] = cyc_selected_rct_name
+    temp_cycle_id_maxmin_byFC_df[i,"FC"] = cyc_selected_rct_FC_val
     #new
-    temp_cycid_maxmin_byFC_df[i,"sel_ec"] = cyc_selected_rct_FC_ec
-    temp_cycid_maxmin_byFC_df[i,"sel_gene"] = cyc_selected_rct_FC_gene
+    temp_cycle_id_maxmin_byFC_df[i,"sel_ec"] = cyc_selected_rct_FC_ec
+    temp_cycle_id_maxmin_byFC_df[i,"sel_gene"] = cyc_selected_rct_FC_gene
   }
   
-  return(temp_cycid_maxmin_byFC_df)
+  return(temp_cycle_id_maxmin_byFC_df)
 }
 
 
@@ -230,22 +230,22 @@ get_cyc_rid_maxmin_byFC <- function(tumor_name, cycle_enzyme_stat) {
 
 ######################################################################################################
 # 第四列:maxmin by count_FC
-# highest count gene's FC of rct, smallest rct of cycid 
+# highest count gene's FC of rct, smallest rct of cycle_id 
 
 get_cyc_rid_maxmin_by_countFC <- function(tumor_name, cycle_enzyme_stat) {
   
   temp_ec_count = cycle_enzyme_stat[[tumor_name]]
-  cycid_arr = unique(temp_ec_count$cycid)
+  cycle_id_arr = unique(temp_ec_count$cycle_id)
   #result list
-  temp_cycid_maxmin_by_countFC_df = as.data.frame(unique(temp_ec_count[,1]))
-  names(temp_cycid_maxmin_by_countFC_df) = c("cycid")
+  temp_cycle_id_maxmin_by_countFC_df = as.data.frame(unique(temp_ec_count[,1]))
+  names(temp_cycle_id_maxmin_by_countFC_df) = c("cycle_id")
   
-  for (i in 1:length(cycid_arr)) {
-    cycid = cycid_arr[i]
-    part_ec_count = temp_ec_count[which(temp_ec_count$cycid == cycid),]
+  for (i in 1:length(cycle_id_arr)) {
+    cycle_id = cycle_id_arr[i]
+    part_ec_count = temp_ec_count[which(temp_ec_count$cycle_id == cycle_id),]
     rid_types = unique(part_ec_count$rid)
     
-    # rid_count for cycid=0
+    # rid_count for cycle_id=0
     rid_count_list = list()
     for (r in 1:length(rid_types)) {
       rid_name = rid_types[r]
@@ -281,27 +281,27 @@ get_cyc_rid_maxmin_by_countFC <- function(tumor_name, cycle_enzyme_stat) {
     }
     min_rct_idx = which(rid_count_list_value== min(rid_count_list_value), arr.ind = TRUE)[1]  
     
-    #highest count of rct, smallest rct of cycid 
+    #highest count of rct, smallest rct of cycle_id 
     cyc_selected_rct_name = ridnames[min_rct_idx]
     cyc_selected_rct_countFC_val = rid_count_list_value[min_rct_idx]
     #new
     cyc_selected_rct_countFC_ec = rid_count_list_ec[min_rct_idx]
     cyc_selected_rct_countFC_gene = rid_count_list_gene[min_rct_idx]
     
-    temp_cycid_maxmin_by_countFC_df[i,"sel_rct"] = cyc_selected_rct_name
-    temp_cycid_maxmin_by_countFC_df[i,"countFC"] = cyc_selected_rct_countFC_val
+    temp_cycle_id_maxmin_by_countFC_df[i,"sel_rct"] = cyc_selected_rct_name
+    temp_cycle_id_maxmin_by_countFC_df[i,"countFC"] = cyc_selected_rct_countFC_val
     #new
-    temp_cycid_maxmin_by_countFC_df[i,"sel_ec"] = cyc_selected_rct_countFC_ec
-    temp_cycid_maxmin_by_countFC_df[i,"sel_gene"] = cyc_selected_rct_countFC_gene
+    temp_cycle_id_maxmin_by_countFC_df[i,"sel_ec"] = cyc_selected_rct_countFC_ec
+    temp_cycle_id_maxmin_by_countFC_df[i,"sel_gene"] = cyc_selected_rct_countFC_gene
     
   }
-  return(temp_cycid_maxmin_by_countFC_df)
+  return(temp_cycle_id_maxmin_by_countFC_df)
 }
 
-# cycid_maxmin_bycount_list
-# cycid_maxmin_bycount_N_list
-# cycid_maxmin_byFC_list
-# cycid_maxmin_by_countFC_list
+# cycle_id_maxmin_bycount_list
+# cycle_id_maxmin_bycount_N_list
+# cycle_id_maxmin_byFC_list
+# cycle_id_maxmin_by_countFC_list
 
 
 ######################################################################################################
@@ -313,8 +313,8 @@ get_cyc_rid_maxmin_by_countFC <- function(tumor_name, cycle_enzyme_stat) {
 merge_temp_col_n<-function(temp_list,tumor_name,type_name) {
   tempcol = temp_list[[tumor_name]]
   tempcol[,"merge"] = paste0(tempcol[,"sel_rct"],"-",tempcol[,"sel_ec"],"-",tempcol[,"sel_gene"],": ",tempcol[,3])
-  tempcol = as.data.frame(tempcol[,c("cycid", "merge")])
-  colnames(tempcol) = c("cycid", type_name)
+  tempcol = as.data.frame(tempcol[,c("cycle_id", "merge")])
+  colnames(tempcol) = c("cycle_id", type_name)
   return(tempcol)
 }
 
@@ -328,36 +328,36 @@ cyc_info_2_main <- function(res_path, input_tumor_name) {
   
   #test
   tumors_array = c(input_tumor_name)
-  cycid_maxmin_bycount_list = list()
-  cycid_maxmin_bycount_N_list = list()
-  cycid_maxmin_byFC_list = list()
-  cycid_maxmin_by_countFC_list = list()
+  cycle_id_maxmin_bycount_list = list()
+  cycle_id_maxmin_bycount_N_list = list()
+  cycle_id_maxmin_byFC_list = list()
+  cycle_id_maxmin_by_countFC_list = list()
   cycle_flux_list = list()
   for (i in 1:length(tumors_array)) {
     temp_list = get_cyc_rid_maxmin_bycount(tumors_array[i], cycle_enzyme_stat)
-    cycid_maxmin_bycount_list[[tumors_array[i]]] = temp_list
+    cycle_id_maxmin_bycount_list[[tumors_array[i]]] = temp_list
     
     temp_list = get_cyc_rid_maxmin_bycount_N(tumors_array[i], cycle_enzyme_stat, normal_gene_count)
-    cycid_maxmin_bycount_N_list[[tumors_array[i]]] = temp_list
+    cycle_id_maxmin_bycount_N_list[[tumors_array[i]]] = temp_list
     
     temp_list = get_cyc_rid_maxmin_byFC(tumors_array[i], cycle_enzyme_stat)
-    cycid_maxmin_byFC_list[[tumors_array[i]]] = temp_list
+    cycle_id_maxmin_byFC_list[[tumors_array[i]]] = temp_list
     
     temp_list = get_cyc_rid_maxmin_by_countFC(tumors_array[i], cycle_enzyme_stat)
-    cycid_maxmin_by_countFC_list[[tumors_array[i]]] = temp_list
+    cycle_id_maxmin_by_countFC_list[[tumors_array[i]]] = temp_list
     
     ##
     temp_tumor_df = cycle_merge_stat[[tumors_array[i]]]
-    col_1 = merge_temp_col_n(cycid_maxmin_bycount_list, tumors_array[i], "count")
-    col_2 = merge_temp_col_n(cycid_maxmin_bycount_N_list, tumors_array[i], "count_N")
-    col_3 = merge_temp_col_n(cycid_maxmin_byFC_list, tumors_array[i], "FC")
-    col_4 = merge_temp_col_n(cycid_maxmin_by_countFC_list, tumors_array[i], "countFC")
+    col_1 = merge_temp_col_n(cycle_id_maxmin_bycount_list, tumors_array[i], "count")
+    col_2 = merge_temp_col_n(cycle_id_maxmin_bycount_N_list, tumors_array[i], "count_N")
+    col_3 = merge_temp_col_n(cycle_id_maxmin_byFC_list, tumors_array[i], "FC")
+    col_4 = merge_temp_col_n(cycle_id_maxmin_by_countFC_list, tumors_array[i], "countFC")
     
-    have_cycid = temp_tumor_df[,"cycid"]
-    new_tumor_df = as.data.frame(col_1[which(col_1$cycid %in% have_cycid),2])
-    new_tumor_df = cbind(new_tumor_df, col_2[which(col_2$cycid %in% have_cycid),2])
-    new_tumor_df = cbind(new_tumor_df, col_3[which(col_3$cycid %in% have_cycid),2])
-    new_tumor_df = cbind(new_tumor_df, col_4[which(col_4$cycid %in% have_cycid),2])
+    have_cycle_id = temp_tumor_df[,"cycle_id"]
+    new_tumor_df = as.data.frame(col_1[which(col_1$cycle_id %in% have_cycle_id),2])
+    new_tumor_df = cbind(new_tumor_df, col_2[which(col_2$cycle_id %in% have_cycle_id),2])
+    new_tumor_df = cbind(new_tumor_df, col_3[which(col_3$cycle_id %in% have_cycle_id),2])
+    new_tumor_df = cbind(new_tumor_df, col_4[which(col_4$cycle_id %in% have_cycle_id),2])
     colnames(new_tumor_df) = c("count", "count_N", "FC", "countFC")
     
     cycle_flux_list[[tumors_array[i]]] = cbind(temp_tumor_df, new_tumor_df)

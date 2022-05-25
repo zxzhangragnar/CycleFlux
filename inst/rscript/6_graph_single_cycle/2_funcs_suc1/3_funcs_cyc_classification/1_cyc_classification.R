@@ -55,9 +55,9 @@ get_class_1_c <- function(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux_l
   class_1_c = c()
   for (i in 1:length(ug_c)) {
     class_1_judge = TRUE
-    tmp_cyc_indeg = indeg_df[which(indeg_df$cycid == ug_c[i]),]
-    tmp_cyc_outdeg = outdeg_df[which(outdeg_df$cycid == ug_c[i]),]
-    tmp_cyc = cyc_df[which(cyc_df$cycid == ug_c[i]),]
+    tmp_cyc_indeg = indeg_df[which(indeg_df$cycle_id == ug_c[i]),]
+    tmp_cyc_outdeg = outdeg_df[which(outdeg_df$cycle_id == ug_c[i]),]
+    tmp_cyc = cyc_df[which(cyc_df$cycle_id == ug_c[i]),]
     up_indegnode_arr = tmp_cyc_indeg[which(tmp_cyc_indeg$ifup == "up"),"node"]
     up_outdegnode_arr = tmp_cyc_outdeg[which(tmp_cyc_outdeg$ifup == "up"),"node"]
     up_degnode_arr = append(up_indegnode_arr, up_outdegnode_arr)
@@ -99,9 +99,9 @@ get_class_2_c <- function(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux_l
   class_2_c = c()
   for (i in 1:length(ug_c)) {
     class_2_judge = TRUE
-    tmp_cyc_indeg = indeg_df[which(indeg_df$cycid == ug_c[i]),]
-    tmp_cyc_outdeg = outdeg_df[which(outdeg_df$cycid == ug_c[i]),]
-    tmp_cyc = cyc_df[which(cyc_df$cycid == ug_c[i]),]
+    tmp_cyc_indeg = indeg_df[which(indeg_df$cycle_id == ug_c[i]),]
+    tmp_cyc_outdeg = outdeg_df[which(outdeg_df$cycle_id == ug_c[i]),]
+    tmp_cyc = cyc_df[which(cyc_df$cycle_id == ug_c[i]),]
     up_indegnode_arr = tmp_cyc_indeg[which(tmp_cyc_indeg$ifup == "up"),"node"]
     up_outdegnode_arr = tmp_cyc_outdeg[which(tmp_cyc_outdeg$ifup == "up"),"node"]
     up_degnode_arr = append(up_indegnode_arr, up_outdegnode_arr)
@@ -144,9 +144,9 @@ get_class_3_c <- function(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux_l
   class_3_c = c()
   for (i in 1:length(ug_c)) {
     class_3_judge = FALSE
-    tmp_cyc_indeg = indeg_df[which(indeg_df$cycid == ug_c[i]),]
-    tmp_cyc_outdeg = outdeg_df[which(outdeg_df$cycid == ug_c[i]),]
-    tmp_cyc = cyc_df[which(cyc_df$cycid == ug_c[i]),]
+    tmp_cyc_indeg = indeg_df[which(indeg_df$cycle_id == ug_c[i]),]
+    tmp_cyc_outdeg = outdeg_df[which(outdeg_df$cycle_id == ug_c[i]),]
+    tmp_cyc = cyc_df[which(cyc_df$cycle_id == ug_c[i]),]
     
     up_indeg = tmp_cyc_indeg[which(tmp_cyc_indeg$ifup == "up"),]
     up_outdeg = tmp_cyc_outdeg[which(tmp_cyc_outdeg$ifup == "up"),]
@@ -197,9 +197,9 @@ get_class_4_c <- function(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux_l
   class_4_c = c()
   for (i in 1:length(ug_c)) {
     class_4_judge = TRUE
-    tmp_cyc_indeg = indeg_df[which(indeg_df$cycid == ug_c[i]),]
-    tmp_cyc_outdeg = outdeg_df[which(outdeg_df$cycid == ug_c[i]),]
-    tmp_cyc = cyc_df[which(cyc_df$cycid == ug_c[i]),]
+    tmp_cyc_indeg = indeg_df[which(indeg_df$cycle_id == ug_c[i]),]
+    tmp_cyc_outdeg = outdeg_df[which(outdeg_df$cycle_id == ug_c[i]),]
+    tmp_cyc = cyc_df[which(cyc_df$cycle_id == ug_c[i]),]
     up_indegnode_arr = tmp_cyc_indeg[which(tmp_cyc_indeg$ifup == "up"),"node"]
     up_outdegnode_arr = tmp_cyc_outdeg[which(tmp_cyc_outdeg$ifup == "up"),"node"]
     up_degnode_arr = append(up_indegnode_arr, up_outdegnode_arr)
@@ -236,9 +236,9 @@ get_ug_class_df <- function(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux
   cyc_df = as.data.frame(cycle_edge_flux_list[[tumor_name]])
   
   #分类结果
-  ug_class_df = as.data.frame(unique(cyc_df[which(cyc_df$cycid %in% ug_c), "cycid"]))
+  ug_class_df = as.data.frame(unique(cyc_df[which(cyc_df$cycle_id %in% ug_c), "cycle_id"]))
   ug_class_df[,"classid"] = 0
-  colnames(ug_class_df) = c("cycid", "classid")
+  colnames(ug_class_df) = c("cycle_id", "classid")
   
   class_1_c = get_class_1_c(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list)
   class_2_c = get_class_2_c(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list)
@@ -255,11 +255,11 @@ get_ug_class_df <- function(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux
   ## 5.其他类(Gap中间有up的出度)
   class_5_c = setdiff(ug_c, class_ist)
   
-  ug_class_df[which(ug_class_df$cycid %in% class_1_c), "classid"] = 1
-  ug_class_df[which(ug_class_df$cycid %in% class_2_c), "classid"] = 2
-  ug_class_df[which(ug_class_df$cycid %in% class_3_c), "classid"] = 3
-  ug_class_df[which(ug_class_df$cycid %in% class_4_c), "classid"] = 4
-  ug_class_df[which(ug_class_df$cycid %in% class_5_c), "classid"] = 5
+  ug_class_df[which(ug_class_df$cycle_id %in% class_1_c), "classid"] = 1
+  ug_class_df[which(ug_class_df$cycle_id %in% class_2_c), "classid"] = 2
+  ug_class_df[which(ug_class_df$cycle_id %in% class_3_c), "classid"] = 3
+  ug_class_df[which(ug_class_df$cycle_id %in% class_4_c), "classid"] = 4
+  ug_class_df[which(ug_class_df$cycle_id %in% class_5_c), "classid"] = 5
   
   return(ug_class_df)
 }

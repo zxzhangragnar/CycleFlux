@@ -1,15 +1,37 @@
 # 
-# 思路：
-# 
 # 1.找到这些枢纽节点 这些节点同时属于很多环
 # 
-#
-#
+
 
 
 ##################################### part1 找到枢纽节点 这些节点同时属于很多环 #################################
 
-get_cpd_hubnode <- function(frequency, compound_directed) {
+get_compound_directed <- function(cycle_directed) {
+  compound_directed = data.frame()
+  for (i in 1:length(cycle_directed[,1])) {
+    cycle_id = cycle_directed[i, "cycle_id"]
+    compound_chain = cycle_directed[i, "compound_chain"]
+    
+    compound_chain = unlist(strsplit(compound_chain, split = ";"))
+    cycle_node = unique(unlist(strsplit(compound_chain[1], split = "->")))
+    
+    for (j in 1:length(cycle_node)) {
+      cpdname = cycle_node[j]
+      temp_row = data.frame()
+      temp_row[1, "cpdname"] = cpdname
+      temp_row[1, "cycle"] = cycle_id
+      
+      compound_directed = rbind(compound_directed, temp_row)
+    }
+  }
+  
+  return(compound_directed)
+}
+
+
+get_cpd_hubnode <- function(frequency, cycle_directed) {
+  compound_directed = get_compound_directed(cycle_directed)
+  
   cpd_table = as.data.frame(table(compound_directed[,c("cpdname")]))
   colnames(cpd_table) = c("cpd","fre")
   #function in function
@@ -40,14 +62,14 @@ get_cpd_hubnode <- function(frequency, compound_directed) {
 
 ##################################### part2 去掉枢纽节点h后，判断这些环是否仍然相连？ #################################
 # 如何判断这些环是否仍然相连？
-# 对环的sharedcyc内的所有环逐一判断，是否仍然相连？
+# 对环的shared_cycle内的所有环逐一判断，是否仍然相连？
 # 若仍然都相连，则h枢纽性不大
 # 若很多都不再相连了，则h枢纽性大
-# 判断2个环是否相连：看 2个环的compound是否有交集，若有交集 即这2个环仍然相连 即满足sharedcyc
+# 判断2个环是否相连：看 2个环的compound是否有交集，若有交集 即这2个环仍然相连 即满足shared_cycle
 
 get_cyc_shared_cyc <- function(cycle_directed) {
-  cyc_shared_cyc = cycle_directed[,c("cycid", "cpds", "sharedcyc", "sharedcycs")]
-  cyc_shared_cyc[, "old_hubdeg"] = cyc_shared_cyc[, "sharedcyc"]
+  cyc_shared_cyc = cycle_directed[,c("cycle_id", "cpds", "shared_cycle", "shared_cycles")]
+  cyc_shared_cyc[, "old_hubdeg"] = cyc_shared_cyc[, "shared_cycle"]
   #wash "cpds"
   for (i in 1:length(rownames(cyc_shared_cyc))) {
     temp_cyc_compounds = cyc_shared_cyc[i, "cpds"]
@@ -60,15 +82,15 @@ get_cyc_shared_cyc <- function(cycle_directed) {
     cyc_shared_cyc[i, "cpds"] = temp_cyc_compounds
   }
   
-  #wash sharedcycs
+  #wash shared_cycles
   for (i in 1:length(rownames(cyc_shared_cyc))) {
-    temp_cyc_compounds = cyc_shared_cyc[i, "sharedcycs"]
+    temp_cyc_compounds = cyc_shared_cyc[i, "shared_cycles"]
     temp_cyc_compounds = substring(temp_cyc_compounds, 2, nchar(temp_cyc_compounds)-1)
     temp_cyc_compounds <- unlist(strsplit(temp_cyc_compounds, split = ", "))
     temp_cyc_compounds = paste(temp_cyc_compounds[1:length(temp_cyc_compounds)], collapse = ";")
-    cyc_shared_cyc[i, "sharedcycs"] = temp_cyc_compounds
+    cyc_shared_cyc[i, "shared_cycles"] = temp_cyc_compounds
   }
-  cyc_shared_cyc[, "old_hubdegs"] = cyc_shared_cyc[, "sharedcycs"]
+  cyc_shared_cyc[, "old_hubdegs"] = cyc_shared_cyc[, "shared_cycles"]
   return(cyc_shared_cyc)
 }
 
@@ -104,10 +126,10 @@ remove_cpd_in_cyc_shared_cyc <- function(cpd_to_be_rm, cyc_shared_cyc) {
 
 
 # if cycle_A and cycle_B have Intersection?
-judge_cycle_have_intersection <- function(cyc_shared_cyc, cycid_A, cycid_B) {
+judge_cycle_have_intersection <- function(cyc_shared_cyc, cycle_id_A, cycle_id_B) {
   # A:line_1 B:line_2
-  cycle_A_cpd = cyc_shared_cyc[which(cyc_shared_cyc$cycid == cycid_A), "aft_rm_cpds"]
-  cycle_B_cpd = cyc_shared_cyc[which(cyc_shared_cyc$cycid == cycid_B), "aft_rm_cpds"]
+  cycle_A_cpd = cyc_shared_cyc[which(cyc_shared_cyc$cycle_id == cycle_id_A), "aft_rm_cpds"]
+  cycle_B_cpd = cyc_shared_cyc[which(cyc_shared_cyc$cycle_id == cycle_id_B), "aft_rm_cpds"]
   cycle_A_cpd <- unlist(strsplit(cycle_A_cpd, split = ";"))
   cycle_B_cpd <- unlist(strsplit(cycle_B_cpd, split = ";"))
   
@@ -128,15 +150,15 @@ judge_cycle_have_intersection <- function(cyc_shared_cyc, cycid_A, cycid_B) {
 calculate_new_hubdeg <- function(cyc_shared_cyc) {
   for (i in 1:length(rownames(cyc_shared_cyc))) {
     #print(i)
-    cycid_slf = cyc_shared_cyc[i, "cycid"]
+    cycle_id_slf = cyc_shared_cyc[i, "cycle_id"]
     old_hubdegs = cyc_shared_cyc[i, "old_hubdegs"]
     old_hubdegs <- unlist(strsplit(old_hubdegs, split = ";"))
     new_hubdegs = c()
     for (j in 1:length(old_hubdegs)) {
-      cycid_ngh = old_hubdegs[j]
-      if_intersect = judge_cycle_have_intersection(cyc_shared_cyc, cycid_slf, cycid_ngh)
+      cycle_id_ngh = old_hubdegs[j]
+      if_intersect = judge_cycle_have_intersection(cyc_shared_cyc, cycle_id_slf, cycle_id_ngh)
       if(if_intersect) {
-        new_hubdegs = append(new_hubdegs, cycid_ngh)
+        new_hubdegs = append(new_hubdegs, cycle_id_ngh)
       }
     }
     cyc_shared_cyc[i, "new_hubdeg"] = length(new_hubdegs)
@@ -178,8 +200,8 @@ get_cpd_to_be_rm_judge_list_tool <- function(cpd_to_be_rm, cpd_hubnode, cycle_di
   temp_hubcpd_cycs = cpd_hubnode[which(cpd_hubnode$cpdname == cpd_to_be_rm), "cycle"]
   temp_hubcpd_cycs <- unlist(strsplit(temp_hubcpd_cycs, split = " ; "))
   #去掉枢纽节点后，连通性对比
-  temp_hubcpd_changed_compared = cyc_shared_cyc[which(cyc_shared_cyc$cycid %in% temp_hubcpd_cycs), c("cycid", "old_hubdeg", "new_hubdeg")]
-  cyc_shared_df = cyc_shared_cyc[which(cyc_shared_cyc$cycid %in% temp_hubcpd_cycs), ]
+  temp_hubcpd_changed_compared = cyc_shared_cyc[which(cyc_shared_cyc$cycle_id %in% temp_hubcpd_cycs), c("cycle_id", "old_hubdeg", "new_hubdeg")]
+  cyc_shared_df = cyc_shared_cyc[which(cyc_shared_cyc$cycle_id %in% temp_hubcpd_cycs), ]
   
   # hub_node: 50% cycle changed amplitude > 50%
   # test diff
@@ -252,13 +274,13 @@ get_hubcpd_cycno_list_df <- function(cpd_to_be_rm_judge_list, fc_threshold) {
 # 一个枢纽节点h 最终确定的属于hub-linking结构的环的数量一定要大于 10 
 # 否则 这个枢纽节点和其所确定的环 无效
 filter_hub_num_under10 <- function(cpd_to_be_rm_judge_list, frequency, fc_threshold) {
-  hub_struct_cycid = c()
+  hub_struct_cycle_id = c()
   if (length(cpd_to_be_rm_judge_list) > 0) {
     hubcpd_cycno_list_df = get_hubcpd_cycno_list_df(cpd_to_be_rm_judge_list, fc_threshold)
     
-    hub_cycids = hubcpd_cycno_list_df[,"cycid"]
+    hub_cycle_ids = hubcpd_cycno_list_df[,"cycle_id"]
     #final result: hub linking struct
-    hub_cycids = unique(hub_cycids)
+    hub_cycle_ids = unique(hub_cycle_ids)
     #filter
     hub_node_belongs_num = as.list(table(hubcpd_cycno_list_df[,"hubcpd"]))
     for (hn in names(hub_node_belongs_num)) {
@@ -267,11 +289,10 @@ filter_hub_num_under10 <- function(cpd_to_be_rm_judge_list, frequency, fc_thresh
         hubcpd_cycno_list_df = hubcpd_cycno_list_df[-which(hubcpd_cycno_list_df$hubcpd == hn),]
       }
     }
-    #table(hubcpd_cycno_list_df[,"hubcpd"])    
-    hub_struct_cycid = hubcpd_cycno_list_df[, "cycid"]
+    hub_struct_cycle_id = hubcpd_cycno_list_df[, "cycle_id"]
   }
 
-  return(hub_struct_cycid)
+  return(hub_struct_cycle_id)
 }
 
 
@@ -282,81 +303,23 @@ filter_hub_num_under10 <- function(cpd_to_be_rm_judge_list, frequency, fc_thresh
 struct_hub_main <- function(output_path, res_path, prm_1=5, prm_2=5, prm_3=3) {
   
   load(file.path(output_path, "cycle_directed.RData"))
-  load(file.path(output_path, "compound_directed.RData"))
-  
   
   ##可疑hub-node
-  cpd_hubnode = get_cpd_hubnode(prm_1, compound_directed)
+  cpd_hubnode = get_cpd_hubnode(prm_1, cycle_directed)
   
   cpd_to_be_rm_judge_list = get_cpd_to_be_rm_judge_list(cpd_hubnode, cycle_directed)
   
-  #Final result:36
-  hub_struct_cycid = filter_hub_num_under10(cpd_to_be_rm_judge_list, prm_2, prm_3)
+  hub_struct_cycle_id = filter_hub_num_under10(cpd_to_be_rm_judge_list, prm_2, prm_3)
   
-  hub_struct_cycid = as.numeric(hub_struct_cycid)
+  hub_struct_cycle_id = as.numeric(hub_struct_cycle_id)
   
   #save
   res_sub_path = "2_cycle_struct_sort/result_struct"
   dir.create(file.path(res_path, res_sub_path), recursive = TRUE, showWarnings = FALSE)
-  res_file_path = file.path(res_path, res_sub_path, "hub_struct_cycid.RData")
+  res_file_path = file.path(res_path, res_sub_path, "hub_struct_cycle_id.RData")
   
-  #save(hub_struct_cycid, file="E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/2_cycle_struct_sort/result_struct/hub_struct_cycid.RData")
-  save(hub_struct_cycid, file=res_file_path)
-  
+  save(hub_struct_cycle_id, file=res_file_path)
 }
-
-#########################################################################################
-#########################################################################################
-#########################################################################################
-#debug
-##### 
-# cyc_shared_oldnew_list = list()
-# cyc_shared_oldnew_vector = c()
-# for (i in 1:length(rownames(cyc_shared_cyc))) {
-#   cycid = as.character(cyc_shared_cyc[i, "cycid"])
-#   if(cyc_shared_cyc[i, "old_hubdeg"] != cyc_shared_cyc[i, "new_hubdeg"]) {
-#     print(i)
-#     cyc_shared_oldnew_vector = append(cyc_shared_oldnew_vector, cycid)
-#     cyc_shared_oldnew_list[[cycid]] = as.data.frame(cyc_shared_cyc[i, c("old_hubdeg", "new_hubdeg")])
-#   }
-# }
-# 
-# temp_hubcpd_cycs = cpd_hubnode[which(cpd_hubnode$cpdname == cpd_to_be_rm), "cycle"]
-# temp_hubcpd_cycs <- unlist(strsplit(temp_hubcpd_cycs, split = " ; "))
-# temp_hubcpd_changed_compared = cyc_shared_cyc[which(cyc_shared_cyc$cycid %in% temp_hubcpd_cycs), c("cycid", "old_hubdeg", "new_hubdeg")]
-# 
-# #compare
-# temp_hubcpd_cycs == cyc_shared_oldnew_vector
-# #all true
-
-
-####################################### 获取所有化合物 ######################################
-
-# all cpd of hsa_net 
-# get_all_node_of_input_net <- function() {
-#   load("E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/partnet.RData")
-#   hsa_net = hsa_net
-#   all_cpd_in = unique(hsa_net[,c("C_in")])
-#   colnames(all_cpd_in) = c("cpd")
-#   all_cpd_out = unique(hsa_net[,c("C_out")])
-#   colnames(all_cpd_out) = c("cpd")
-#   all_cpd = rbind(all_cpd_in, all_cpd_out)
-#   all_cpd = unique(all_cpd)
-#   #1416
-#   return(all_cpd)
-# }
-# all_cpd = get_all_node_of_input_net
-
-
-#############################################################                 
-#bar
-#绘制cycle_inout_rate图
-# sort_bind <- sort(cycle_inout_rate)
-# t_sort_bind <- table(sort_bind)
-# plot(t_sort_bind)
-# barplot(t_sort_bind)
-# cycle_inout_rate_df = as.data.frame(cycle_inout_rate)
-
 
 
 

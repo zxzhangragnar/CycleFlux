@@ -4,17 +4,17 @@
 refesh_cycle_flux_list<-function(tumor_name, cycle_flux_list, cycle_edge_flux_list){
   temp_df = cycle_edge_flux_list[[tumor_name]]
   
-  gap_c = unique(temp_df[which(temp_df$ifgap=="gap"), "cycid"])
-  up_c = unique(temp_df[which(temp_df$ifup=="up"), "cycid"])
+  gap_c = unique(temp_df[which(temp_df$ifgap=="gap"), "cycle_id"])
+  up_c = unique(temp_df[which(temp_df$ifup=="up"), "cycle_id"])
 
-  temp_stat_df = temp_df[,c("cycid","mean_fc")]
-  temp_mean_fc = aggregate(temp_stat_df$mean_fc, list(temp_stat_df$cycid), mean)
+  temp_stat_df = temp_df[,c("cycle_id","mean_fc")]
+  temp_mean_fc = aggregate(temp_stat_df$mean_fc, list(temp_stat_df$cycle_id), mean)
   cycle_flux_list[[tumor_name]][, "mean_fc"] = temp_mean_fc$mean_fc
   
   cycle_flux_list[[tumor_name]][, "ifup"] = "normal"
   cycle_flux_list[[tumor_name]][, "ifgap"] = "normal"
-  cycle_flux_list[[tumor_name]][which(cycle_flux_list[[tumor_name]]$cycid %in% up_c), "ifup"] = "up"
-  cycle_flux_list[[tumor_name]][which(cycle_flux_list[[tumor_name]]$cycid %in% gap_c), "ifgap"] = "gap"
+  cycle_flux_list[[tumor_name]][which(cycle_flux_list[[tumor_name]]$cycle_id %in% up_c), "ifup"] = "up"
+  cycle_flux_list[[tumor_name]][which(cycle_flux_list[[tumor_name]]$cycle_id %in% gap_c), "ifgap"] = "gap"
   
   return(cycle_flux_list)
 }

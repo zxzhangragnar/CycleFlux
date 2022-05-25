@@ -9,7 +9,7 @@ get_select_out_upinfo <- function(tumor_name, cycle_edge_flux_list_out, cycle_ed
   out_gapinfo = cycle_edge_flux_list_out[[tumor_name]]
   cyc_pct = cycle_edge_flux_list[[tumor_name]]
   ug_c = names(gapup_cycle_chain_list[[tumor_name]])
-  ug_cyc_pct = cyc_pct[which(cyc_pct$cycid %in% ug_c),]
+  ug_cyc_pct = cyc_pct[which(cyc_pct$cycle_id %in% ug_c),]
   
   #  c2<--up--c1
   ug_cyc_pct_upnode = ug_cyc_pct[which(ug_cyc_pct$ifup == "up"),]
@@ -17,10 +17,10 @@ get_select_out_upinfo <- function(tumor_name, cycle_edge_flux_list_out, cycle_ed
   #  e1<----c2<--up--c1
   select_out_upinfo = data.frame()
   for (i in 1:length(ug_cyc_pct_upnode[,1])) {
-    tmp_cycid = ug_cyc_pct_upnode[i, "cycid"]
+    tmp_cycle_id = ug_cyc_pct_upnode[i, "cycle_id"]
     tmp_cout = ug_cyc_pct_upnode[i, "c_out"]
     
-    tmp_row1 = out_gapinfo[which((out_gapinfo$cycid == tmp_cycid) & (out_gapinfo$node == tmp_cout)),]
+    tmp_row1 = out_gapinfo[which((out_gapinfo$cycle_id == tmp_cycle_id) & (out_gapinfo$node == tmp_cout)),]
     select_out_upinfo = rbind(select_out_upinfo, tmp_row1)
   }
   
@@ -36,7 +36,7 @@ get_select_out_upinfo_both <- function(tumor_name, cycle_edge_flux_list_out, cyc
   out_gapinfo = cycle_edge_flux_list_out[[tumor_name]]
   cyc_pct = cycle_edge_flux_list[[tumor_name]]
   ug_c = names(gapup_cycle_chain_list[[tumor_name]])
-  ug_cyc_pct = cyc_pct[which(cyc_pct$cycid %in% ug_c),]
+  ug_cyc_pct = cyc_pct[which(cyc_pct$cycle_id %in% ug_c),]
   
   #  c2<--up--c1
   ug_cyc_pct_upnode = ug_cyc_pct[which(ug_cyc_pct$ifup == "up"),]
@@ -44,11 +44,11 @@ get_select_out_upinfo_both <- function(tumor_name, cycle_edge_flux_list_out, cyc
   #  e1<----c2<--up--c1
   select_out_upinfo = data.frame()
   for (i in 1:length(ug_cyc_pct_upnode[,1])) {
-    tmp_cycid = ug_cyc_pct_upnode[i, "cycid"]
+    tmp_cycle_id = ug_cyc_pct_upnode[i, "cycle_id"]
     tmp_cout = ug_cyc_pct_upnode[i, "c_out"]
     tmp_cin = ug_cyc_pct_upnode[i, "c_in"]
     
-    tmp_row1 = out_gapinfo[which((out_gapinfo$cycid == tmp_cycid) & ((out_gapinfo$node == tmp_cout) | (out_gapinfo$node == tmp_cin))),]
+    tmp_row1 = out_gapinfo[which((out_gapinfo$cycle_id == tmp_cycle_id) & ((out_gapinfo$node == tmp_cout) | (out_gapinfo$node == tmp_cin))),]
     select_out_upinfo = rbind(select_out_upinfo, tmp_row1)
   }
   
@@ -65,7 +65,7 @@ get_select_out_upinfo_eachedge <- function(tumor_name, cycle_edge_flux_list_out,
   out_gapinfo = cycle_edge_flux_list_out[[tumor_name]]
   cyc_pct = cycle_edge_flux_list[[tumor_name]]
   ug_c = names(gapup_cycle_chain_list[[tumor_name]])
-  ug_cyc_pct = cyc_pct[which(cyc_pct$cycid %in% ug_c),]
+  ug_cyc_pct = cyc_pct[which(cyc_pct$cycle_id %in% ug_c),]
   
   #  c2<--up--c1
   
@@ -76,10 +76,10 @@ get_select_out_upinfo_eachedge <- function(tumor_name, cycle_edge_flux_list_out,
   #  e1<----c2<--up--c1
   select_out_upinfo = data.frame()
   for (i in 1:length(ug_cyc_pct_upnode[,1])) {
-    tmp_cycid = ug_cyc_pct_upnode[i, "cycid"]
+    tmp_cycle_id = ug_cyc_pct_upnode[i, "cycle_id"]
     tmp_cout = ug_cyc_pct_upnode[i, "c_out"]
     
-    tmp_row1 = out_gapinfo[which((out_gapinfo$cycid == tmp_cycid) & (out_gapinfo$node == tmp_cout)),]
+    tmp_row1 = out_gapinfo[which((out_gapinfo$cycle_id == tmp_cycle_id) & (out_gapinfo$node == tmp_cout)),]
     select_out_upinfo = rbind(select_out_upinfo, tmp_row1)
   }
   
@@ -98,7 +98,7 @@ get_select_out_gapinfo <- function(tumor_name, cycle_edge_flux_list_out, cycle_e
   out_gapinfo = cycle_edge_flux_list_out[[tumor_name]]
   cyc_pct = cycle_edge_flux_list[[tumor_name]]
   ug_c = names(gapup_cycle_chain_list[[tumor_name]])
-  ug_cyc_pct = cyc_pct[which(cyc_pct$cycid %in% ug_c),]
+  ug_cyc_pct = cyc_pct[which(cyc_pct$cycle_id %in% ug_c),]
   
   #  c2<--up--c1
   ug_cyc_pct_upnode = ug_cyc_pct[which(ug_cyc_pct$ifgap == "gap"),]
@@ -107,10 +107,10 @@ get_select_out_gapinfo <- function(tumor_name, cycle_edge_flux_list_out, cycle_e
   #  e1<----c2<--up--c1
   select_out_gapinfo = data.frame()
   for (i in 1:length(ug_cyc_pct_upnode[,1])) {
-    tmp_cycid = ug_cyc_pct_upnode[i, "cycid"]
+    tmp_cycle_id = ug_cyc_pct_upnode[i, "cycle_id"]
     tmp_cout = ug_cyc_pct_upnode[i, "c_out"]
     
-    tmp_row1 = out_gapinfo[which((out_gapinfo$cycid == tmp_cycid) & (out_gapinfo$node == tmp_cout)),]
+    tmp_row1 = out_gapinfo[which((out_gapinfo$cycle_id == tmp_cycle_id) & (out_gapinfo$node == tmp_cout)),]
     select_out_gapinfo = rbind(select_out_gapinfo, tmp_row1)
   }
   
@@ -127,7 +127,7 @@ get_select_out_gapinfo_eachedge <- function(tumor_name, cycle_edge_flux_list_out
   out_gapinfo = cycle_edge_flux_list_out[[tumor_name]]
   cyc_pct = cycle_edge_flux_list[[tumor_name]]
   ug_c = names(gapup_cycle_chain_list[[tumor_name]])
-  ug_cyc_pct = cyc_pct[which(cyc_pct$cycid %in% ug_c),]
+  ug_cyc_pct = cyc_pct[which(cyc_pct$cycle_id %in% ug_c),]
   
   #  c2<--up--c1
   #ug_cyc_pct_upnode = ug_cyc_pct[which(ug_cyc_pct$ifgap == "gap"),]
@@ -136,10 +136,10 @@ get_select_out_gapinfo_eachedge <- function(tumor_name, cycle_edge_flux_list_out
   #  e1<----c2<--up--c1
   select_out_gapinfo = data.frame()
   for (i in 1:length(ug_cyc_pct_upnode[,1])) {
-    tmp_cycid = ug_cyc_pct_upnode[i, "cycid"]
+    tmp_cycle_id = ug_cyc_pct_upnode[i, "cycle_id"]
     tmp_cout = ug_cyc_pct_upnode[i, "c_out"]
     
-    tmp_row1 = out_gapinfo[which((out_gapinfo$cycid == tmp_cycid) & (out_gapinfo$node == tmp_cout)),]
+    tmp_row1 = out_gapinfo[which((out_gapinfo$cycle_id == tmp_cycle_id) & (out_gapinfo$node == tmp_cout)),]
     select_out_gapinfo = rbind(select_out_gapinfo, tmp_row1)
   }
   

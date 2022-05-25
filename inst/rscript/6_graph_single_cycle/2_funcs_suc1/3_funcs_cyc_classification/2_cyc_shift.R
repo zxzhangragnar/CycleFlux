@@ -37,11 +37,11 @@ get_cyc_shift_formula <- function(tumor_name, cycle_upgap_class_list, cycle_edge
 
   
   for (i in 1:length(ug_c)) {
-    cycid = ug_c[i]
-    print(cycid)
-    tmp_cyc_indeg = indeg_df[which(indeg_df$cycid == ug_c[i]),]
-    tmp_cyc_outdeg = outdeg_df[which(outdeg_df$cycid == ug_c[i]),]
-    tmp_cyc = cyc_df[which(cyc_df$cycid == ug_c[i]),]
+    cycle_id = ug_c[i]
+    print(cycle_id)
+    tmp_cyc_indeg = indeg_df[which(indeg_df$cycle_id == ug_c[i]),]
+    tmp_cyc_outdeg = outdeg_df[which(outdeg_df$cycle_id == ug_c[i]),]
+    tmp_cyc = cyc_df[which(cyc_df$cycle_id == ug_c[i]),]
     
     up_indeg = tmp_cyc_indeg[which(tmp_cyc_indeg$ifup == "up"),]
     up_outdeg = tmp_cyc_outdeg[which(tmp_cyc_outdeg$ifup == "up"),]
@@ -137,7 +137,7 @@ get_cyc_shift_formula <- function(tumor_name, cycle_upgap_class_list, cycle_edge
           
           ## 为df添加行
           temp_old_path_df = data.frame()
-          temp_old_path_df[1, "cycid"] = cycid
+          temp_old_path_df[1, "cycle_id"] = cycle_id
           temp_old_path_df[1, "new_path"] = new_path_str
           temp_old_path_df[1, "old_path"] = old_path_str
           temp_old_path_df[1, "endpoint_node"] = paste0(permutation_node[1,"od"], ";", permutation_node[1,"ind"])
@@ -193,7 +193,7 @@ cyc_shift_main <- function(res_path, input_tumor_name) {
 # res_path = "E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/"
 # input_tumor_name = "COAD"
 # cyc_shift_main(res_path, input_tumor_name)
-
+# 
 
 
 

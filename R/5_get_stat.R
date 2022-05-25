@@ -13,7 +13,7 @@ get_freq_stat <- function(input_net_file, output_path, res_path, graph_path, inp
   ENV = new.env()
   attach(ENV)
 
-  library(reticulate)
+
   ENV$old_wd = getwd()
 
   ##new wd

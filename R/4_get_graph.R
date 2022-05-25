@@ -13,7 +13,7 @@ get_graph_basic <- function(input_net_file, output_path, res_path, input_tumor_n
   ENV = new.env()
   attach(ENV)
 
-  library(reticulate)
+
   ENV$old_wd = getwd()
 
   ##new wd
@@ -65,7 +65,7 @@ get_graph_single_cycle <- function(input_net_file, output_path, res_path, graph_
   ENV = new.env()
   attach(ENV)
 
-  library(reticulate)
+
   ENV$old_wd = getwd()
 
   ##new wd
@@ -115,7 +115,7 @@ get_graph_single_cycle_degree_1 <- function(input_net_file, output_path, res_pat
   ENV = new.env()
   attach(ENV)
 
-  library(reticulate)
+
   ENV$old_wd = getwd()
 
   ##new wd
@@ -174,7 +174,7 @@ get_cycle_shift <- function(input_net_file, output_path, res_path, graph_path, i
   ENV = new.env()
   attach(ENV)
 
-  library(reticulate)
+
   ENV$old_wd = getwd()
 
   ##new wd
@@ -233,7 +233,7 @@ get_graph_single_cycle_degree_2 <- function(input_net_file, output_path, res_pat
   ENV = new.env()
   attach(ENV)
 
-  library(reticulate)
+
   ENV$old_wd = getwd()
 
   ##new wd
@@ -295,7 +295,7 @@ get_graph_subnet <- function(input_net_file, output_path, res_path, graph_path, 
   ENV = new.env()
   attach(ENV)
 
-  library(reticulate)
+
   ENV$old_wd = getwd()
 
   ##new wd
@@ -351,7 +351,7 @@ get_graph_topology_struct <- function(input_net_file, output_path, res_path, gra
   ENV = new.env()
   attach(ENV)
 
-  library(reticulate)
+
   ENV$old_wd = getwd()
 
   ##new wd

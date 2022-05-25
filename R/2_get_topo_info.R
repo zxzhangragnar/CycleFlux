@@ -14,7 +14,6 @@ get_topology_info <- function(input_net_file, output_path, res_path) {
   ENV = new.env()
   attach(ENV)
 
-  library(reticulate)
   ENV$old_wd = getwd()
 
   ##new wd
@@ -23,12 +22,6 @@ get_topology_info <- function(input_net_file, output_path, res_path) {
   if(!file.exists(file.path(output_path, "cycle_directed.RData"))) {
     find_net_cycle(input_net_file, output_path)
   }
-
-  source(system.file("rscript/1_cycle_topology/1_funcs/0_rela_module_cyc.R", package = "CycleFlux"), local=ENV)
-  ENV$rela_module_cyc_main(output_path, res_path)
-
-  source(system.file("rscript/1_cycle_topology/1_funcs/1_cyc_stcid_topology.R", package = "CycleFlux"), local=ENV)
-  ENV$cycle_stcid_topology_main(output_path, res_path)
 
   source(system.file("rscript/1_cycle_topology/1_funcs/2_cycle_plot_and_distance.R", package = "CycleFlux"), local=ENV)
   ENV$cycle_plot_and_distance_main(output_path, res_path)

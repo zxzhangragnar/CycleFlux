@@ -1,11 +1,8 @@
-# 判断标准：
-# hub 在去掉1个(泛化成2个3个) 枢纽节点后，很多环就不相连了(泛化成连通性大幅度减少了)
+# hub 在去掉1个(泛化成2个3个) 枢纽节点后，很多环就不相连了
 # web 去掉1个枢纽节点后 仍然成环，有很多overlap相连的点
-# 
 # 
 # 先找到 Hub  ---> 去掉(不考虑)这些环 ---> 再找 web
 # 
-#
 # （根据距离distance分布进行聚类）
 #
 # 【可疑聚簇】
@@ -119,8 +116,8 @@ get_suspicious_web_table_list <- function(suspicious_web_struct_cluster) {
       temp_df_index = 1
       for (j in 1:length(suspicious_web_struct_cluster)) {
         if(as.integer(suspicious_web_struct_cluster[j]) == temp_clus_name) {
-          cycid = names(suspicious_web_struct_cluster[j])
-          temp_df[temp_df_index, "cycid"] = cycid
+          cycle_id = names(suspicious_web_struct_cluster[j])
+          temp_df[temp_df_index, "cycle_id"] = cycle_id
           temp_df_index = temp_df_index + 1
         }
       }
@@ -135,37 +132,37 @@ get_suspicious_web_table_list <- function(suspicious_web_struct_cluster) {
 
 ##################################################################################
 # （网内所有环之间的距离distance都小于4）
-get_far_cycid_pairs_df_list <- function(suspicious_web_table_list, threshold, cycle_directed, cyc_all_distance_df) {
+get_far_cycle_id_pairs_df_list <- function(suspicious_web_table_list, threshold, cycle_directed, cyc_all_distance_df) {
   cycle_num = length(cycle_directed[,1])
   distance_matrix = get_distance_matrix(cycle_num, cyc_all_distance_df)
-  far_cycid_pairs_df_list = list()
+  far_cycle_id_pairs_df_list = list()
   if (length(suspicious_web_table_list) > 0) {
     for (k in 1:length(suspicious_web_table_list)) {
       suspicious_web_table = suspicious_web_table_list[[k]]
-      suspicious_web_cycids = suspicious_web_table$cycid
+      suspicious_web_cycle_ids = suspicious_web_table$cycle_id
       
-      far_cycid_pairs_df = data.frame()
+      far_cycle_id_pairs_df = data.frame()
       df_row_index = 1
-      for (i in 1:length(suspicious_web_cycids)) {
+      for (i in 1:length(suspicious_web_cycle_ids)) {
         print(i)
-        cyc_a = as.character(suspicious_web_cycids[i])
-        for (j in 1:length(suspicious_web_cycids)) {
-          cyc_b = as.character(suspicious_web_cycids[j])
+        cyc_a = as.character(suspicious_web_cycle_ids[i])
+        for (j in 1:length(suspicious_web_cycle_ids)) {
+          cyc_b = as.character(suspicious_web_cycle_ids[j])
           temp_distance = distance_matrix[cyc_a, cyc_b]
           if(temp_distance > threshold) {
-            far_cycid_pairs_df[df_row_index, "from"] = cyc_a
-            far_cycid_pairs_df[df_row_index, "to"] = cyc_b
-            far_cycid_pairs_df[df_row_index, "dist"] = temp_distance
+            far_cycle_id_pairs_df[df_row_index, "from"] = cyc_a
+            far_cycle_id_pairs_df[df_row_index, "to"] = cyc_b
+            far_cycle_id_pairs_df[df_row_index, "dist"] = temp_distance
             df_row_index = df_row_index + 1
           }
         }
       }
       
-      far_cycid_pairs_df_list[[k]] = far_cycid_pairs_df
+      far_cycle_id_pairs_df_list[[k]] = far_cycle_id_pairs_df
     }    
   }
 
-  return(far_cycid_pairs_df_list)
+  return(far_cycle_id_pairs_df_list)
 }
 
 #get sum dist
@@ -176,17 +173,17 @@ get_sumdist_df_list <- function(suspicious_web_table_list, cycle_directed, cyc_a
   if (length(suspicious_web_table_list) > 0) {
     for (k in 1:length(suspicious_web_table_list)) {
       suspicious_web_table = suspicious_web_table_list[[k]]
-      suspicious_web_cycids = suspicious_web_table$cycid
+      suspicious_web_cycle_ids = suspicious_web_table$cycle_id
       
-      sumdist_df = as.data.frame(suspicious_web_cycids)
+      sumdist_df = as.data.frame(suspicious_web_cycle_ids)
       sumdist_df[,"sumdist"] = 0
-      for (i in 1:length(suspicious_web_cycids)) {
+      for (i in 1:length(suspicious_web_cycle_ids)) {
         print(i)
-        cyc_a = as.character(suspicious_web_cycids[i])
-        for (j in 1:length(suspicious_web_cycids)) {
-          cyc_b = as.character(suspicious_web_cycids[j])
+        cyc_a = as.character(suspicious_web_cycle_ids[i])
+        for (j in 1:length(suspicious_web_cycle_ids)) {
+          cyc_b = as.character(suspicious_web_cycle_ids[j])
           temp_distance = as.integer(distance_matrix[cyc_a, cyc_b])
-          sumdist_df[which(sumdist_df$suspicious_web_cycids == cyc_a),"sumdist"] = sumdist_df[which(sumdist_df$suspicious_web_cycids == cyc_a),"sumdist"] + temp_distance
+          sumdist_df[which(sumdist_df$suspicious_web_cycle_ids == cyc_a),"sumdist"] = sumdist_df[which(sumdist_df$suspicious_web_cycle_ids == cyc_a),"sumdist"] + temp_distance
           
         }
       }
@@ -199,25 +196,25 @@ get_sumdist_df_list <- function(suspicious_web_table_list, cycle_directed, cyc_a
 }
 
 #离群点
-get_outlier_list <- function(far_cycid_pairs_df_list, sumdist_df_list) {
+get_outlier_list <- function(far_cycle_id_pairs_df_list, sumdist_df_list) {
   outlier_list = c()
-  if ((length(far_cycid_pairs_df_list) > 0) & (length(sumdist_df_list) > 0)) {
+  if ((length(far_cycle_id_pairs_df_list) > 0) & (length(sumdist_df_list) > 0)) {
     # for every pair, remove the dist bigger one
-    for (i in 1:length(far_cycid_pairs_df_list)) {
-      temp_far_cycid_pairs_df = far_cycid_pairs_df_list[[i]]
-      if (length(far_cycid_pairs_df_list[[i]]) == 0) {
-        far_cycid_pairs_df_list[[i]] = temp_far_cycid_pairs_df
+    for (i in 1:length(far_cycle_id_pairs_df_list)) {
+      temp_far_cycle_id_pairs_df = far_cycle_id_pairs_df_list[[i]]
+      if (length(far_cycle_id_pairs_df_list[[i]]) == 0) {
+        far_cycle_id_pairs_df_list[[i]] = temp_far_cycle_id_pairs_df
       }else {
         sumdist_df = sumdist_df_list[[i]]
-        for(j in 1:length(rownames(temp_far_cycid_pairs_df))) {
-          from_cycid = temp_far_cycid_pairs_df[j, "from"]
-          to_cycid = temp_far_cycid_pairs_df[j, "to"]
-          from_cycid_dist = sumdist_df[which(sumdist_df$suspicious_web_cycids == from_cycid), "sumdist"]
-          to_cycid_dist = sumdist_df[which(sumdist_df$suspicious_web_cycids == to_cycid), "sumdist"]
-          if(from_cycid_dist >= to_cycid_dist) {
-            outlier_list = append(outlier_list, from_cycid)
+        for(j in 1:length(rownames(temp_far_cycle_id_pairs_df))) {
+          from_cycle_id = temp_far_cycle_id_pairs_df[j, "from"]
+          to_cycle_id = temp_far_cycle_id_pairs_df[j, "to"]
+          from_cycle_id_dist = sumdist_df[which(sumdist_df$suspicious_web_cycle_ids == from_cycle_id), "sumdist"]
+          to_cycle_id_dist = sumdist_df[which(sumdist_df$suspicious_web_cycle_ids == to_cycle_id), "sumdist"]
+          if(from_cycle_id_dist >= to_cycle_id_dist) {
+            outlier_list = append(outlier_list, from_cycle_id)
           }else {
-            outlier_list = append(outlier_list, to_cycid)
+            outlier_list = append(outlier_list, to_cycle_id)
           }
         } 
       }
@@ -234,13 +231,13 @@ get_outlier_list <- function(far_cycid_pairs_df_list, sumdist_df_list) {
 
 ##################################################################################
 # （网内每一个环的neighcyc都大于20）
-filter_neighcyc_bigger <- function(suspicious_web_cycids, threshold, cycle_directed) {
-  cycid_neighcyc_sharedcyc = cycle_directed[,c("cycid", "neighcyc", "sharedcyc")]
-  cycid_neighcyc_sharedcyc = cycid_neighcyc_sharedcyc[which(cycid_neighcyc_sharedcyc$cycid %in% suspicious_web_cycids),]
-  cycid_neighcyc_sharedcyc = cycid_neighcyc_sharedcyc[which(cycid_neighcyc_sharedcyc$neighcyc > threshold),]
-  cycid_neighcyc_sharedcyc = cycid_neighcyc_sharedcyc[which(cycid_neighcyc_sharedcyc$sharedcyc > threshold),]
-  suspicious_web_cycids = cycid_neighcyc_sharedcyc[,c("cycid")]
-  return(suspicious_web_cycids)
+filter_neighcyc_bigger <- function(suspicious_web_cycle_ids, threshold, cycle_directed) {
+  cycle_id_neighcyc_shared_cycle = cycle_directed[,c("cycle_id", "neighcyc", "shared_cycle")]
+  cycle_id_neighcyc_shared_cycle = cycle_id_neighcyc_shared_cycle[which(cycle_id_neighcyc_shared_cycle$cycle_id %in% suspicious_web_cycle_ids),]
+  cycle_id_neighcyc_shared_cycle = cycle_id_neighcyc_shared_cycle[which(cycle_id_neighcyc_shared_cycle$neighcyc > threshold),]
+  cycle_id_neighcyc_shared_cycle = cycle_id_neighcyc_shared_cycle[which(cycle_id_neighcyc_shared_cycle$shared_cycle > threshold),]
+  suspicious_web_cycle_ids = cycle_id_neighcyc_shared_cycle[,c("cycle_id")]
+  return(suspicious_web_cycle_ids)
 }
 
 
@@ -257,7 +254,7 @@ filter_neighcyc_bigger <- function(suspicious_web_cycids, threshold, cycle_direc
 struct_web_main <- function(output_path, res_path, prm_1=.18, prm_2=3, prm_3=7, prm_4=2, prm_5=10) {
 
   load(file.path(output_path, "cycle_directed.RData"))
-  load(file.path(res_path, "2_cycle_struct_sort/result_struct/hub_struct_cycid.RData"))
+  load(file.path(res_path, "2_cycle_struct_sort/result_struct/hub_struct_cycle_id.RData"))
   load(file.path(res_path, "1_cycle_topology/result_topo/cyc_all_distance_df.RData"))
   
   cycle_num = length(cycle_directed[,1])
@@ -279,7 +276,7 @@ struct_web_main <- function(output_path, res_path, prm_1=.18, prm_2=3, prm_3=7, 
   
   #test
   suspicious_web_table_list = get_suspicious_web_table_list(suspicious_web_struct_cluster) 
-  far_cycid_pairs_df_list = get_far_cycid_pairs_df_list(suspicious_web_table_list, prm_4, cycle_directed, cyc_all_distance_df)
+  far_cycle_id_pairs_df_list = get_far_cycle_id_pairs_df_list(suspicious_web_table_list, prm_4, cycle_directed, cyc_all_distance_df)
   
   
   #test
@@ -287,59 +284,36 @@ struct_web_main <- function(output_path, res_path, prm_1=.18, prm_2=3, prm_3=7, 
   sumdist_df_list = get_sumdist_df_list(suspicious_web_table_list, cycle_directed, cyc_all_distance_df)
   
   
-  outlier_list = get_outlier_list(far_cycid_pairs_df_list, sumdist_df_list)
+  outlier_list = get_outlier_list(far_cycle_id_pairs_df_list, sumdist_df_list)
   ###
-  suspicious_web_cycids = names(suspicious_web_struct_cluster)
+  suspicious_web_cycle_ids = names(suspicious_web_struct_cluster)
   ### remove 离群点
-  suspicious_web_cycids = setdiff(suspicious_web_cycids, outlier_list)
+  suspicious_web_cycle_ids = setdiff(suspicious_web_cycle_ids, outlier_list)
   
   
   #test
-  #suspicious_web_cycids = filter_neighcyc_bigger(suspicious_web_cycids, 25)
-  suspicious_web_cycids = filter_neighcyc_bigger(suspicious_web_cycids, prm_5, cycle_directed)
+  #suspicious_web_cycle_ids = filter_neighcyc_bigger(suspicious_web_cycle_ids, 25)
+  suspicious_web_cycle_ids = filter_neighcyc_bigger(suspicious_web_cycle_ids, prm_5, cycle_directed)
   
   
   # 【去掉hub环】
   # 得到 Hub结构及其所属的环
   ### remove Hub struct 
-  suspicious_web_cycids = setdiff(suspicious_web_cycids, hub_struct_cycid)
+  suspicious_web_cycle_ids = setdiff(suspicious_web_cycle_ids, hub_struct_cycle_id)
   
   #Final result:
-  web_struct_cycid = suspicious_web_cycids
+  web_struct_cycle_id = suspicious_web_cycle_ids
   
   
   #save
   res_sub_path = "2_cycle_struct_sort/result_struct"
   dir.create(file.path(res_path, res_sub_path), recursive = TRUE, showWarnings = FALSE)
-  res_file_path = file.path(res_path, res_sub_path, "web_struct_cycid.RData")
+  res_file_path = file.path(res_path, res_sub_path, "web_struct_cycle_id.RData")
   
-  #save(web_struct_cycid, file="E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/2_cycle_struct_sort/result_struct/web_struct_cycid.RData")
-  save(web_struct_cycid, file=res_file_path)
+  #save(web_struct_cycle_id, file="E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/2_cycle_struct_sort/result_struct/web_struct_cycle_id.RData")
+  save(web_struct_cycle_id, file=res_file_path)
   
 }
-
-
-
-
-##################################################################################
-### plot the result
-# plot_the_web_cycids <- function(clus_cluster, suspicious_web_cycids) {
-#   plot_web_cycids = clus_cluster
-#   for (i in 1:length(plot_web_cycids)) {
-#     if(names(plot_web_cycids[i]) %in% suspicious_web_cycids) {
-#       plot_web_cycids[[i]] = 80
-#     }else {
-#       plot_web_cycids[[i]] = 90
-#     }
-#   }
-#   plot(coor_by_distance_matrix, col = plot_web_cycids+1L)
-# }
-# 
-# #plot
-# plot_the_web_cycids(clus_cluster, suspicious_web_cycids)
-
-
-
 
 
 #######################################################################################################################                 

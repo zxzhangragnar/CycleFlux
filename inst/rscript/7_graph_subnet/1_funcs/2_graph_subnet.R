@@ -22,21 +22,18 @@
 add_normal_cycles <- function(cycle_directed, g) {
   #添加普通环
   for (k in 1:length(cycle_directed[,1])) {
-    ord_cpds_str = cycle_directed[k,"ord_cpds_str"]
-    ord_cpds_str = substring(ord_cpds_str, 2,nchar(ord_cpds_str)-1)
-    ord_cpds_str = unlist(strsplit(ord_cpds_str,split = ", "))
-    for (i in 1:length(ord_cpds_str)) {
-      cpds_str = substring(ord_cpds_str[i], 2,nchar(ord_cpds_str[i])-1)
+    compound_chain = cycle_directed[k,"compound_chain"]
+    compound_chain = unlist(strsplit(compound_chain,split = ";"))
+    for (i in 1:length(compound_chain)) {
+      cpds_str = compound_chain[i]
       cpds_str = unlist(strsplit(cpds_str,split = "->")) #'c' 'U' 'c' 'G' 'c'
-      for (j in 1:length(cpds_str)) {
-        if(j%%2 == 0) {
-          tmp_cyc_hnode = V(g)[name==cpds_str[j-1]]
-          tmp_cyc_tnode = V(g)[name==cpds_str[j+1]]
-          V(g)[name==cpds_str[j-1]]$color <- "grey"
-          V(g)[name==cpds_str[j+1]]$color <- "grey"
-          E(g)[get.edge.ids(g, c(tmp_cyc_hnode, tmp_cyc_tnode))]$size = 1
-          E(g)[get.edge.ids(g, c(tmp_cyc_hnode, tmp_cyc_tnode))]$color = "grey"
-        }
+      for (j in 1:(length(cpds_str)-1)) {
+        tmp_cyc_hnode = V(g)[name==cpds_str[j]]
+        tmp_cyc_tnode = V(g)[name==cpds_str[j+1]]
+        V(g)[name==cpds_str[j]]$color <- "grey"
+        V(g)[name==cpds_str[j+1]]$color <- "grey"
+        E(g)[get.edge.ids(g, c(tmp_cyc_hnode, tmp_cyc_tnode))]$size = 1
+        E(g)[get.edge.ids(g, c(tmp_cyc_hnode, tmp_cyc_tnode))]$color = "grey"
       }
     }
   }

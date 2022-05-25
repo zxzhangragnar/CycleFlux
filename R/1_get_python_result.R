@@ -10,27 +10,20 @@
 #'
 #'
 find_net_cycle <- function(input_net_file, output_path) {
-  library(reticulate)
+  ENV = new.env()
+  attach(ENV)
 
-  tryCatch({
-    use_condaenv("r-reticulate")
-  },error=function() {
-    conda_create("r-reticulate")
-    # install python packages
-    conda_install("r-reticulate", "networkx")
-    conda_install("r-reticulate", "pyreadr")
-    conda_install("r-reticulate", "pandas")
-    conda_install("r-reticulate", "numpy")
-  })
+  ENV$old_wd = getwd()
 
-  old_wd = getwd()
   ##new wd
-  setwd(system.file("python/", package = "CycleFlux"))
+  setwd(system.file("rscript/", package = "CycleFlux"))
 
-  source_python(system.file("python/control_centra.py", package = "CycleFlux"))
-  write_directed(input_net_file, output_path)
+  source(system.file("rscript/0_cycle_expression/1_funcs/1_cycle_directed.R", package = "CycleFlux"), local=ENV)
+  ENV$get_expression_main(input_net_file, output_path)
 
-  setwd(old_wd)
+  setwd(ENV$old_wd)
+
+  rm(ENV)
 }
 
 

@@ -4,7 +4,7 @@ add_struct_id_cycles <- function(judge, struct_cycle_sort_list, cycle_directed, 
   
   #4.all
   for (k in 1:length(cycle_directed[,1])) {
-    tmp_cyc_id = cycle_directed[k,"cycid"]
+    tmp_cyc_id = cycle_directed[k,"cycle_id"]
     
     struct_color = "grey"
     struct_size = 3
@@ -26,21 +26,18 @@ add_struct_id_cycles <- function(judge, struct_cycle_sort_list, cycle_directed, 
       }
     }
     
-    ord_cpds_str = cycle_directed[k,"ord_cpds_str"]
-    ord_cpds_str = substring(ord_cpds_str, 2,nchar(ord_cpds_str)-1)
-    ord_cpds_str = unlist(strsplit(ord_cpds_str,split = ", "))
-    for (i in 1:length(ord_cpds_str)) {
-      cpds_str = substring(ord_cpds_str[i], 2,nchar(ord_cpds_str[i])-1)
-      cpds_str = unlist(strsplit(cpds_str,split = "->")) #'c' 'U' 'c' 'G' 'c'
-      for (j in 1:length(cpds_str)) {
-        if(j%%2 == 0) {
-          tmp_cyc_hnode = V(g)[name==cpds_str[j-1]]
-          tmp_cyc_tnode = V(g)[name==cpds_str[j+1]]
-          V(g)[name==cpds_str[j-1]]$color <- struct_color
-          V(g)[name==cpds_str[j+1]]$color <- struct_color
-          E(g)[get.edge.ids(g, c(tmp_cyc_hnode, tmp_cyc_tnode))]$size = struct_size
-          E(g)[get.edge.ids(g, c(tmp_cyc_hnode, tmp_cyc_tnode))]$color = struct_color
-        }
+    compound_chain = cycle_directed[k,"compound_chain"]
+    compound_chain = unlist(strsplit(compound_chain,split = ";"))
+    for (i in 1:length(compound_chain)) {
+      cpds_str = compound_chain[i]
+      cpds_str = unlist(strsplit(cpds_str,split = "->"))
+      for (j in 1:(length(cpds_str)-1)) {
+        tmp_cyc_hnode = V(g)[name==cpds_str[j]]
+        tmp_cyc_tnode = V(g)[name==cpds_str[j+1]]
+        V(g)[name==cpds_str[j]]$color <- struct_color
+        V(g)[name==cpds_str[j+1]]$color <- struct_color
+        E(g)[get.edge.ids(g, c(tmp_cyc_hnode, tmp_cyc_tnode))]$size = struct_size
+        E(g)[get.edge.ids(g, c(tmp_cyc_hnode, tmp_cyc_tnode))]$color = struct_color
       }
     }
   }

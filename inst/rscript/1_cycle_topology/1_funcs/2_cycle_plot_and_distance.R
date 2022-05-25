@@ -1,44 +1,39 @@
-#   
-############################### 在以下计算中，将"环"看成网络中的节点 ####################################
-# 
-# 
-# 以"环"为点
-# 
-# 如何plot出 以环作为点 的图像?
-#   
-# 求 环 和 环 之间的距离 distance 
-#
-# 环的距离数据 from python Functions_new/cycle_distance.py
-#
-#
-#
 
 
 
 ##################################### part1 build graph ################################################
 #############################################################################################
 
-get_cyc_all_distance_df <- function(cycle_directed) {
-  cycle_distance = as.data.frame(cycle_directed[,c("cycid", "distance")])
+get_cyc_all_distance_df <- function(g, cycle_directed) {
   cyc_all_distance_df = data.frame()
-  for (i in 1:length(rownames(cycle_distance))) {
-    print(paste0("cyc+",i))
-    temp_cycid = cycle_directed[i, "cycid"]
-    temp_distance_str = as.character(cycle_distance[i,"distance"])
-    temp_distance_str = substring(temp_distance_str, 2,nchar(temp_distance_str)-1)
-    temp_distance_str <- unlist(strsplit(temp_distance_str,split = ", "))
-    for (j in 1:length(temp_distance_str)) {
-      temp_distance_str_cyc_val = unlist(strsplit(temp_distance_str[j],split = ": "))
-      temp_distance_cycid = temp_distance_str_cyc_val[1]
-      temp_distance_val = temp_distance_str_cyc_val[2]
-      temp_df = data.frame(
-        from = c(temp_cycid), 
-        to = c(temp_distance_cycid),
-        distance = c(temp_distance_val)
-      )
-      cyc_all_distance_df = rbind(cyc_all_distance_df, temp_df)
+  
+  for (i in 1:length(cycle_directed[,1])) {
+    cycle_1_id = cycle_directed[i, "cycle_id"]
+    compound_1_chain = cycle_directed[i, "compound_chain"]
+    
+    compound_1_chain = unlist(strsplit(compound_1_chain, split = ";"))
+    cycle_1_node = unique(unlist(strsplit(compound_1_chain[1], split = "->")))
+    
+    for (j in 1:length(cycle_directed[,1])) {
+      cycle_2_id = cycle_directed[j, "cycle_id"]
+      compound_2_chain = cycle_directed[j, "compound_chain"]
+      
+      compound_2_chain = unlist(strsplit(compound_2_chain, split = ";"))
+      cycle_2_node = unique(unlist(strsplit(compound_2_chain[1], split = "->")))
+      
+      distance_cycle = min(distances(g, cycle_1_node, cycle_2_node))
+      
+      temp_row = data.frame()
+      temp_row[1, "from"] = cycle_1_id
+      temp_row[1, "to"] = cycle_2_id
+      temp_row[1, "distance"] = distance_cycle
+      
+      cyc_all_distance_df = rbind(cyc_all_distance_df, temp_row)
     }
+    
   }
+  
+  
   return(cyc_all_distance_df)
 }
 
@@ -46,8 +41,9 @@ get_cyc_all_distance_df <- function(cycle_directed) {
 #############################################################################################
 # test
 cycle_plot_and_distance_main <- function(output_path, res_path) {
+  load(file.path(output_path, "g.RData"))
   load(file.path(output_path, "cycle_directed.RData"))
-  cyc_all_distance_df = get_cyc_all_distance_df(cycle_directed)
+  cyc_all_distance_df = get_cyc_all_distance_df(g, cycle_directed)
   
   # save
   res_sub_path = "1_cycle_topology/result_topo"
@@ -64,7 +60,7 @@ cycle_plot_and_distance_main <- function(output_path, res_path) {
 # test
 # output_path = "E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_output"
 # res_path = "E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/"
-# cycle_plot_and_distance_main(output_path, res_path) 
+# cycle_plot_and_distance_main(output_path, res_path)
 
 
 

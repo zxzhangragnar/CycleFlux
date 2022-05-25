@@ -15,7 +15,7 @@ get_enzyme_info <- function(input_net_file, output_path, res_path, input_tumor_n
   ENV = new.env()
   attach(ENV)
 
-  library(reticulate)
+
   ENV$old_wd = getwd()
 
   ##new wd
@@ -54,7 +54,7 @@ get_cycle_gapup_info <- function(input_net_file, output_path, res_path, input_tu
   ENV = new.env()
   attach(ENV)
 
-  library(reticulate)
+
   ENV$old_wd = getwd()
 
   ##new wd

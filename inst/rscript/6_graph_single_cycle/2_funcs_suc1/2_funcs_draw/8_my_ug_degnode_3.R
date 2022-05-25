@@ -5,9 +5,9 @@
 #e1<--up--(c2<--up--c1)<--up--e1
 ###################################################################
 
-# st2_cycid = select_st2_1_gapinfo_e1e2$cycid
-# st3_cycid = select_st3_1_gapinfo_e1e2$cycid
-# intersect_cycid = intersect(st2_cycid, st3_cycid)
+# st2_cycle_id = select_st2_1_gapinfo_e1e2$cycle_id
+# st3_cycle_id = select_st3_1_gapinfo_e1e2$cycle_id
+# intersect_cycle_id = intersect(st2_cycle_id, st3_cycle_id)
 
 ## 不要求 某个环同时有 od & ind 才计算在内
 ## 而是 做并集 只要这个环 有 od | ind 就计算在内 
@@ -41,11 +41,11 @@ plot_up_cycle<-function(tumor_name, plot_name, select_in_upinfo, select_out_upin
       ## successors部分
       #第k个环
       #有入度的结点
-      up_out_node = select_out_upinfo[which(select_out_upinfo$cycid == tmp_cyc_id), "node"]
-      up_out_od = select_out_upinfo[which(select_out_upinfo$cycid == tmp_cyc_id), "od"]
+      up_out_node = select_out_upinfo[which(select_out_upinfo$cycle_id == tmp_cyc_id), "node"]
+      up_out_od = select_out_upinfo[which(select_out_upinfo$cycle_id == tmp_cyc_id), "od"]
       #有出度的结点
-      up_in_node = select_in_upinfo[which(select_in_upinfo$cycid == tmp_cyc_id), "node"]
-      up_in_ind = select_in_upinfo[which(select_in_upinfo$cycid == tmp_cyc_id), "ind"]
+      up_in_node = select_in_upinfo[which(select_in_upinfo$cycle_id == tmp_cyc_id), "node"]
+      up_in_ind = select_in_upinfo[which(select_in_upinfo$cycle_id == tmp_cyc_id), "ind"]
       
       #degree_node_arr = c(rbind(up_out_od, up_in_ind))
       degree_node_arr = c(up_out_od, up_in_ind)
@@ -177,18 +177,18 @@ plot_ug_cycle<-function(tumor_name, plot_name, select_in_upinfo, select_out_upin
       ## successors部分
       #第k个环
       #有入度的结点
-      up_out_node = select_out_upinfo[which(select_out_upinfo$cycid == tmp_cyc_id), "node"]
-      up_out_od = select_out_upinfo[which(select_out_upinfo$cycid == tmp_cyc_id), "od"]
+      up_out_node = select_out_upinfo[which(select_out_upinfo$cycle_id == tmp_cyc_id), "node"]
+      up_out_od = select_out_upinfo[which(select_out_upinfo$cycle_id == tmp_cyc_id), "od"]
       #有出度的结点
-      up_in_node = select_in_upinfo[which(select_in_upinfo$cycid == tmp_cyc_id), "node"]
-      up_in_ind = select_in_upinfo[which(select_in_upinfo$cycid == tmp_cyc_id), "ind"]
+      up_in_node = select_in_upinfo[which(select_in_upinfo$cycle_id == tmp_cyc_id), "node"]
+      up_in_ind = select_in_upinfo[which(select_in_upinfo$cycle_id == tmp_cyc_id), "ind"]
       
       #有入度的结点
-      gap_out_node = select_out_gapinfo[which(select_out_gapinfo$cycid == tmp_cyc_id), "node"]
-      gap_out_od = select_out_gapinfo[which(select_out_gapinfo$cycid == tmp_cyc_id), "od"]
+      gap_out_node = select_out_gapinfo[which(select_out_gapinfo$cycle_id == tmp_cyc_id), "node"]
+      gap_out_od = select_out_gapinfo[which(select_out_gapinfo$cycle_id == tmp_cyc_id), "od"]
       #有出度的结点
-      gap_in_node = select_in_gapinfo[which(select_in_gapinfo$cycid == tmp_cyc_id), "node"]
-      gap_in_ind = select_in_gapinfo[which(select_in_gapinfo$cycid == tmp_cyc_id), "ind"]
+      gap_in_node = select_in_gapinfo[which(select_in_gapinfo$cycle_id == tmp_cyc_id), "node"]
+      gap_in_ind = select_in_gapinfo[which(select_in_gapinfo$cycle_id == tmp_cyc_id), "ind"]
       
       
       #degree_node_arr = c(rbind(up_out_od, up_in_ind, gap_out_od, gap_in_ind))

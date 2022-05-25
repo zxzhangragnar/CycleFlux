@@ -14,7 +14,7 @@ get_basic_gene_info <- function(input_net_file, output_path, res_path, input_tum
   ENV = new.env()
   attach(ENV)
 
-  library(reticulate)
+
   ENV$old_wd = getwd()
 
   ##new wd
@@ -68,7 +68,7 @@ get_subnet_edge_info <- function(input_net_file, output_path, res_path, input_tu
   ENV = new.env()
   attach(ENV)
 
-  library(reticulate)
+
   ENV$old_wd = getwd()
 
   ##new wd
@@ -148,7 +148,6 @@ get_cycle_edge_info <- function(input_net_file, output_path, res_path, input_tum
   ENV = new.env()
   attach(ENV)
 
-  library(reticulate)
   ENV$old_wd = getwd()
 
   ##new wd

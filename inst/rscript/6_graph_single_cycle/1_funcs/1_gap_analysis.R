@@ -54,9 +54,9 @@ get_ug_chain_list<-function(tumors_array, cycle_edge_flux_list, all_chain_list_c
   for (j in 1:length(tumors_array)) {
     tumor_name = tumors_array[j]
     temp_tumor_df = cycle_edge_flux_list[[tumor_name]]
-    #有gap现象的环的cycid
-    gap_c = unique(temp_tumor_df[which(temp_tumor_df$ifgap == "gap"),'cycid'])
-    up_c = unique(temp_tumor_df[which(temp_tumor_df$ifup == "up"),'cycid'])
+    #有gap现象的环的cycle_id
+    gap_c = unique(temp_tumor_df[which(temp_tumor_df$ifgap == "gap"),'cycle_id'])
+    up_c = unique(temp_tumor_df[which(temp_tumor_df$ifup == "up"),'cycle_id'])
     ug_c = intersect(gap_c, up_c)
     
     temp_chain_list = all_chain_list_cid[[tumor_name]]

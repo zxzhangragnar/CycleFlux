@@ -82,19 +82,19 @@ filter_suspicious_idv_struct <- function(clus_cluster, filter_cluster_size, if_p
 ##################################################################################
 # 【去掉hub环】
 # 【去掉web环】
-remove_other_struct <- function(suspicious_idv_cycids, web_struct_cycid, hub_struct_cycid) {
-  suspicious_idv_cycids = setdiff(suspicious_idv_cycids, web_struct_cycid)
-  suspicious_idv_cycids = setdiff(suspicious_idv_cycids, hub_struct_cycid)
-  idv_struct_cycid = suspicious_idv_cycids
-  return(idv_struct_cycid)
+remove_other_struct <- function(suspicious_idv_cycle_ids, web_struct_cycle_id, hub_struct_cycle_id) {
+  suspicious_idv_cycle_ids = setdiff(suspicious_idv_cycle_ids, web_struct_cycle_id)
+  suspicious_idv_cycle_ids = setdiff(suspicious_idv_cycle_ids, hub_struct_cycle_id)
+  idv_struct_cycle_id = suspicious_idv_cycle_ids
+  return(idv_struct_cycle_id)
 }
 
 
 ##################################################################################
 # 检验
-test_by_cycid_neighcyc_sharedcyc <- function(idv_struct_cycid, cycle_directed) {
-  cycid_neighcyc_sharedcyc = cycle_directed[,c("cycid", "neighcyc", "sharedcyc")]
-  cycid_neighcyc_sharedcyc = cycid_neighcyc_sharedcyc[which(cycid_neighcyc_sharedcyc$cycid %in% idv_struct_cycid),]
+test_by_cycle_id_neighcyc_shared_cycle <- function(idv_struct_cycle_id, cycle_directed) {
+  cycle_id_neighcyc_shared_cycle = cycle_directed[,c("cycle_id", "neighcyc", "shared_cycle")]
+  cycle_id_neighcyc_shared_cycle = cycle_id_neighcyc_shared_cycle[which(cycle_id_neighcyc_shared_cycle$cycle_id %in% idv_struct_cycle_id),]
 }
 ##################################################################################
 
@@ -107,8 +107,8 @@ struct_idv_main <- function(output_path, res_path, prm_1=.16, prm_2=1, prm_3=2, 
   
   load(file.path(output_path, "cycle_directed.RData"))
   load(file.path(res_path, "1_cycle_topology/result_topo/cyc_all_distance_df.RData"))
-  load(file.path(res_path, "2_cycle_struct_sort/result_struct/hub_struct_cycid.RData"))
-  load(file.path(res_path, "2_cycle_struct_sort/result_struct/web_struct_cycid.RData"))
+  load(file.path(res_path, "2_cycle_struct_sort/result_struct/hub_struct_cycle_id.RData"))
+  load(file.path(res_path, "2_cycle_struct_sort/result_struct/web_struct_cycle_id.RData"))
   
   cycle_num = length(cycle_directed[,1])
   distance_matrix = get_distance_matrix(cycle_num, cyc_all_distance_df)
@@ -123,15 +123,15 @@ struct_idv_main <- function(output_path, res_path, prm_1=.16, prm_2=1, prm_3=2, 
   # plot(coor_by_distance_matrix, col = suspicious_idv_struct_cluster+1L)
   #plot_cluster_with_color(coor_by_distance_matrix, suspicious_idv_struct_cluster)
   
-  suspicious_idv_cycids = names(suspicious_idv_struct_cluster)
+  suspicious_idv_cycle_ids = names(suspicious_idv_struct_cluster)
   #remove web hub
-  suspicious_idv_cycids = remove_other_struct(suspicious_idv_cycids, web_struct_cycid, hub_struct_cycid)
+  suspicious_idv_cycle_ids = remove_other_struct(suspicious_idv_cycle_ids, web_struct_cycle_id, hub_struct_cycle_id)
   # 检验
-  cluster_idv_ngh_df = test_by_cycid_neighcyc_sharedcyc(suspicious_idv_cycids, cycle_directed)
-  cluster_idv_ngh_df = cluster_idv_ngh_df[which(cluster_idv_ngh_df$sharedcyc < prm_4),]
-  avg_shc1 = mean(cluster_idv_ngh_df$sharedcyc)
+  cluster_idv_ngh_df = test_by_cycle_id_neighcyc_shared_cycle(suspicious_idv_cycle_ids, cycle_directed)
+  cluster_idv_ngh_df = cluster_idv_ngh_df[which(cluster_idv_ngh_df$shared_cycle < prm_4),]
+  avg_shc1 = mean(cluster_idv_ngh_df$shared_cycle)
   
-  idv_struct_cycid_1 = cluster_idv_ngh_df$cycid
+  idv_struct_cycle_id_1 = cluster_idv_ngh_df$cycle_id
   
   
   
@@ -147,34 +147,34 @@ struct_idv_main <- function(output_path, res_path, prm_1=.16, prm_2=1, prm_3=2, 
   library(HDoutliers)
   outlier_coor_by_distance_matrix <- HDoutliers(coor_by_distance_matrix, alpha=prm_5, transform = TRUE)
   # plotHDoutliers(coor_by_distance_matrix, outlier_coor_by_distance_matrix)
-  outlier_idv_cycids = outlier_coor_by_distance_matrix
+  outlier_idv_cycle_ids = outlier_coor_by_distance_matrix
   
   #remove web hub
-  outlier_idv_cycids = remove_other_struct(outlier_idv_cycids, web_struct_cycid, hub_struct_cycid)
+  outlier_idv_cycle_ids = remove_other_struct(outlier_idv_cycle_ids, web_struct_cycle_id, hub_struct_cycle_id)
   # 检验
-  outlier_idv_ngh_df = test_by_cycid_neighcyc_sharedcyc(outlier_idv_cycids, cycle_directed)
-  outlier_idv_ngh_df = outlier_idv_ngh_df[which(outlier_idv_ngh_df$sharedcyc < prm_6),]
-  avg_shc2 = mean(outlier_idv_ngh_df$sharedcyc)
+  outlier_idv_ngh_df = test_by_cycle_id_neighcyc_shared_cycle(outlier_idv_cycle_ids, cycle_directed)
+  outlier_idv_ngh_df = outlier_idv_ngh_df[which(outlier_idv_ngh_df$shared_cycle < prm_6),]
+  avg_shc2 = mean(outlier_idv_ngh_df$shared_cycle)
   
-  idv_struct_cycid_2 = outlier_idv_ngh_df$cycid
+  idv_struct_cycle_id_2 = outlier_idv_ngh_df$cycle_id
   
   
   ##################################################################################
   ### final result (merged)
-  idv_struct_cycid = append(idv_struct_cycid_1, idv_struct_cycid_2)
-  idv_struct_cycid = unique(idv_struct_cycid)
+  idv_struct_cycle_id = append(idv_struct_cycle_id_1, idv_struct_cycle_id_2)
+  idv_struct_cycle_id = unique(idv_struct_cycle_id)
   
   # 检验
-  idv_merge_compare_df = cycle_directed[which(cycle_directed$cycid %in% idv_struct_cycid), c("cycid","neighcyc","sharedcyc")]
+  idv_merge_compare_df = cycle_directed[which(cycle_directed$cycle_id %in% idv_struct_cycle_id), c("cycle_id","neighcyc","shared_cycle")]
   
   
   #save
   res_sub_path = "2_cycle_struct_sort/result_struct"
   dir.create(file.path(res_path, res_sub_path), recursive = TRUE, showWarnings = FALSE)
-  res_file_path = file.path(res_path, res_sub_path, "idv_struct_cycid.RData")
+  res_file_path = file.path(res_path, res_sub_path, "idv_struct_cycle_id.RData")
   
-  #save(idv_struct_cycid, file="E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/2_cycle_struct_sort/result_struct/idv_struct_cycid.RData")
-  save(idv_struct_cycid, file=res_file_path)
+  #save(idv_struct_cycle_id, file="E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/2_cycle_struct_sort/result_struct/idv_struct_cycle_id.RData")
+  save(idv_struct_cycle_id, file=res_file_path)
   
 }
 
