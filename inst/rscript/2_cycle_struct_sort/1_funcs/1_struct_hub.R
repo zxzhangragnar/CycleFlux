@@ -68,28 +68,17 @@ get_cpd_hubnode <- function(frequency, cycle_directed) {
 # 判断2个环是否相连：看 2个环的compound是否有交集，若有交集 即这2个环仍然相连 即满足shared_cycle
 
 get_cyc_shared_cyc <- function(cycle_directed) {
-  cyc_shared_cyc = cycle_directed[,c("cycle_id", "cpds", "shared_cycle", "shared_cycles")]
+  cyc_shared_cyc = cycle_directed[,c("cycle_id", "compound_chain", "shared_cycle", "shared_cycles")]
   cyc_shared_cyc[, "old_hubdeg"] = cyc_shared_cyc[, "shared_cycle"]
   #wash "cpds"
-  for (i in 1:length(rownames(cyc_shared_cyc))) {
-    temp_cyc_compounds = cyc_shared_cyc[i, "cpds"]
-    temp_cyc_compounds = substring(temp_cyc_compounds, 2, nchar(temp_cyc_compounds)-1)
-    temp_cyc_compounds <- unlist(strsplit(temp_cyc_compounds, split = ", "))
-    for (j in 1:length(temp_cyc_compounds)) {
-      temp_cyc_compounds[j] = substring(temp_cyc_compounds[j], 2, nchar(temp_cyc_compounds[j])-1)
-    }
-    temp_cyc_compounds = paste(temp_cyc_compounds[1:length(temp_cyc_compounds)], collapse = ";")
-    cyc_shared_cyc[i, "cpds"] = temp_cyc_compounds
+  for (i in 1:length(cycle_directed[,1])) {
+    compound_chain = cyc_shared_cyc[i, "compound_chain"]
+    compound_chain = unlist(strsplit(compound_chain, split = ";"))
+    cycle_node = unlist(strsplit(compound_chain[1], split = "->"))
+    cyc_shared_cyc[i, "cpds"] = paste(cycle_node[1:(length(cycle_node)-1)], collapse = ";") 
   }
   
   #wash shared_cycles
-  for (i in 1:length(rownames(cyc_shared_cyc))) {
-    temp_cyc_compounds = cyc_shared_cyc[i, "shared_cycles"]
-    temp_cyc_compounds = substring(temp_cyc_compounds, 2, nchar(temp_cyc_compounds)-1)
-    temp_cyc_compounds <- unlist(strsplit(temp_cyc_compounds, split = ", "))
-    temp_cyc_compounds = paste(temp_cyc_compounds[1:length(temp_cyc_compounds)], collapse = ";")
-    cyc_shared_cyc[i, "shared_cycles"] = temp_cyc_compounds
-  }
   cyc_shared_cyc[, "old_hubdegs"] = cyc_shared_cyc[, "shared_cycles"]
   return(cyc_shared_cyc)
 }
@@ -107,11 +96,9 @@ remove_cpd_in_cyc_shared_cyc <- function(cpd_to_be_rm, cyc_shared_cyc) {
     temp_cyc_compounds <- unlist(strsplit(temp_cyc_compounds, split = ";"))
     after_rm_temp_cyc_compounds = c()
     for (j in 1:length(temp_cyc_compounds)) {
-      if(temp_cyc_compounds[j] == cpd_to_be_rm) {
-        #pass
-      }else {
+      if(temp_cyc_compounds[j] != cpd_to_be_rm) {
         after_rm_temp_cyc_compounds = append(after_rm_temp_cyc_compounds, temp_cyc_compounds[j])
-      } 
+      }
     }
     after_rm_temp_cyc_compounds = paste(after_rm_temp_cyc_compounds[1:length(after_rm_temp_cyc_compounds)], collapse = ";")
     cyc_shared_cyc[i, "aft_rm_cpds"] = after_rm_temp_cyc_compounds    
