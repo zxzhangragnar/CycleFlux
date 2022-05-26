@@ -25,6 +25,7 @@ build_net <- function(hsa_net) {
   
   ## edges
   for (i in 1:length(hsa_net[,1])) {
+    print(i)
     c_in = as.integer(V(g)[name==hsa_net[i, "C_in"]])
     c_out = as.integer(V(g)[name==hsa_net[i, "C_out"]])
     
@@ -115,20 +116,27 @@ find_directed_cycle <- function(hsa_net, g) {
   judge_directed_cycle <- function(x) {
     pos_judge = TRUE
     neg_judge = TRUE
+    
     for (i in 1:(length(x)-1)) {
-      directed_path = all_simple_paths(g, x[i], x[i+1], mode="out")
-      directed_path = directed_path[lapply(directed_path, length) == 2]
-      if (length(directed_path) == 0) {
+      edge_c = c(x[i], x[i+1])
+      ud_edge = hsa_net[which( ((hsa_net$C_in %in% edge_c) & (hsa_net$C_out %in% edge_c)) ),]
+      
+      d_edge = hsa_net[which( ((hsa_net$C_in == x[i]) & (hsa_net$C_out == x[i+1])) ),]
+      if (!(TRUE %in% ud_edge$Irreversible) & length(rownames(d_edge)) == 0) {
         pos_judge = FALSE
       }
     }
+    
     neg_x = rev(x)
     for (i in 1:(length(neg_x)-1)) {
-      directed_path = all_simple_paths(g, neg_x[i], neg_x[i+1], mode="out")
-      directed_path = directed_path[lapply(directed_path, length) == 2]
-      if (length(directed_path) == 0) {
+      edge_c = c(neg_x[i], neg_x[i+1])
+      ud_edge = hsa_net[which( ((hsa_net$C_in %in% edge_c) & (hsa_net$C_out %in% edge_c)) ),]
+      
+      d_edge = hsa_net[which( ((hsa_net$C_in == neg_x[i]) & (hsa_net$C_out == neg_x[i+1])) ),]
+      if (!(TRUE %in% ud_edge$Irreversible) & length(rownames(d_edge)) == 0) {
         neg_judge = FALSE
       }
+      
     }
     
     res = c()
@@ -140,6 +148,7 @@ find_directed_cycle <- function(hsa_net, g) {
     }
     
     return(res)
+    
   }
   
   cycles_cname_directed = lapply(cycles_cname, judge_directed_cycle)
@@ -434,8 +443,8 @@ get_expression_main <- function(input_net_file, output_path) {
 
 
 # test
-# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/hsa_subnet.RData'
+# input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/hsa_net.RData'
+# #input_net_file = 'E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_input/subnet_input/hsa_subnet.RData'
 # output_path = "E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_output"
-# 
 # get_expression_main(input_net_file, output_path)
 
