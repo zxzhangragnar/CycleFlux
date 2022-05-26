@@ -319,9 +319,13 @@ get_cycle_expression <- function(cycle_directed, g) {
         c_in = cycle_node[k]
         c_out = cycle_node[k+1]
         
-        cycle_enzyme = c(cycle_enzyme, E(g)[get.edge.ids(g, c(c_in, c_out))]$enzyme)
-        cycle_pathway = c(cycle_pathway, E(g)[get.edge.ids(g, c(c_in, c_out))]$pathway)
-        cycle_gene_symbol = c(cycle_gene_symbol, E(g)[get.edge.ids(g, c(c_in, c_out))]$gene_symbol)
+        edge_enzyme = unlist(strsplit(E(g)[get.edge.ids(g, c(c_in, c_out))]$enzyme, split = ";"))
+        edge_pathway = unlist(strsplit(E(g)[get.edge.ids(g, c(c_in, c_out))]$pathway, split = ";"))
+        edge_gene_symbol = unlist(strsplit(E(g)[get.edge.ids(g, c(c_in, c_out))]$gene_symbol, split = ";"))
+        
+        cycle_enzyme = c(cycle_enzyme, edge_enzyme)
+        cycle_pathway = c(cycle_pathway, edge_pathway)
+        cycle_gene_symbol = c(cycle_gene_symbol, edge_gene_symbol)
       }
     }
     
