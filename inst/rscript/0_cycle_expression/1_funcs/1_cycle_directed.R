@@ -25,7 +25,6 @@ build_net <- function(hsa_net) {
   
   ## edges
   for (i in 1:length(hsa_net[,1])) {
-    print(i)
     c_in = as.integer(V(g)[name==hsa_net[i, "C_in"]])
     c_out = as.integer(V(g)[name==hsa_net[i, "C_out"]])
     
@@ -163,7 +162,7 @@ find_directed_cycle <- function(hsa_net, g) {
 
 #cycle_directed OK
 get_cycle_directed <- function(hsa_net, g) {
-  
+  print("cycle_directed")
   directed_cycle = find_directed_cycle(hsa_net, g)
   
   directed_cycle_node = list()
@@ -177,6 +176,7 @@ get_cycle_directed <- function(hsa_net, g) {
   cycle_directed = data.frame()
   
   for(i in 1:length(directed_cycle)) {
+    print(paste0("cyc_", i))
     cycle_directed[i, "cycle_id"] = i
     cycle_directed[i, "compound_chain"] = paste(directed_cycle[[i]], collapse = ";")
     
@@ -199,40 +199,37 @@ get_cycle_directed <- function(hsa_net, g) {
   }
   
   
-  
-  for (i in 1:length(cycle_directed[,1])) {
-    cycle_1_id = cycle_directed[i, "cycle_id"]
-    compound_1_chain = cycle_directed[i, "compound_chain"]
+  for(i in 1:length(directed_cycle)) {
+    print(paste0("cyc_", i))
+    cycle_directed[i, "cycle_id"] = i
+    cycle_directed[i, "compound_chain"] = paste(directed_cycle[[i]], collapse = ";")
     
-    compound_1_chain = unlist(strsplit(compound_1_chain, split = ";"))
-    cycle_1_node = unique(unlist(strsplit(compound_1_chain[1], split = "->")))
-    
-    neighcycs = c()
-    for (j in 1:length(cycle_directed[,1])) {
-      cycle_2_id = cycle_directed[j, "cycle_id"]
-      compound_2_chain = cycle_directed[j, "compound_chain"]
-      
-      compound_2_chain = unlist(strsplit(compound_2_chain, split = ";"))
-      cycle_2_node = unique(unlist(strsplit(compound_2_chain[1], split = "->")))
-      
-      distance_cycle = min(distances(g, cycle_1_node, cycle_2_node))
-      
-      if(distance_cycle < 2) {
-        neighcycs = c(neighcycs, j)
+    ##
+    cycle_node = directed_cycle_node[[i]]
+    neighbor_cycles = c()
+    for (j in 1:length(cycle_node)) {
+      neighbor_nodes = neighbors(g, cycle_node[j], mode = "all")$name
+      for (m in 1:length(neighbor_nodes)) {
+        for (k in 1:length(directed_cycle_node)) {
+          if(neighbor_nodes[m] %in% directed_cycle_node[[k]]) {
+            neighbor_cycles = c(neighbor_cycles, k)
+          }
+        }        
       }
-      
     }
-    
-    neighcycs = neighcycs[neighcycs != i]
-    cycle_directed[i, "neighcyc"] = length(neighcycs)
-    cycle_directed[i, "neighcycs"] = paste(neighcycs, collapse = ";")
+    neighbor_cycles = neighbor_cycles[neighbor_cycles != i]
+    neighbor_cycles = unique(neighbor_cycles)
+    cycle_directed[i, "neighcyc"] = length(neighbor_cycles)
+    cycle_directed[i, "neighcycs"] = paste(neighbor_cycles, collapse = ";")
   }
+
   return(cycle_directed)
 }
 
 ##
 #subnet_edge_expression OK
 get_subnet_edge_expression <- function(g) {
+  print("subnet_edge")
   subnet_edge_expression = data.frame()
   edges = E(g)
   for(i in 1:length(edges)) {
@@ -252,6 +249,7 @@ get_subnet_edge_expression <- function(g) {
 ##
 #cycle_edge_expression OK
 get_cycle_edge_expression <- function(cycle_directed, g) {
+  print("cycle_edge")
   cycle_edge_expression = data.frame()
   
   for(i in 1:length(cycle_directed[,1])) {
@@ -305,6 +303,7 @@ get_express_string <- function(cycle_var) {
 }
 
 get_cycle_expression <- function(cycle_directed, g) {
+  print("cycle")
   cycle_expression = data.frame()
   for(i in 1:length(cycle_directed[,1])) {
     cycle_id = cycle_directed[i, "cycle_id"]
@@ -346,8 +345,10 @@ get_cycle_expression <- function(cycle_directed, g) {
 ##
 #cycle_edgesucs_expression_in OK
 get_cycle_edgesucs_expression_in <- function(cycle_directed, g) {
+  print("cycle_indegree")
   cycle_edgesucs_expression_in = data.frame()
   for(i in 1:length(cycle_directed[,1])) {
+    print(paste0("cyc_", i))
     cycle_id = cycle_directed[i, "cycle_id"]
     compound_chain = cycle_directed[i, "compound_chain"]
     compound_chain = unlist(strsplit(compound_chain, split = ";"))
@@ -382,8 +383,10 @@ get_cycle_edgesucs_expression_in <- function(cycle_directed, g) {
 ##
 #cycle_edgesucs_expression_out OK
 get_cycle_edgesucs_expression_out <- function(cycle_directed, g) {
+  print("cycle_outdegree")
   cycle_edgesucs_expression_out = data.frame()
   for(i in 1:length(cycle_directed[,1])) {
+    print(paste0("cyc_", i))
     cycle_id = cycle_directed[i, "cycle_id"]
     compound_chain = cycle_directed[i, "compound_chain"]
     compound_chain = unlist(strsplit(compound_chain, split = ";"))
