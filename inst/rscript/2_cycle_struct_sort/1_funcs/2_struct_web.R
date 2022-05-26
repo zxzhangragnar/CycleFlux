@@ -27,9 +27,7 @@
 # get coor_by_distance_matrix
 get_distance_matrix <- function(cycle_num, cyc_all_distance_df) {
   distance_scale <- cyc_all_distance_df$distance
-  #距离矩阵
-  #distance_matrix =matrix(distance_scale, nr=248, byrow=TRUE, dimnames=list(c(0:651), c(0:651)))
-  distance_matrix =matrix(distance_scale, nr=cycle_num, byrow=TRUE, dimnames=list(c(0:(cycle_num-1)), c(0:(cycle_num-1))))
+  distance_matrix = matrix(distance_scale, nr=cycle_num, byrow=TRUE, dimnames=list(c(1:cycle_num), c(1:cycle_num)))
   
   return(distance_matrix)
 }
@@ -43,7 +41,7 @@ get_distance_matrix <- function(cycle_num, cyc_all_distance_df) {
 build_coor_by_distance <- function(distance_matrix) {
   tmp = distance_matrix
   d <- as.dist(tmp)
-  mds.coor <- cmdscale(d)
+  mds.coor <- cmdscale(d, k = length(d-1))
   # plot(mds.coor[,1], mds.coor[,2], type="n", xlab="", ylab="")
   # text(jitter(mds.coor[,1]), jitter(mds.coor[,2]),
   #      rownames(mds.coor), cex=0.8)
