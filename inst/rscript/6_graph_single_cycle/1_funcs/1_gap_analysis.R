@@ -64,7 +64,7 @@ get_ug_chain_list<-function(tumors_array, cycle_edge_flux_list, all_chain_list_c
     #names(temp_chain_list) = c(0:247)
     names(temp_chain_list) = c(1:cycle_len)
     ug_c = as.integer(ug_c)
-    ug_chain_list = temp_chain_list[ug_c+1]
+    ug_chain_list = temp_chain_list[ug_c]
     
     ug_chain_list_dict[[tumor_name]] = ug_chain_list
   }

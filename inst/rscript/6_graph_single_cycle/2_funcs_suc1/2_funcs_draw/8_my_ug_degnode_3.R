@@ -53,10 +53,9 @@ plot_up_cycle<-function(tumor_name, plot_name, select_in_upinfo, select_out_upin
       
       ## successors部分
       library(igraph)
-      all_node_num = length(cyc_node_vector) + length(degree_node_arr)
       all_node_vector = append(cyc_node_vector, degree_node_arr)
-      
-      g <- make_empty_graph(n = all_node_num)
+      all_node_vector = unique(all_node_vector)
+      g <- make_empty_graph(n = length(all_node_vector))
       
       #分2段给graph中的vertex添加名字
       #1.给cyc上的vertex添加名字 2.给cyc的degree的vertex添加名字
@@ -197,10 +196,9 @@ plot_ug_cycle<-function(tumor_name, plot_name, select_in_upinfo, select_out_upin
       
       ## successors部分
       library(igraph)
-      all_node_num = length(cyc_node_vector) + length(degree_node_arr)
       all_node_vector = append(cyc_node_vector, degree_node_arr)
-      
-      g <- make_empty_graph(n = all_node_num)
+      all_node_vector = unique(all_node_vector)
+      g <- make_empty_graph(n = length(all_node_vector))
       
       #分2段给graph中的vertex添加名字
       #1.给cyc上的vertex添加名字 2.给cyc的degree的vertex添加名字

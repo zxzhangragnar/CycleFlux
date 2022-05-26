@@ -97,10 +97,10 @@ get_gene_and_tofind_list_main <- function(output_path, res_path, package_path) {
 
 
 # test
-# output_path = "E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_output"
-# res_path = "E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/"
-# package_path = "E:/R/R-4.1.2/library/CycleFlux/rscript"
-# get_gene_and_tofind_list_main(output_path, res_path, package_path)
+output_path = "E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/main_output"
+res_path = "E:/scFEA_universal/my_R/aimA/rdata_cycle_detect/"
+package_path = "E:/R/R-4.1.2/library/CycleFlux/rscript"
+get_gene_and_tofind_list_main(output_path, res_path, package_path)
 
 
 

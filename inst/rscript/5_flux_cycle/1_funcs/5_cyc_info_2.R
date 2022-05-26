@@ -27,7 +27,7 @@ get_cyc_rid_maxmin_bycount <- function(tumor_name, cycle_enzyme_stat) {
     rid_count_list = list()
     for (r in 1:length(rid_types)) {
       rid_name = rid_types[r]
-      if(is.na(part_ec_count[which(part_ec_count$rid == rid_name), "tumor_gene_count"])){
+      if(NA %in% part_ec_count[which(part_ec_count$rid == rid_name), "tumor_gene_count"]){
         rid_count_list[[rid_name]]["val"] = NA
         rid_count_list[[rid_name]]["ec"] = NA
         rid_count_list[[rid_name]]["gene"] = NA
@@ -99,7 +99,7 @@ get_cyc_rid_maxmin_bycount_N <- function(tumor_name, cycle_enzyme_stat, normal_g
     rid_count_list = list()
     for (r in 1:length(rid_types)) {
       rid_name = rid_types[r]
-      if(is.na(part_ec_count[which(part_ec_count$rid == rid_name), "normal_gene_count"])){
+      if(NA %in% part_ec_count[which(part_ec_count$rid == rid_name), "normal_gene_count"]){
         rid_count_list[[rid_name]]["val"] = NA
         rid_count_list[[rid_name]]["ec"] = NA
         rid_count_list[[rid_name]]["gene"] = NA
@@ -174,7 +174,7 @@ get_cyc_rid_maxmin_byFC <- function(tumor_name, cycle_enzyme_stat) {
     rid_count_list = list()
     for (r in 1:length(rid_types)) {
       rid_name = rid_types[r]
-      if(is.na(part_ec_count[which(part_ec_count$rid == rid_name), "foldchange"])){
+      if(NA %in% part_ec_count[which(part_ec_count$rid == rid_name), "foldchange"]){
         rid_count_list[[rid_name]]["val"] = NA
         rid_count_list[[rid_name]]["ec"] = NA
         rid_count_list[[rid_name]]["gene"] = NA
@@ -249,7 +249,7 @@ get_cyc_rid_maxmin_by_countFC <- function(tumor_name, cycle_enzyme_stat) {
     rid_count_list = list()
     for (r in 1:length(rid_types)) {
       rid_name = rid_types[r]
-      if(is.na(part_ec_count[which(part_ec_count$rid == rid_name), "foldchange"])){
+      if(NA %in% part_ec_count[which(part_ec_count$rid == rid_name), "foldchange"]){
         rid_count_list[[rid_name]]["val"] = NA
         rid_count_list[[rid_name]]["ec"] = NA
         rid_count_list[[rid_name]]["gene"] = NA
