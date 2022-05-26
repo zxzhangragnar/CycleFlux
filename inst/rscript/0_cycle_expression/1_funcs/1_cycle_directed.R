@@ -357,6 +357,7 @@ get_cycle_edgesucs_expression_in <- function(cycle_directed, g) {
     for (k in 1:(length(cycle_node)-1)) {
       node = cycle_node[k]
       ind_nodes = neighbors(g, node, mode = "in")$name
+      ind_nodes = setdiff(ind_nodes, node)
       for (m in 1:length(ind_nodes)) {
         temp_row = data.frame()
         
@@ -395,6 +396,7 @@ get_cycle_edgesucs_expression_out <- function(cycle_directed, g) {
     for (k in 1:(length(cycle_node)-1)) {
       node = cycle_node[k]
       od_nodes = neighbors(g, node, mode = "out")$name
+      od_nodes = setdiff(od_nodes, node)
       for (m in 1:length(od_nodes)) {
         temp_row = data.frame()
         
