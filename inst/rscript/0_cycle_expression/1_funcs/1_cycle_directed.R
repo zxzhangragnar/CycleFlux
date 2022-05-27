@@ -25,8 +25,8 @@ build_net <- function(hsa_net) {
   
   ## edges
   for (i in 1:length(hsa_net[,1])) {
-    c_in = as.integer(V(g)[name==hsa_net[i, "C_in"]])
-    c_out = as.integer(V(g)[name==hsa_net[i, "C_out"]])
+    c_in = V(g)[name==hsa_net[i, "C_in"]]
+    c_out = V(g)[name==hsa_net[i, "C_out"]]
     
     rid = hsa_net[i, "Rid"]
     enzyme = hsa_net[i, "EC"]
