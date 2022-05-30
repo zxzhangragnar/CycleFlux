@@ -1414,15 +1414,15 @@ get_cyc_shift_formula <- function(tumor_name, cycle_upgap_class_list, cycle_edge
 cyc_shift_main <- function(cycle_upgap_class_list, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list, input_tumor_name) {
 
   # init
-  cycle_flux_path_df_list = list()
+  cycle_shift_path_df_list = list()
   tumors_array = c(input_tumor_name)
   for (i in 1:length(tumors_array)) {
     tumor_name = tumors_array[i]
     new_old_path_df = get_cyc_shift_formula(tumor_name, cycle_upgap_class_list, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list)
-    cycle_flux_path_df_list[[tumor_name]] = new_old_path_df
+    cycle_shift_path_df_list[[tumor_name]] = new_old_path_df
   }
 
-  return(cycle_flux_path_df_list)
+  return(cycle_shift_path_df_list)
 }
 
 
@@ -1445,14 +1445,14 @@ cyc_shift_main <- function(cycle_upgap_class_list, cycle_edge_flux_list_in, cycl
 #   return(gap_cycleid_freq_list)
 # }
 
-get_shift_node_freq_list <- function(input_tumor_name, cycle_flux_path_df_list) {
+get_shift_node_freq_list <- function(input_tumor_name, cycle_shift_path_df_list) {
   shift_node_freq_list = list()
   for (i in 1:length(input_tumor_name)) {
     tumor_name = input_tumor_name[i]
-    shift_node_freq = as.data.frame(table(cycle_flux_path_df_list[[tumor_name]]$shift_node))
+    shift_node_freq = as.data.frame(table(cycle_shift_path_df_list[[tumor_name]]$shift_node))
     shift_node_freq = shift_node_freq[order(shift_node_freq$Freq, decreasing = T),]
 
-    shift_node_df = cycle_flux_path_df_list[[tumor_name]]
+    shift_node_df = cycle_shift_path_df_list[[tumor_name]]
     if (length(rownames(shift_node_df)) != 0) {
       cycle_ids =  aggregate(shift_node_df$cycle_id, list(shift_node_df$shift_node), paste, collapse = ";")
       rownames(cycle_ids) = cycle_ids[,1]
@@ -1469,14 +1469,14 @@ get_shift_node_freq_list <- function(input_tumor_name, cycle_flux_path_df_list) 
   return(shift_node_freq_list)
 }
 
-get_shift_edge_node_freq_list <- function(input_tumor_name, cycle_flux_path_df_list) {
+get_shift_edge_node_freq_list <- function(input_tumor_name, cycle_shift_path_df_list) {
   shift_edge_node_freq_list = list()
   for (i in 1:length(input_tumor_name)) {
     tumor_name = input_tumor_name[i]
-    temp_cycle_flux_path_df = cycle_flux_path_df_list[[tumor_name]]
+    temp_cycle_shift_path_df = cycle_shift_path_df_list[[tumor_name]]
     shift_edgenode_freq = data.frame()
-    if (length(rownames(temp_cycle_flux_path_df)) != 0) {
-      shift_edgenode_freq = as.data.frame(table(temp_cycle_flux_path_df[,c("endpoint_node","shift_node")]))
+    if (length(rownames(temp_cycle_shift_path_df)) != 0) {
+      shift_edgenode_freq = as.data.frame(table(temp_cycle_shift_path_df[,c("endpoint_node","shift_node")]))
       shift_edgenode_freq = shift_edgenode_freq[order(shift_edgenode_freq$Freq, decreasing = T),]
 
       colnames(shift_edgenode_freq) = c("edge_node", "node", "shift_freq")
@@ -1593,16 +1593,19 @@ getCycleFlux <- function(input_net_file, input_stat_gene_file, input_deg_gene_fi
   cycle_upgap_class_list = cyc_classification_main(cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list, input_tumor_name)
 
   #source("11_cyc_shift.R")
-  cycle_flux_path_df_list = cyc_shift_main(cycle_upgap_class_list, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list, input_tumor_name)
+  cycle_shift_path_df_list = cyc_shift_main(cycle_upgap_class_list, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list, input_tumor_name)
 
   #source("12_freq_stat.R")
   # gap_cycleid_freq_list = get_gap_cycleid_freq_list(input_tumor_name, cycle_edge_flux_list)
-  # shift_node_freq_list = get_shift_node_freq_list(input_tumor_name, cycle_flux_path_df_list)
-  # shift_edge_node_freq_list = get_shift_edge_node_freq_list(input_tumor_name, cycle_flux_path_df_list)
+  shift_node_freq_list = get_shift_node_freq_list(input_tumor_name, cycle_shift_path_df_list)
+  shift_edge_node_freq_list = get_shift_edge_node_freq_list(input_tumor_name, cycle_shift_path_df_list)
 
   result_list = list()
   result_list[["cycle_edge"]] = cycle_edge_flux_list
-  result_list[["shift_edge"]] = cycle_flux_path_df_list
+  result_list[["cycle_chain"]] = all_chain_list_cid
+  result_list[["shift_edge"]] = cycle_shift_path_df_list
+  result_list[["shift_edge_freq"]] = shift_node_freq_list
+  result_list[["shift_edge_nfreq"]] = shift_edge_node_freq_list
 
   return(result_list)
 }
