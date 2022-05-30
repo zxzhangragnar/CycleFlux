@@ -10,7 +10,8 @@ License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2
-Depends: 
+Depends:
+  ggm
 Imports:
 	readr,
 	igraph,
@@ -19,7 +20,4 @@ Imports:
 	tidygraph,
 	ggraph,
 	dplyr,
-	gtools,
-	dbscan,
-	HDoutliers,
-	cluster
+	gtools
