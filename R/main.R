@@ -1600,7 +1600,11 @@ getCycleFlux <- function(input_net_file, input_stat_gene_file, input_deg_gene_fi
   # shift_node_freq_list = get_shift_node_freq_list(input_tumor_name, cycle_flux_path_df_list)
   # shift_edge_node_freq_list = get_shift_edge_node_freq_list(input_tumor_name, cycle_flux_path_df_list)
 
-  return(cycle_flux_path_df_list)
+  result_list = list()
+  result_list[["cycle_edge"]] = cycle_edge_flux_list
+  result_list[["shift_edge"]] = cycle_flux_path_df_list
+
+  return(result_list)
 }
 
 
