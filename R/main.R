@@ -529,7 +529,9 @@ get_state_edges_model_1 <- function(tumor_name, edge_state_list, gene_gapup_info
   temp_edge_flux = edge_state_list[[tumor_name]]
   temp_edge_flux[, "state"] = "normal"
   for (i in 1:length(temp_edge_flux[,1])) {
-    print(paste0("cyc_", i))
+    if((i %% 1000) == 0) {
+      print(paste0("edge_", i))
+    }
     gene_arr = temp_edge_flux[i, "gene_symbol"]
     gene_arr = unlist(strsplit(gene_arr, split = ";"))
     for (j in 1:length(gene_arr)) {
@@ -550,7 +552,9 @@ get_state_edges_model_2 <- function(tumor_name, edge_state_list, gene_gapup_info
   temp_edge_flux = edge_state_list[[tumor_name]]
   temp_edge_flux[, "state"] = "normal"
   for (i in 1:length(temp_edge_flux[,1])) {
-    print(paste0("cyc_", i))
+    if((i %% 1000) == 0) {
+      print(paste0("edge_", i))
+    }
     gene_arr = temp_edge_flux[i, "gene_symbol"]
     gene_arr <- unlist(strsplit(gene_arr, split = ";"))
 
@@ -755,7 +759,6 @@ get_ug_chain_list<-function(tumors_array, cycle_edge_flux_list, all_chain_list_c
   for (j in 1:length(tumors_array)) {
     tumor_name = tumors_array[j]
     temp_tumor_df = cycle_edge_flux_list[[tumor_name]]
-    #有gap现象的环的cycle_id
     gap_c = unique(temp_tumor_df[which(temp_tumor_df$state == "gap"),'cycle_id'])
     up_c = unique(temp_tumor_df[which(temp_tumor_df$state == "up"),'cycle_id'])
     ug_c = intersect(gap_c, up_c)
