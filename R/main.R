@@ -822,214 +822,186 @@ cycle_edge_flux_list_out_main <- function(cycle_edgesucs_expression_out, gene_mi
 # source("8_my_ug_degnode_1.R")
 
 #e2<--up--c2<--up--c1
-#outdegree
-get_select_out_upinfo_eachedge <- function(tumor_name, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list) {
-  #tumor_name = "COAD"
-
-  out_gapinfo = cycle_edge_flux_list_out[[tumor_name]]
-  cyc_pct = cycle_edge_flux_list[[tumor_name]]
-  ug_c = names(gapup_cycle_chain_list[[tumor_name]])
-  ug_cyc_pct = cyc_pct[which(cyc_pct$cycle_id %in% ug_c),]
-
-  #  c2<--up--c1
-  #ug_cyc_pct_upnode = ug_cyc_pct[which(ug_cyc_pct$state == "up"),]
-  ug_cyc_pct_upnode = ug_cyc_pct
-
-  #  e1<----c2<--up--c1
-  select_out_upinfo = data.frame()
-  for (i in 1:length(ug_cyc_pct_upnode[,1])) {
-    tmp_cycle_id = ug_cyc_pct_upnode[i, "cycle_id"]
-    tmp_cout = ug_cyc_pct_upnode[i, "c_out"]
-
-    tmp_row1 = out_gapinfo[which((out_gapinfo$cycle_id == tmp_cycle_id) & (out_gapinfo$node == tmp_cout)),]
-    select_out_upinfo = rbind(select_out_upinfo, tmp_row1)
-  }
-
-  #  e1<--up--c2<--up--c1
-  select_out_upinfo = select_out_upinfo[which(select_out_upinfo$state == "up"),]
-  return(select_out_upinfo)
-}
-
-
-get_select_in_upinfo_eachedge <- function(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux_list, gapup_cycle_chain_list) {
-  in_gapinfo = cycle_edge_flux_list_in[[tumor_name]]
-  cyc_pct = cycle_edge_flux_list[[tumor_name]]
-  ug_c = names(gapup_cycle_chain_list[[tumor_name]])
-  ug_cyc_pct = cyc_pct[which(cyc_pct$cycle_id %in% ug_c),]
-
-  #  c2<--up--c1
-  #ug_cyc_pct_upnode = ug_cyc_pct[which(ug_cyc_pct$state == "up"),]
-  ug_cyc_pct_upnode = ug_cyc_pct
-
-  up_cin_node = ug_cyc_pct_upnode$c_in
-
-  #  e1<----c2<--up--c1
-  select_in_upinfo = data.frame()
-
-  for (i in 1:length(ug_cyc_pct_upnode[,1])) {
-    tmp_cycle_id = ug_cyc_pct_upnode[i, "cycle_id"]
-    tmp_cin = ug_cyc_pct_upnode[i, "c_in"]
-
-    tmp_row1 = in_gapinfo[which((in_gapinfo$cycle_id == tmp_cycle_id) & (in_gapinfo$node == tmp_cin)),]
-    select_in_upinfo = rbind(select_in_upinfo, tmp_row1)
-  }
-
-  #  e1<--up--c2<--up--c1
-  select_in_upinfo = select_in_upinfo[which(select_in_upinfo$state == "up"),]
-
-  return(select_in_upinfo)
-}
-
-my_ug_degnode_1_main <- function(cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list, input_tumor_name) {
+get_ug_outdegree <- function(cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list, input_tumor_name) {
 
   # init
   tumors_array = c(input_tumor_name)
-  select_out_upinfo_eachedge = list()
+  select_ug_outdegree_list = list()
   for (i in 1:length(tumors_array)) {
     tumor_name = tumors_array[i]
 
     ##up
-    temp_select_out_upinfo_eachedge = get_select_out_upinfo_eachedge(tumor_name, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list)
+    out_degnode_df = cycle_edge_flux_list_out[[tumor_name]]
+    ug_c = names(gapup_cycle_chain_list[[tumor_name]])
+    out_degnode_df = out_degnode_df[which((out_degnode_df$state == "up") & (out_degnode_df$cycle_id %in% ug_c)),]
 
-    select_out_upinfo_eachedge[[tumor_name]] = temp_select_out_upinfo_eachedge
+    select_ug_outdegree_list[[tumor_name]] = out_degnode_df
   }
 
-  return(select_out_upinfo_eachedge)
+  return(select_ug_outdegree_list)
 }
 
 
 
-my_ug_degnode_2_main <- function(cycle_edge_flux_list_in, cycle_edge_flux_list, gapup_cycle_chain_list, input_tumor_name) {
+get_ug_indegree <- function(cycle_edge_flux_list_in, cycle_edge_flux_list, gapup_cycle_chain_list, input_tumor_name) {
 
   # init
   tumors_array = c(input_tumor_name)
-  select_in_upinfo_eachedge = list()
+  select_ug_indegree_list = list()
 
   for (i in 1:length(tumors_array)) {
     tumor_name = tumors_array[i]
 
     ## up
-    temp_select_in_upinfo_eachedge = get_select_in_upinfo_eachedge(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux_list, gapup_cycle_chain_list)
+    in_degnode_df = cycle_edge_flux_list_in[[tumor_name]]
+    ug_c = names(gapup_cycle_chain_list[[tumor_name]])
+    in_degnode_df = in_degnode_df[which((in_degnode_df$state == "up") & (in_degnode_df$cycle_id %in% ug_c)),]
 
-    select_in_upinfo_eachedge[[tumor_name]] = temp_select_in_upinfo_eachedge
+    select_ug_indegree_list[[tumor_name]] = in_degnode_df
   }
 
-  return(select_in_upinfo_eachedge)
+  return(select_ug_indegree_list)
 }
 
+get_ug_cycle <- function(cycle_edge_flux_list, gapup_cycle_chain_list, input_tumor_name) {
+
+  # init
+  tumors_array = c(input_tumor_name)
+  select_ug_cycle_list = list()
+  for (i in 1:length(tumors_array)) {
+    tumor_name = tumors_array[i]
+
+    ##up
+    ug_cycle_df = cycle_edge_flux_list[[tumor_name]]
+    ug_c = names(gapup_cycle_chain_list[[tumor_name]])
+    ug_cycle_df = ug_cycle_df[which(ug_cycle_df$cycle_id %in% ug_c),]
+
+    select_ug_cycle_list[[tumor_name]] = ug_cycle_df
+  }
+
+  return(select_ug_cycle_list)
+}
 
 #######################################################################################
 # source("9_my_ug_degnode_3.R")
 
 #e1<--up--(c2<--up--c1)<--up--e1
-# st2_cycle_id = select_st2_1_gapinfo_e1e2$cycle_id
-# st3_cycle_id = select_st3_1_gapinfo_e1e2$cycle_id
-# intersect_cycle_id = intersect(st2_cycle_id, st3_cycle_id)
 
-plot_up_cycle<-function(tumor_name, plot_name, select_in_upinfo, select_out_upinfo, gapup_cycle_chain_list, never_considered_comp_names) {
-  tmp_chain_str = gapup_cycle_chain_list[[tumor_name]]
-  if (length(tmp_chain_str) > 0) {
-    cyc_id_arr = names(tmp_chain_str)
+plot_up_cycle<-function(tumor_name, plot_name, cycle_shift_path_df_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names) {
+  library(igraph)
+  library(qgraph)
+  select_shift_info = cycle_shift_path_df_list[[tumor_name]]
+  select_in_upinfo = select_ug_indegree_list[[tumor_name]]
+  select_out_upinfo = select_ug_outdegree_list[[tumor_name]]
+  select_ug_cycle = select_ug_cycle_list[[tumor_name]]
 
-    for (k in 1:length(cyc_id_arr)) {
-      tmp_cyc_id = cyc_id_arr[k]
-      tmp_cycle_chain_str = tmp_chain_str[[tmp_cyc_id]] #[1]C->U->c->G->c [2]c->G->c->U->c
-      tmp_cycle_chain_arr = unlist(strsplit(tmp_cycle_chain_str[1],split = " -> ")) #'c' 'U' 'c' 'G' 'c'
+  shift_cycle_ids = unique(select_shift_info$cycle_id)
+  for (i in 1:length(shift_cycle_ids)) {
+    cycid = shift_cycle_ids[i]
+    ind_df = select_in_upinfo[which(select_in_upinfo$cycle_id == cycid),]
+    od_df = select_out_upinfo[which(select_out_upinfo$cycle_id == cycid),]
+    cycle_df = select_ug_cycle[which(select_ug_cycle$cycle_id == cycid),]
+    shift_df = select_shift_info[which(select_shift_info$cycle_id == cycid),]
 
-      cyc_node_vector = c()
-      for (i in 1:length(tmp_cycle_chain_arr)) {
-        if((i%%2 == 1) & (i != length(tmp_cycle_chain_arr))) {
-          cyc_node_vector = append(cyc_node_vector, tmp_cycle_chain_arr[i])
-        }
+    ## nodes
+    ind_node = unique(ind_df$ind)
+    od_node = unique(od_df$od)
+    cycle_node = union(cycle_df$c_in, cycle_df$c_out)
+    all_node = unique(c(ind_node, od_node, cycle_node))
+
+    g <- make_empty_graph(n = length(all_node))
+    g <- set.vertex.attribute(g, "name", value=all_node)
+    for (j in 1:length(all_node)) {
+      if(all_node[j] %in% never_considered_comp_names) {
+        V(g)[name==all_node[j]]$color <- "grey"
       }
-
-
-      ##
-      up_out_node = select_out_upinfo[which(select_out_upinfo$cycle_id == tmp_cyc_id), "node"]
-      up_out_od = select_out_upinfo[which(select_out_upinfo$cycle_id == tmp_cyc_id), "od"]
-      up_in_node = select_in_upinfo[which(select_in_upinfo$cycle_id == tmp_cyc_id), "node"]
-      up_in_ind = select_in_upinfo[which(select_in_upinfo$cycle_id == tmp_cyc_id), "ind"]
-
-      #degree_node_arr = c(rbind(up_out_od, up_in_ind))
-      degree_node_arr = c(up_out_od, up_in_ind)
-      degree_node_arr = unique(degree_node_arr)
-
-      library(igraph)
-      all_node_vector = append(cyc_node_vector, degree_node_arr)
-      all_node_vector = unique(all_node_vector)
-      g <- make_empty_graph(n = length(all_node_vector))
-
-      g <- set.vertex.attribute(g, "name", value=all_node_vector)
-
-      for (i in 1:length(all_node_vector)) {
-        if(all_node_vector[i] %in% never_considered_comp_names) {
-          V(g)[name==all_node_vector[i]]$color <- "grey"
-        }
-      }
-
-      for (i in 1:length(tmp_cycle_chain_str)) {
-        chain_cycle_temp = tmp_cycle_chain_str[i]
-        chain_cycle_temp_arr = unlist(strsplit(chain_cycle_temp,split = " -> "))
-
-        for (j in 1:length(chain_cycle_temp_arr)) {
-          if(j%%2 == 0) {
-            edge_info = chain_cycle_temp_arr[j]
-            tmp_cyc_hnode = V(g)[name==chain_cycle_temp_arr[j-1]]
-            tmp_cyc_tnode = V(g)[name==chain_cycle_temp_arr[j+1]]
-            if(edge_info == "G") {
-              g <- add_edges(g, c(tmp_cyc_hnode,tmp_cyc_tnode), color = "red")
-            }else if(edge_info == "U") {
-              g <- add_edges(g, c(tmp_cyc_hnode,tmp_cyc_tnode), color = "green")
-            }else {
-              g <- add_edges(g, c(tmp_cyc_hnode,tmp_cyc_tnode), color = "black")
-            }
-          }
-        }
-      }
-
-      # up_out_node
-      # up_out_od
-      # up_in_node
-      # up_in_ind
-
-      if (!identical(up_out_node == 0, logical(0))) {
-        for (i in 1:length(up_out_node)) {
-          tmp_cyc_node = V(g)[name==up_out_node[i]]
-          tmp_cyc_od = V(g)[name==up_out_od[i]]
-
-          if (!are.connected(g, tmp_cyc_node, tmp_cyc_od)) {
-            g <- add_edges(g, c(tmp_cyc_node, tmp_cyc_od), color = "cyan")
-          }
-
-        }
-      }
-
-
-      if (!identical(up_in_node == 0, logical(0))) {
-        for (i in 1:length(up_in_node)) {
-          tmp_cyc_node = V(g)[name==up_in_node[i]]
-          tmp_cyc_ind = V(g)[name==up_in_ind[i]]
-
-          if (!are.connected(g, tmp_cyc_ind, tmp_cyc_node)) {
-            g <- add_edges(g, c(tmp_cyc_ind, tmp_cyc_node), color = "cyan")
-          }
-
-        }
-      }
-
-      tmp_graph_name = paste0(tumor_name, "_C", cyc_id_arr[k], ".png")
-      tmp_plot_name = file.path(plot_name, tmp_graph_name)
-
-      png(tmp_plot_name, 500, 500)
-      plot(g)
-      dev.off()
     }
+
+    ##edges
+    for (j in 1:length(rownames(cycle_df))) {
+      c_in = cycle_df[j, "c_in"]
+      c_out = cycle_df[j, "c_out"]
+      state = cycle_df[j, "state"]
+      c_in_node = V(g)[name==c_in]
+      c_out_node = V(g)[name==c_out]
+      if(state == "gap") {
+        g <- add_edges(g, c(c_in_node,c_out_node), color = "red", size = 3)
+      }else if(state == "up") {
+        g <- add_edges(g, c(c_in_node,c_out_node), color = "green", size = 3)
+      }else {
+        g <- add_edges(g, c(c_in_node,c_out_node), color = "black", size = 3)
+      }
+    }
+
+    for (j in 1:length(rownames(od_df))) {
+      node = od_df[j, "node"]
+      od = od_df[j, "od"]
+      v_node = V(g)[name==node]
+      v_od = V(g)[name==od]
+      if (!are.connected(g, v_node, v_od)) {
+        g <- add_edges(g, c(v_node, v_od), color = "cyan", size = 1)
+      }
+    }
+
+    for (j in 1:length(rownames(ind_df))) {
+      node = ind_df[j, "node"]
+      ind = ind_df[j, "ind"]
+      v_node = V(g)[name==node]
+      v_ind = V(g)[name==ind]
+      if (!are.connected(g, v_ind, v_node)) {
+        g <- add_edges(g, c(v_ind, v_node), color = "cyan", size = 1)
+      }
+    }
+
+    ##shift
+    if (length(rownames(shift_df)) > 0) {
+      for (j in 1:length(rownames(shift_df))) {
+        new_path = shift_df[j, "new_path"]
+        new_path_nodes = unlist(strsplit(new_path, split = " -> "))
+        if(length(new_path_nodes) == 5) {
+          start_node = new_path_nodes[1]
+          shift_node = new_path_nodes[3]
+          end_node = new_path_nodes[5]
+
+          V(g)[name==shift_node]$color <- "orchid"
+          if (are.connected(g, start_node, shift_node)) {
+            E(g)[get.edge.ids(g, c(start_node, shift_node))]$color = "orchid"
+            E(g)[get.edge.ids(g, c(start_node, shift_node))]$size = 6
+          }
+          if (are.connected(g, shift_node, end_node)) {
+            E(g)[get.edge.ids(g, c(shift_node, end_node))]$color = "orchid"
+            E(g)[get.edge.ids(g, c(shift_node, end_node))]$size = 6
+          }
+        }
+
+
+      }
+
+    }
+
+
+
+    #plot
+    tmp_graph_name = paste0(tumor_name, "_C", cycid, ".png")
+    tmp_plot_name = file.path(plot_name, tmp_graph_name)
+
+    png_size = ceiling(vcount(g)/8)
+    png_size[png_size < 15] = 15
+
+    png(tmp_plot_name, height=png_size, width=png_size, units="in", res=100)
+    e <- get.edgelist(g,names=FALSE)
+    l <- qgraph.layout.fruchtermanreingold(e,vcount=vcount(g),
+                                           area=(vcount(g)^2),repulse.rad=(vcount(g)^3))
+    plot(g, layout=l, vertex.size=5, edge.arrow.size=0.8, edge.width=E(g)$size)
+
+    dev.off()
   }
+
 }
 
-my_ug_degnode_3_main <- function(select_in_upinfo_eachedge, select_out_upinfo_eachedge, gapup_cycle_chain_list, never_considered_comp_names, input_tumor_name) {
+plot_single_cycle <- function(cycle_shift_path_df_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names, input_tumor_name) {
 
-  ##select_in_upinfo_eachedge select_out_upinfo_eachedge
+  ##select_ug_indegree_list select_ug_outdegree_list
   tumors_array = c(input_tumor_name)
 
   ##2.each_edge
@@ -1039,259 +1011,122 @@ my_ug_degnode_3_main <- function(select_in_upinfo_eachedge, select_out_upinfo_ea
 
   for (i in 1:length(tumors_array)) {
     tumor_name = tumors_array[i]
-
-    plot_up_cycle(tumor_name, res_file_path, select_in_upinfo_eachedge[[tumor_name]], select_out_upinfo_eachedge[[tumor_name]], gapup_cycle_chain_list, never_considered_comp_names)
-
+    plot_up_cycle(tumor_name, res_file_path, cycle_shift_path_df_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names)
   }
 
 }
+
+
 
 
 #######################################################################################
-# source("10_cyc_classification.R")
-#
-# each edge
-#
-# 1.Up only head in and tail out
-# 2.There is a degree of up in the middle of Up
-# 3.Another way
-#
-# 1.Up only head in and tail out
-# Only 2 nodes in the ring have the degree of up
-# And when these two nodes are used as c_in or c_out in this ring, state==up
-#
-# 2.There is a degree of up in the middle of Up
-# There are >3 nodes in the ring with up degree
-# And when these nodes are used as c_in or c_out in this ring, the state at both ends are not all gaps
-#
-# 3.Another way
-# There is a degree node (ind or od)
-# This node is the degree of 2 nodes in this ring at the same time
-# And when these two nodes are used as c_in or c_out in this ring, state==up
-# And the edge between these two nodes, there is a gap edge
-#
-# 4. Burst from 1 node
-#
-# 5.Other classes (with up out-degree in the middle of Gap)
-#
+# plot net cycle new
+plot_net_up_cycle<-function(tumor_name, plot_name, cycle_shift_path_df_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names) {
+  library(igraph)
+  library(qgraph)
+  select_shift_info = cycle_shift_path_df_list[[tumor_name]]
+  shift_cycle_ids = unique(select_shift_info$cycle_id)
 
+  select_ug_cycle = select_ug_cycle_list[[tumor_name]]
+  select_ug_cycle = select_ug_cycle[which(select_ug_cycle$cycle_id %in% shift_cycle_ids),]
 
-get_class_1_c <- function(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list) {
-  indeg_df = cycle_edge_flux_list_in[[tumor_name]]
-  outdeg_df = cycle_edge_flux_list_out[[tumor_name]]
-  cyc_df = cycle_edge_flux_list[[tumor_name]]
-  ug_c = names(gapup_cycle_chain_list[[tumor_name]])
-  ##
-  class_1_c = c()
-  for (i in 1:length(ug_c)) {
-    class_1_judge = TRUE
-    tmp_cyc_indeg = indeg_df[which(indeg_df$cycle_id == ug_c[i]),]
-    tmp_cyc_outdeg = outdeg_df[which(outdeg_df$cycle_id == ug_c[i]),]
-    tmp_cyc = cyc_df[which(cyc_df$cycle_id == ug_c[i]),]
-    up_indegnode_arr = tmp_cyc_indeg[which(tmp_cyc_indeg$state == "up"),"node"]
-    up_outdegnode_arr = tmp_cyc_outdeg[which(tmp_cyc_outdeg$state == "up"),"node"]
-    up_degnode_arr = append(up_indegnode_arr, up_outdegnode_arr)
-    up_degnode_arr = unique(up_degnode_arr)
+  ## nodes
+  shf_node = unique(select_shift_info$shift_node)
+  cycle_node = union(select_ug_cycle$c_in, select_ug_cycle$c_out)
+  all_node = unique(c(shf_node, cycle_node))
 
-    if (length(up_degnode_arr) == 2) {
-      for (j in 1:length(up_degnode_arr)) {
-        tmpnode = up_degnode_arr[j]
-        tmp_node_row = tmp_cyc[which((tmp_cyc$c_in == tmpnode) | (tmp_cyc$c_out == tmpnode)),]
-        #tmp_node_row_state = tmp_node_row[,"state"]
-        if(!("up" %in% tmp_node_row[,"state"])){
-          class_1_judge = FALSE
-        }
-
-      }
-    }else {
-      class_1_judge = FALSE
+  g <- make_empty_graph(n = length(all_node))
+  g <- set.vertex.attribute(g, "name", value=all_node)
+  for (j in 1:length(all_node)) {
+    if(all_node[j] %in% never_considered_comp_names) {
+      V(g)[name==all_node[j]]$color <- "grey"
     }
-
-    if (class_1_judge) {
-      class_1_c = append(class_1_c, ug_c[i])
-    }
-
   }
-  return(class_1_c)
 
-}
+  for (i in 1:length(shift_cycle_ids)) {
+    cycid = shift_cycle_ids[i]
+    cycle_df = select_ug_cycle[which(select_ug_cycle$cycle_id == cycid),]
+    shift_df = select_shift_info[which(select_shift_info$cycle_id == cycid),]
 
+    ##edges
+    for (j in 1:length(rownames(cycle_df))) {
+      c_in = cycle_df[j, "c_in"]
+      c_out = cycle_df[j, "c_out"]
+      state = cycle_df[j, "state"]
+      c_in_node = V(g)[name==c_in]
+      c_out_node = V(g)[name==c_out]
+      if (!are.connected(g, c_in_node, c_out_node)) {
+        if(state == "gap") {
+          g <- add_edges(g, c(c_in_node,c_out_node), color = "red", size = 3)
+        }else if(state == "up") {
+          g <- add_edges(g, c(c_in_node,c_out_node), color = "green", size = 3)
+        }else {
+          g <- add_edges(g, c(c_in_node,c_out_node), color = "black", size = 3)
+        }
+      }
 
-get_class_2_c <- function(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list) {
-  indeg_df = cycle_edge_flux_list_in[[tumor_name]]
-  outdeg_df = cycle_edge_flux_list_out[[tumor_name]]
-  cyc_df = cycle_edge_flux_list[[tumor_name]]
-  ug_c = names(gapup_cycle_chain_list[[tumor_name]])
-  ##
-  class_2_c = c()
-  for (i in 1:length(ug_c)) {
-    class_2_judge = TRUE
-    tmp_cyc_indeg = indeg_df[which(indeg_df$cycle_id == ug_c[i]),]
-    tmp_cyc_outdeg = outdeg_df[which(outdeg_df$cycle_id == ug_c[i]),]
-    tmp_cyc = cyc_df[which(cyc_df$cycle_id == ug_c[i]),]
-    up_indegnode_arr = tmp_cyc_indeg[which(tmp_cyc_indeg$state == "up"),"node"]
-    up_outdegnode_arr = tmp_cyc_outdeg[which(tmp_cyc_outdeg$state == "up"),"node"]
-    up_degnode_arr = append(up_indegnode_arr, up_outdegnode_arr)
-    up_degnode_arr = unique(up_degnode_arr)
+    }
 
-    if (length(up_degnode_arr) > 2) {
-      for (j in 1:length(up_degnode_arr)) {
-        tmpnode = up_degnode_arr[j]
-        tmp_node_row = tmp_cyc[which((tmp_cyc$c_in == tmpnode) | (tmp_cyc$c_out == tmpnode)),]
-        #tmp_node_row_state = tmp_node_row[,"state"]
-        if(("gap" %in% tmp_node_row[,"state"]) & !("up" %in% tmp_node_row[,"state"])){
-          class_2_judge = FALSE
+    ##shift
+    if (length(rownames(shift_df)) > 0) {
+      for (j in 1:length(rownames(shift_df))) {
+        new_path = shift_df[j, "new_path"]
+        new_path_nodes = unlist(strsplit(new_path, split = " -> "))
+        start_node = new_path_nodes[1]
+        shift_node = new_path_nodes[3]
+        end_node = new_path_nodes[5]
+
+        v_start_node = as.integer(V(g)[name==start_node])
+        v_shift_node = as.integer(V(g)[name==shift_node])
+        v_end_node = as.integer(V(g)[name==end_node])
+
+        V(g)[name==shift_node]$color <- "orchid"
+        if (!are.connected(g, v_start_node, v_shift_node)) {
+          g <- add_edges(g, c(v_start_node, v_shift_node), color = "orchid", size = 6)
+        }
+        if (!are.connected(g, v_shift_node, v_end_node)) {
+          g <- add_edges(g, c(v_shift_node, v_end_node), color = "orchid", size = 6)
         }
 
       }
-    }else {
-      class_2_judge = FALSE
-    }
 
-    if (class_2_judge) {
-      class_2_c = append(class_2_c, ug_c[i])
-    }
-
-  }
-  return(class_2_c)
-
-}
-
-
-
-get_class_3_c <- function(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list) {
-  indeg_df = cycle_edge_flux_list_in[[tumor_name]]
-  outdeg_df = cycle_edge_flux_list_out[[tumor_name]]
-  cyc_df = cycle_edge_flux_list[[tumor_name]]
-  ug_c = names(gapup_cycle_chain_list[[tumor_name]])
-  ##
-  class_3_c = c()
-  for (i in 1:length(ug_c)) {
-    class_3_judge = FALSE
-    tmp_cyc_indeg = indeg_df[which(indeg_df$cycle_id == ug_c[i]),]
-    tmp_cyc_outdeg = outdeg_df[which(outdeg_df$cycle_id == ug_c[i]),]
-    tmp_cyc = cyc_df[which(cyc_df$cycle_id == ug_c[i]),]
-
-    up_indeg = tmp_cyc_indeg[which(tmp_cyc_indeg$state == "up"),]
-    up_outdeg = tmp_cyc_outdeg[which(tmp_cyc_outdeg$state == "up"),]
-
-    up_indeg_arr = tmp_cyc_indeg[which(tmp_cyc_indeg$state == "up"),"ind"]
-    up_outdeg_arr = tmp_cyc_outdeg[which(tmp_cyc_outdeg$state == "up"),"od"]
-
-    ist_deg_arr = intersect(up_indeg_arr, up_outdeg_arr)
-    if(length(ist_deg_arr) != 0) {
-      #shared_deg_arr = c()
-      for (j in 1:length(ist_deg_arr)) {
-        indegnode = up_indeg[which(up_indeg$ind == ist_deg_arr[j]), "node"] #hnode
-        outdegnode = up_outdeg[which(up_outdeg$od == ist_deg_arr[j]), "node"] #tnode
-        if(length(indegnode)>0 & length(outdegnode)>0){
-          cond1 = !identical(indegnode, outdegnode)
-          cond2 = (identical(indegnode, outdegnode) & !((length(indegnode)==1) & (length(outdegnode)==1)))
-          if ( cond1 | cond2 ) {
-            class_3_judge = TRUE
-            #shared_deg_arr = append(shared_deg_arr, ist_deg_arr[j])
-          }
-        }
-
-      }
-    }
-
-    if (class_3_judge) {
-      class_3_c = append(class_3_c, ug_c[i])
     }
 
   }
 
-  return(class_3_c)
-}
+  #plot
+  tmp_graph_name = paste0(tumor_name, "_net_shift", ".png")
+  tmp_plot_name = file.path(plot_name, tmp_graph_name)
 
+  png_size = ceiling(vcount(g)/8)
+  png_size[png_size < 15] = 15
 
-get_class_4_c <- function(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list) {
-  indeg_df = cycle_edge_flux_list_in[[tumor_name]]
-  outdeg_df = cycle_edge_flux_list_out[[tumor_name]]
-  cyc_df = cycle_edge_flux_list[[tumor_name]]
-  ug_c = names(gapup_cycle_chain_list[[tumor_name]])
-  ##
-  class_4_c = c()
-  for (i in 1:length(ug_c)) {
-    class_4_judge = TRUE
-    tmp_cyc_indeg = indeg_df[which(indeg_df$cycle_id == ug_c[i]),]
-    tmp_cyc_outdeg = outdeg_df[which(outdeg_df$cycle_id == ug_c[i]),]
-    tmp_cyc = cyc_df[which(cyc_df$cycle_id == ug_c[i]),]
-    up_indegnode_arr = tmp_cyc_indeg[which(tmp_cyc_indeg$state == "up"),"node"]
-    up_outdegnode_arr = tmp_cyc_outdeg[which(tmp_cyc_outdeg$state == "up"),"node"]
-    up_degnode_arr = append(up_indegnode_arr, up_outdegnode_arr)
-    up_degnode_arr = unique(up_degnode_arr)
+  png(tmp_plot_name, height=png_size, width=png_size, units="in", res=100)
+  e <- get.edgelist(g,names=FALSE)
+  l <- qgraph.layout.fruchtermanreingold(e,vcount=vcount(g),
+                                         area=(18*vcount(g)^2),repulse.rad=(vcount(g)^3.2))
+  plot(g, layout=l, vertex.size=2, edge.arrow.size=0.8, edge.width=E(g)$size)
 
-    if (length(up_degnode_arr) == 1) {
-      for (j in 1:length(up_degnode_arr)) {
-        tmpnode = up_degnode_arr[j]
-        tmp_node_row = tmp_cyc[which((tmp_cyc$c_in == tmpnode) | (tmp_cyc$c_out == tmpnode)),]
-        #tmp_node_row_state = tmp_node_row[,"state"]
-        if(!("up" %in% tmp_node_row[,"state"])){
-          class_4_judge = FALSE
-        }
-
-      }
-    }else {
-      class_4_judge = FALSE
-    }
-
-    if (class_4_judge) {
-      class_4_c = append(class_4_c, ug_c[i])
-    }
-
-  }
-  return(class_4_c)
-
+  dev.off()
 }
 
 
 
-get_ug_class_df <- function(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list) {
-  ug_c = names(gapup_cycle_chain_list[[tumor_name]])
-  cyc_df = as.data.frame(cycle_edge_flux_list[[tumor_name]])
+plot_net_cycle <- function(cycle_shift_path_df_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names, input_tumor_name) {
 
-  ug_class_df = as.data.frame(unique(cyc_df[which(cyc_df$cycle_id %in% ug_c), "cycle_id"]))
-  ug_class_df[,"classid"] = 0
-  colnames(ug_class_df) = c("cycle_id", "classid")
-
-  class_1_c = get_class_1_c(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list)
-  class_2_c = get_class_2_c(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list)
-  class_3_c = get_class_3_c(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list)
-  class_4_c = get_class_4_c(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list)
-
-  class_1_c = setdiff(class_1_c, class_3_c)
-  class_2_c = setdiff(class_2_c, class_3_c)
-
-  class_ist = c(class_1_c, class_2_c, class_3_c, class_4_c)
-  class_ist = unique(class_ist)
-
-  class_5_c = setdiff(ug_c, class_ist)
-
-  ug_class_df[which(ug_class_df$cycle_id %in% class_1_c), "classid"] = 1
-  ug_class_df[which(ug_class_df$cycle_id %in% class_2_c), "classid"] = 2
-  ug_class_df[which(ug_class_df$cycle_id %in% class_3_c), "classid"] = 3
-  ug_class_df[which(ug_class_df$cycle_id %in% class_4_c), "classid"] = 4
-  ug_class_df[which(ug_class_df$cycle_id %in% class_5_c), "classid"] = 5
-
-  return(ug_class_df)
-}
-
-
-
-cyc_classification_main <- function(cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list, input_tumor_name) {
-
-  # init
-  cycle_upgap_class_list = list()
+  ##select_ug_indegree_list select_ug_outdegree_list
   tumors_array = c(input_tumor_name)
+
+  ##2.each_edge
+  res_sub_path = "net_graphs"
+  dir.create(file.path(res_sub_path), recursive = TRUE, showWarnings = FALSE)
+  res_file_path = file.path(res_sub_path)
+
   for (i in 1:length(tumors_array)) {
     tumor_name = tumors_array[i]
-    ug_class_df = get_ug_class_df(tumor_name, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list)
-    cycle_upgap_class_list[[tumor_name]] = ug_class_df
+    plot_net_up_cycle(tumor_name, res_file_path, cycle_shift_path_df_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names)
   }
 
-  return(cycle_upgap_class_list)
 }
 
 
@@ -1300,126 +1135,125 @@ cyc_classification_main <- function(cycle_edge_flux_list_in, cycle_edge_flux_lis
 # source("11_cyc_shift.R")
 ##
 #Another way
-get_cyc_shift_formula <- function(tumor_name, cycle_upgap_class_list, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list) {
-  indeg_df = cycle_edge_flux_list_in[[tumor_name]]
-  outdeg_df = cycle_edge_flux_list_out[[tumor_name]]
-  cyc_df = cycle_edge_flux_list[[tumor_name]]
-  ug_c = names(gapup_cycle_chain_list[[tumor_name]])
-  ug_chain_list = gapup_cycle_chain_list[[tumor_name]]
-  new_old_path_df = data.frame()
 
-  for (i in 1:length(ug_c)) {
-    cycle_id = ug_c[i]
-    print(cycle_id)
-    tmp_cyc_indeg = indeg_df[which(indeg_df$cycle_id == ug_c[i]),]
-    tmp_cyc_outdeg = outdeg_df[which(outdeg_df$cycle_id == ug_c[i]),]
-    tmp_cyc = cyc_df[which(cyc_df$cycle_id == ug_c[i]),]
+get_tmp_comm_degnode_df <- function(cycle_id, permutation_node, ug_chain, comm_degnode) {
+  tmp_comm_degnode_df = data.frame()
 
-    up_indeg = tmp_cyc_indeg[which(tmp_cyc_indeg$state == "up"),]
-    up_outdeg = tmp_cyc_outdeg[which(tmp_cyc_outdeg$state == "up"),]
+  for (p in 1:length(rownames(permutation_node))) {
+    new_path_str = paste0(permutation_node[p,"od"], " -> U -> ", comm_degnode, " -> U -> ", permutation_node[p,"ind"])
+    old_path_arr = c()
+    for (c in 1:length(ug_chain)) {
+      temp_chain_str = ug_chain[c]
+      temp_chain_arr = unlist(strsplit(temp_chain_str,split = " -> "))
 
-    up_indeg_arr = up_indeg[,"ind"]
-    up_outdeg_arr = up_outdeg[,"od"]
+      od_index = which(temp_chain_arr == permutation_node[p,"od"])
+      ind_index = which(temp_chain_arr == permutation_node[p,"ind"])
+      if(length(od_index) > 1) { od_index = od_index[1] }
+      if(length(ind_index) > 1) { ind_index = ind_index[1] }
 
-    ist_deg_arr = intersect(up_indeg_arr, up_outdeg_arr)
-    if(length(ist_deg_arr) != 0) {
-      #shared_deg_arr = c()
-      for (j in 1:length(ist_deg_arr)) {
-        indegnode = up_indeg[which(up_indeg$ind == ist_deg_arr[j]), "node"] #hnode
-        outdegnode = up_outdeg[which(up_outdeg$od == ist_deg_arr[j]), "node"] #tnode
+      index_1 = min(od_index, ind_index)
+      index_2 = max(od_index, ind_index)
 
-        cond1 = !identical(indegnode, outdegnode)
-        cond2 = (identical(indegnode, outdegnode) & !((length(indegnode)==1) & (length(outdegnode)==1)))
-        if ( cond1 | cond2 ) {
-          permutation_node = data.frame()
-          for (od in outdegnode) {
-            for (ind in indegnode) {
-              temp_node_df = data.frame()
-              temp_node_df[1, "od"] = od
-              temp_node_df[1, "ind"] = ind
-
-              permutation_node = rbind(permutation_node, temp_node_df)
-            }
-          }
-
-          if (length(which(permutation_node$od == permutation_node$ind)) > 0) {
-            permutation_node = permutation_node[-which(permutation_node$od == permutation_node$ind),]
-          }
-
-          new_path_str = paste0(permutation_node[1,"od"], " -> U -> ", ist_deg_arr[j], " -> U -> ", permutation_node[1,"ind"])
-
-          old_path_arr = c()
-          for (chn in ug_chain_list[[i]]) {
-            temp_chain_str = chn
-            temp_chain_arr = unlist(strsplit(temp_chain_str,split = " -> "))
-
-            od_index = which(temp_chain_arr == permutation_node[1,"od"])
-            ind_index = which(temp_chain_arr == permutation_node[1,"ind"])
-            length(od_index)
-            length(ind_index)
-
-            if(length(od_index) > 1) {
-              od_index = od_index[1]
-            }
-
-            if(length(ind_index) > 1) {
-              ind_index = ind_index[1]
-            }
-
-            if(od_index > ind_index) {
-              index_1 = ind_index
-              index_2 = od_index
-            }else {
-              index_1 = od_index
-              index_2 = ind_index
-            }
-
-            temp_old_path_arr_1 = temp_chain_arr[index_1:index_2]
-            if("G" %in% temp_old_path_arr_1) {
-              temp_old_path_str_1 = paste(temp_old_path_arr_1, collapse  = " -> ")
-              old_path_arr = append(old_path_arr, temp_old_path_str_1)
-            }
-
-            chain_part_1 = temp_chain_arr[1:index_1]
-            chain_part_2 = temp_chain_arr[index_2:(length(temp_chain_arr)-1)]
-            temp_old_path_arr_2 = c(chain_part_2, chain_part_1)
-
-            if("G" %in% temp_old_path_arr_2) {
-              temp_old_path_str_2 = paste(temp_old_path_arr_2, collapse  = " -> ")
-              old_path_arr = append(old_path_arr, temp_old_path_str_2)
-            }
-          }
-
-          old_path_arr = unique(old_path_arr)
-          old_path_str = paste(old_path_arr, collapse  = " ; ")
-          temp_old_path_df = data.frame()
-          temp_old_path_df[1, "cycle_id"] = cycle_id
-          temp_old_path_df[1, "new_path"] = new_path_str
-          temp_old_path_df[1, "old_path"] = old_path_str
-          temp_old_path_df[1, "endpoint_node"] = paste0(permutation_node[1,"od"], ";", permutation_node[1,"ind"])
-          temp_old_path_df[1, "shift_node"] = ist_deg_arr[j]
-
-          new_old_path_df = rbind(new_old_path_df, temp_old_path_df)
-
-        }
+      temp_old_path_arr_1 = temp_chain_arr[index_1:index_2]
+      if("G" %in% temp_old_path_arr_1) {
+        temp_old_path_str_1 = paste(temp_old_path_arr_1, collapse  = " -> ")
+        old_path_arr = append(old_path_arr, temp_old_path_str_1)
       }
+
+      chain_part_1 = temp_chain_arr[1:index_1]
+      chain_part_2 = temp_chain_arr[index_2:(length(temp_chain_arr)-1)]
+      temp_old_path_arr_2 = c(chain_part_2, chain_part_1)
+      if("G" %in% temp_old_path_arr_2) {
+        temp_old_path_str_2 = paste(temp_old_path_arr_2, collapse  = " -> ")
+        old_path_arr = append(old_path_arr, temp_old_path_str_2)
+      }
+
     }
 
+    old_path_arr = unique(old_path_arr)
+    old_path_str = paste(old_path_arr, collapse  = " ; ")
+
+    tmp_comm_degnode_df[p, "cycle_id"] = cycle_id
+    tmp_comm_degnode_df[p, "new_path"] = new_path_str
+    tmp_comm_degnode_df[p, "old_path"] = old_path_str
+    tmp_comm_degnode_df[p, "endpoint_node"] = paste0(permutation_node[p,"od"], ";", permutation_node[p,"ind"])
+    tmp_comm_degnode_df[p, "shift_node"] = comm_degnode
   }
 
-  return(new_old_path_df)
+  return(tmp_comm_degnode_df)
+}
+
+get_tmp_cycle_shift_df <- function(cycle_id, comm_deg_arr, up_indeg, up_outdeg, ug_chain) {
+  tmp_cycle_shift_df = data.frame()
+
+  if(length(comm_deg_arr) != 0) {
+    for (j in 1:length(comm_deg_arr)) {
+      comm_degnode = comm_deg_arr[j]
+      start_cyclenode = up_indeg[which(up_indeg$ind == comm_degnode), "node"] #hnode
+      end_cyclenode = up_outdeg[which(up_outdeg$od == comm_degnode), "node"] #tnode
+
+      cond1 = !identical(start_cyclenode, end_cyclenode)
+      cond2 = (identical(start_cyclenode, end_cyclenode) & !((length(start_cyclenode)==1) & (length(end_cyclenode)==1)))
+      if ( cond1 | cond2 ) {
+        permutation_node = data.frame()
+        for (od in end_cyclenode) {
+          for (ind in start_cyclenode) {
+            temp_node_df = data.frame()
+            temp_node_df[1, "od"] = od
+            temp_node_df[1, "ind"] = ind
+            permutation_node = rbind(permutation_node, temp_node_df)
+          }
+        }
+
+        if (length(which(permutation_node$od == permutation_node$ind)) > 0) {
+          permutation_node = permutation_node[-which(permutation_node$od == permutation_node$ind),]
+        }
+
+        tmp_comm_degnode_df = get_tmp_comm_degnode_df(cycle_id, permutation_node, ug_chain, comm_degnode)
+        tmp_cycle_shift_df = rbind(tmp_cycle_shift_df, tmp_comm_degnode_df)
+      }
+    }
+  }
+
+  return(tmp_cycle_shift_df)
 }
 
 
-cyc_shift_main <- function(cycle_upgap_class_list, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list, input_tumor_name) {
+get_cyc_shift_formula <- function(tumor_name, select_ug_indegree_list, select_ug_outdegree_list, gapup_cycle_chain_list) {
+  ug_indegree = select_ug_indegree_list[[tumor_name]]
+  ug_outdegree = select_ug_outdegree_list[[tumor_name]]
+  ug_c = names(gapup_cycle_chain_list[[tumor_name]])
+  ug_chain_list = gapup_cycle_chain_list[[tumor_name]]
+
+  all_cycle_shift_df = data.frame()
+  for (i in 1:length(ug_c)) {
+    cycle_id = ug_c[i]
+    ug_chain = ug_chain_list[[i]]
+    up_indeg = ug_indegree[which(ug_indegree$cycle_id == cycle_id),]
+    up_outdeg = ug_outdegree[which(ug_outdegree$cycle_id == cycle_id),]
+
+    up_indegnodes = up_indeg[,"ind"]
+    up_outdegnodes = up_outdeg[,"od"]
+
+    comm_deg_arr = intersect(up_indegnodes, up_outdegnodes)
+
+    tmp_cycle_shift_df = get_tmp_cycle_shift_df(cycle_id, comm_deg_arr, up_indeg, up_outdeg, ug_chain)
+    all_cycle_shift_df = rbind(all_cycle_shift_df, tmp_cycle_shift_df)
+  }
+
+  return(all_cycle_shift_df)
+}
+
+
+cyc_shift_main <- function(select_ug_indegree_list, select_ug_outdegree_list, gapup_cycle_chain_list, input_tumor_name) {
 
   # init
   cycle_shift_path_df_list = list()
   tumors_array = c(input_tumor_name)
   for (i in 1:length(tumors_array)) {
     tumor_name = tumors_array[i]
-    new_old_path_df = get_cyc_shift_formula(tumor_name, cycle_upgap_class_list, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list)
-    cycle_shift_path_df_list[[tumor_name]] = new_old_path_df
+    all_cycle_shift_df = get_cyc_shift_formula(tumor_name, select_ug_indegree_list, select_ug_outdegree_list, gapup_cycle_chain_list)
+    cycle_shift_path_df_list[[tumor_name]] = all_cycle_shift_df
   }
 
   return(cycle_shift_path_df_list)
@@ -1581,19 +1415,19 @@ getCycleFlux <- function(input_net_file, input_stat_gene_file, input_deg_gene_fi
   cycle_edge_flux_list_out = cycle_edge_flux_list_out_main(cycle_edgesucs_expression_out, gene_missing_list, stat_all, deg_all, input_tumor_name, prm_1, prm_2, prm_3)
 
   #source("8_my_ug_degnode_1.R")
-  select_out_upinfo_eachedge = my_ug_degnode_1_main(cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list, input_tumor_name)
-  select_in_upinfo_eachedge = my_ug_degnode_2_main(cycle_edge_flux_list_in, cycle_edge_flux_list, gapup_cycle_chain_list, input_tumor_name)
+  select_ug_indegree_list = get_ug_indegree(cycle_edge_flux_list_in, cycle_edge_flux_list, gapup_cycle_chain_list, input_tumor_name)
+  select_ug_outdegree_list = get_ug_outdegree(cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list, input_tumor_name)
+  select_ug_cycle_list = get_ug_cycle(cycle_edge_flux_list, gapup_cycle_chain_list, input_tumor_name)
 
   #### result ####
-
-  #source("9_my_ug_degnode_3.R")
-  my_ug_degnode_3_main(select_in_upinfo_eachedge, select_out_upinfo_eachedge, gapup_cycle_chain_list, never_considered_comp_names, input_tumor_name)
-
   #source("10_cyc_classification.R")
-  cycle_upgap_class_list = cyc_classification_main(cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list, input_tumor_name)
 
   #source("11_cyc_shift.R")
-  cycle_shift_path_df_list = cyc_shift_main(cycle_upgap_class_list, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_edge_flux_list, gapup_cycle_chain_list, input_tumor_name)
+  cycle_shift_path_df_list = cyc_shift_main(select_ug_indegree_list, select_ug_outdegree_list, gapup_cycle_chain_list, input_tumor_name)
+
+  #source("9_my_ug_degnode_3.R")
+  plot_single_cycle(cycle_shift_path_df_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names, input_tumor_name)
+  plot_net_cycle(cycle_shift_path_df_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names, input_tumor_name)
 
   #source("12_freq_stat.R")
   # gap_cycleid_freq_list = get_gap_cycleid_freq_list(input_tumor_name, cycle_edge_flux_list)
