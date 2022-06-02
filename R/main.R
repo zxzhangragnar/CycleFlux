@@ -328,7 +328,9 @@ get_cycle_edgesucs_expression_in <- function(cycle_directed, g) {
   print("cycle_indegree")
   cycle_edgesucs_expression_in = data.frame()
   for(i in 1:length(rownames(cycle_directed))) {
-    print(paste0("cyc_", i))
+    if((i %% 10) == 0) {
+      print(paste0("cyc_", i))
+    }
     cycle_id = as.integer(cycle_directed[i, "cycle_id"])
     compound_chain = as.character(cycle_directed[i, "compound_chain"])
     compound_chain = unlist(strsplit(compound_chain, split = ";"))
@@ -367,7 +369,9 @@ get_cycle_edgesucs_expression_out <- function(cycle_directed, g) {
   print("cycle_outdegree")
   cycle_edgesucs_expression_out = data.frame()
   for(i in 1:length(rownames(cycle_directed))) {
-    print(paste0("cyc_", i))
+    if((i %% 10) == 0) {
+      print(paste0("cyc_", i))
+    }
     cycle_id = as.integer(cycle_directed[i, "cycle_id"])
     compound_chain = as.character(cycle_directed[i, "compound_chain"])
     compound_chain = unlist(strsplit(compound_chain, split = ";"))
