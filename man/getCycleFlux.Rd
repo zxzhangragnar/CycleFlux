@@ -8,31 +8,30 @@ getCycleFlux(
   input_net_file,
   input_stat_gene_file,
   input_deg_gene_file,
-  prm_1 = 0.05,
-  prm_2 = 1,
-  prm_3 = 1
+  model = 1,
+  single_graph = TRUE,
+  net_graph = TRUE
 )
 }
 \arguments{
-\item{prm_1&prm_2:}{FOR DE_cof
-(gene pvalue < prm_1) & (abs(gene fc) > prm_2)
--> DE num ++
--> DE_cof = DE num/gene num}
-
-\item{prm_3:}{IF prm_3=1
+\item{model:}{IF model=1
 For an edge, if any gene on the edge is up, the edge is up
-IF prm_3=2
+IF model=2
 For an edge, if the gene with the largest mean of tumor value is up, then the edge is up}
 
-\item{Default:}{prm_1=0.05
-prm_2=1
-prm_3=1}
+\item{single_graph:}{If this parameter is TRUE, an image will be generated in this directory for each cycle that matches the shift definition.}
+
+\item{net_graph:}{If this parameter is TRUE, an image containing all cycles that match the shift definition will be generated in this directory.
+Default:
+model=1
+single_graph=TRUE
+net_graph=TRUE}
 }
 \description{
 This function for cycle shift situation
 }
 \examples{
-getCycleFlux(input_net_file, input_stat_gene_file, input_deg_gene_file, 0.05, 1, 1)
+getCycleFlux(input_net_file, input_stat_gene_file, input_deg_gene_file, 1, TRUE, FALSE)
 
 }
 \keyword{getCycleFlux}

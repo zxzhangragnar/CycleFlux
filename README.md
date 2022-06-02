@@ -23,12 +23,17 @@ deg_gene = './TCGA_deg_genes.RData'
 
 ## use '?getCycleFlux' to view the meaning of each parameter
 
-prm_1=0.05
+'model':
+IF model=1, For an edge, if any gene on the edge is up(gap), the edge is up(gap).
+IF model=2, For an edge, if the gene with the largest mean of tumor value is up(gap), then the edge is up(gap).
 
-prm_2=1
+'single_graph':
+If this parameter is TRUE, an image will be generated in this directory for each cycle that matches the shift definition.
 
-prm_3=1
+'net_graph':
+If this parameter is TRUE, an image containing all cycles that match the shift definition will be generated in this directory.
+
 
 # function
 
-shift_result = getCycleFlux(net, stat_gene, deg_gene, 0.05, 1, 1)
+shift_result = getCycleFlux(net, stat_gene, deg_gene, 1, TRUE, FALSE)
