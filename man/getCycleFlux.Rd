@@ -15,7 +15,7 @@ getCycleFlux(
 }
 \arguments{
 \item{model:}{IF model=1
-For an edge, if any gene on the edge is up, the edge is up
+For an edge, if any gene on the edge is up, the edge is up, if the edge contains both the gap gene and the up gene, it is regarded as a gap.
 IF model=2
 For an edge, if the gene with the largest mean of tumor value is up, then the edge is up}
 

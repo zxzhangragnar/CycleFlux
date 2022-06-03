@@ -424,74 +424,73 @@ get_gene_expressinfo<-function(subnet_edge_expression){
 
 
 
-get_cyc_gene_not_in_tgca<-function(cyc_gene_expressinfo, all_gene_stat, to_find_correct_symbol_v1_1){
-  cyc_gene_kegg = c()
-  cyc_gene_tcga = c()
-  for (i in 1:length(rownames(to_find_correct_symbol_v1_1))) {
-    kegg_gene = to_find_correct_symbol_v1_1[i,1]
-    tcga_gene = to_find_correct_symbol_v1_1[i,2]
-    if(kegg_gene %in% cyc_gene_expressinfo){
-      cyc_gene_kegg = append(cyc_gene_kegg,kegg_gene)
-    }
-    if(tcga_gene %in% cyc_gene_expressinfo){
-      cyc_gene_tcga = append(cyc_gene_tcga,tcga_gene)
-    }
-  }
-
-  cyc_gene_not_in_tgca = c()
-  cyc_gene_in_tgca = c()
-  tcga_gene_list = rownames(all_gene_stat[[1]])
-  cyc_gene_expressinfo = unique(cyc_gene_expressinfo)
-  for (i in 1:length(cyc_gene_expressinfo)) {
-    gene = cyc_gene_expressinfo[i]
-    if(gene %in% tcga_gene_list){
-      cyc_gene_in_tgca = append(cyc_gene_in_tgca,gene)
-    }else{
-      cyc_gene_not_in_tgca = append(cyc_gene_not_in_tgca,gene)
-    }
-  }
-
-  return(cyc_gene_not_in_tgca)
-}
-
-
-get_gene_missing_list<-function(cyc_gene_expressinfo, all_gene_stat, to_find_correct_symbol_v1_1){
-  #test
-  cyc_gene_not_in_tgca = get_cyc_gene_not_in_tgca(cyc_gene_expressinfo, all_gene_stat, to_find_correct_symbol_v1_1)
-  cyc_gene_not_in_tgca_but_in_tofind = intersect(cyc_gene_not_in_tgca,to_find_correct_symbol_v1_1$X1)
-  cyc_gene_not_in_tgca_not_in_tofind = setdiff(cyc_gene_not_in_tgca, cyc_gene_not_in_tgca_but_in_tofind)
-
-  #result
-  gene_missing_list = list()
-  gene_missing_list[["cyc_gene_expressinfo"]] = cyc_gene_expressinfo
-  gene_missing_list[["cyc_gene_not_in_tgca"]] = cyc_gene_not_in_tgca
-  gene_missing_list[["cyc_gene_not_in_tgca_but_in_tofind"]] = cyc_gene_not_in_tgca_but_in_tofind
-  gene_missing_list[["cyc_gene_not_in_tgca_not_in_tofind"]] = cyc_gene_not_in_tgca_not_in_tofind
-
-  return(gene_missing_list)
-}
-
-
-
-
-
-get_gene_and_tofind_list_main <- function(subnet_edge_expression, stat_all, deg_all) {
-
-
-  cyc_gene_expressinfo = get_gene_expressinfo(subnet_edge_expression)
-
-  library(readr)
-  to_find_correct_symbol_v1_1 = read_csv(system.file("data/to_find_correct_symbol_v1.1.csv", package = "CycleFlux"), col_names = FALSE)
-
-  gene_missing_list = get_gene_missing_list(cyc_gene_expressinfo, stat_all, to_find_correct_symbol_v1_1)
-
-  return(gene_missing_list)
-}
+# get_cyc_gene_not_in_tgca<-function(cyc_gene_expressinfo, all_gene_stat, to_find_correct_symbol_v1_1){
+#   cyc_gene_kegg = c()
+#   cyc_gene_tcga = c()
+#   for (i in 1:length(rownames(to_find_correct_symbol_v1_1))) {
+#     kegg_gene = to_find_correct_symbol_v1_1[i,1]
+#     tcga_gene = to_find_correct_symbol_v1_1[i,2]
+#     if(kegg_gene %in% cyc_gene_expressinfo){
+#       cyc_gene_kegg = append(cyc_gene_kegg,kegg_gene)
+#     }
+#     if(tcga_gene %in% cyc_gene_expressinfo){
+#       cyc_gene_tcga = append(cyc_gene_tcga,tcga_gene)
+#     }
+#   }
+#
+#   cyc_gene_not_in_tgca = c()
+#   cyc_gene_in_tgca = c()
+#   tcga_gene_list = rownames(all_gene_stat[[1]])
+#   cyc_gene_expressinfo = unique(cyc_gene_expressinfo)
+#   for (i in 1:length(cyc_gene_expressinfo)) {
+#     gene = cyc_gene_expressinfo[i]
+#     if(gene %in% tcga_gene_list){
+#       cyc_gene_in_tgca = append(cyc_gene_in_tgca,gene)
+#     }else{
+#       cyc_gene_not_in_tgca = append(cyc_gene_not_in_tgca,gene)
+#     }
+#   }
+#
+#   return(cyc_gene_not_in_tgca)
+# }
+#
+#
+# get_gene_missing_list<-function(cyc_gene_expressinfo, all_gene_stat, to_find_correct_symbol_v1_1){
+#   #test
+#   cyc_gene_not_in_tgca = get_cyc_gene_not_in_tgca(cyc_gene_expressinfo, all_gene_stat, to_find_correct_symbol_v1_1)
+#   cyc_gene_not_in_tgca_but_in_tofind = intersect(cyc_gene_not_in_tgca,to_find_correct_symbol_v1_1$X1)
+#   cyc_gene_not_in_tgca_not_in_tofind = setdiff(cyc_gene_not_in_tgca, cyc_gene_not_in_tgca_but_in_tofind)
+#
+#   #result
+#   gene_missing_list = list()
+#   gene_missing_list[["cyc_gene_expressinfo"]] = cyc_gene_expressinfo
+#   gene_missing_list[["cyc_gene_not_in_tgca"]] = cyc_gene_not_in_tgca
+#   gene_missing_list[["cyc_gene_not_in_tgca_but_in_tofind"]] = cyc_gene_not_in_tgca_but_in_tofind
+#   gene_missing_list[["cyc_gene_not_in_tgca_not_in_tofind"]] = cyc_gene_not_in_tgca_not_in_tofind
+#
+#   return(gene_missing_list)
+# }
+#
+#
+#
+#
+#
+# get_gene_and_tofind_list_main <- function(subnet_edge_expression, stat_all, deg_all) {
+#
+#
+#   cyc_gene_expressinfo = get_gene_expressinfo(subnet_edge_expression)
+#
+#   library(readr)
+#   to_find_correct_symbol_v1_1 = read_csv(system.file("data/to_find_correct_symbol_v1.1.csv", package = "CycleFlux"), col_names = FALSE)
+#
+#   gene_missing_list = get_gene_missing_list(cyc_gene_expressinfo, stat_all, to_find_correct_symbol_v1_1)
+#
+#   return(gene_missing_list)
+# }
 
 #######################################################################################
 # function for gap
-# get_mean_fc<-function(tumor_name, edge_state_list, all_gene_stat, gene_missing_list) {
-#   missing_genes = gene_missing_list[["cyc_gene_not_in_tgca"]]
+# get_mean_fc<-function(tumor_name, edge_state_list, all_gene_stat) {
 #
 #   temp_cycle_edge_flux = edge_state_list[[tumor_name]]
 #   temp_gene_stat = all_gene_stat[[tumor_name]]
@@ -504,7 +503,7 @@ get_gene_and_tofind_list_main <- function(subnet_edge_expression, stat_all, deg_
 #
 #     for (j in 1:length(temp_gene_symbol_arr)) {
 #       temp_gene = temp_gene_symbol_arr[j]
-#       if (!(temp_gene %in% missing_genes)) {
+#       if (temp_gene %in% rownames(temp_gene_stat)) {
 #         genesign = as.double(temp_gene_stat[temp_gene,"FC"])
 #         temp_edge_sum_fc = temp_edge_sum_fc + genesign
 #       }
@@ -515,46 +514,58 @@ get_gene_and_tofind_list_main <- function(subnet_edge_expression, stat_all, deg_
 #   return(temp_cycle_edge_flux)
 # }
 
-get_state_edges <- function(tumor_name, edge_state_list, gene_gapup_info, all_gene_stat, gene_missing_list, model) {
+get_state_edges <- function(tumor_name, edge_state_list, gene_gapup_info, all_gene_stat, model) {
 
+  temp_edge_state = edge_state_list[[tumor_name]]
   if (model == 1) {
-    temp_edge_flux = get_state_edges_model_1(tumor_name, edge_state_list, gene_gapup_info, gene_missing_list)
+    temp_edge_flux = get_state_edges_model_1(tumor_name, temp_edge_state, gene_gapup_info)
   }else if (model == 2) {
-    temp_edge_flux = get_state_edges_model_2(tumor_name, edge_state_list, gene_gapup_info, all_gene_stat, gene_missing_list)
+    temp_edge_flux = get_state_edges_model_2(tumor_name, temp_edge_state, gene_gapup_info, all_gene_stat)
   }else {
-    temp_edge_flux = get_state_edges_model_1(tumor_name, edge_state_list, gene_gapup_info, gene_missing_list)
+    temp_edge_flux = get_state_edges_model_1(tumor_name, temp_edge_state, gene_gapup_info)
   }
   return(temp_edge_flux)
 }
 
-get_state_edges_model_1 <- function(tumor_name, edge_state_list, gene_gapup_info, gene_missing_list) {
-  missing_genes = gene_missing_list[["cyc_gene_not_in_tgca"]]
+get_state_edges_model_1 <- function(tumor_name, temp_edge_state, gene_gapup_info) {
   temp_gene_gapup_info = gene_gapup_info[[tumor_name]]
-  temp_edge_flux = edge_state_list[[tumor_name]]
-  temp_edge_flux[, "state"] = "normal"
+  temp_edge_flux = temp_edge_state
+  temp_edge_flux[, "state"] = "no_change"
   for (i in 1:length(temp_edge_flux[,1])) {
     if((i %% 1000) == 0) {
       print(paste0("edge_", i))
     }
     gene_arr = temp_edge_flux[i, "gene_symbol"]
     gene_arr = unlist(strsplit(gene_arr, split = ";"))
+
+    temp_gene_state = "no_change"
+    temp_gap_num = 0
+    temp_up_num = 0
+    temp_ne_num = 0
     for (j in 1:length(gene_arr)) {
       temp_gene = gene_arr[j]
-      if (!(temp_gene %in% missing_genes)) {
-        temp_edge_flux[i, "state"] = temp_gene_gapup_info[[temp_gene]]
+      if (temp_gene %in% names(temp_gene_gapup_info)) {
+        temp_gene_state = temp_gene_gapup_info[[temp_gene]]
       }
+      if(temp_gene_state == "gap"){temp_gap_num = temp_gap_num + 1}
+      if(temp_gene_state == "up"){temp_up_num = temp_up_num + 1}
+      if(temp_gene_state == "no_express"){temp_ne_num = temp_ne_num + 1}
     }
+
+    if(temp_ne_num > 0) {temp_edge_flux[i, "state"] = "no_express"}
+    if(temp_up_num > 0) {temp_edge_flux[i, "state"] = "up"}
+    if(temp_gap_num > 0) {temp_edge_flux[i, "state"] = "gap"}
+
   }
   return(temp_edge_flux)
 }
 
-get_state_edges_model_2 <- function(tumor_name, edge_state_list, gene_gapup_info, all_gene_stat, gene_missing_list) {
-  missing_genes = gene_missing_list[["cyc_gene_not_in_tgca"]]
+get_state_edges_model_2 <- function(tumor_name, temp_edge_state, gene_gapup_info, all_gene_stat) {
 
   temp_gene_gapup_info = gene_gapup_info[[tumor_name]]
   temp_all_gene_stat = all_gene_stat[[tumor_name]]
-  temp_edge_flux = edge_state_list[[tumor_name]]
-  temp_edge_flux[, "state"] = "normal"
+  temp_edge_flux = temp_edge_state
+  temp_edge_flux[, "state"] = "no_change"
   for (i in 1:length(temp_edge_flux[,1])) {
     if((i %% 1000) == 0) {
       print(paste0("edge_", i))
@@ -566,10 +577,10 @@ get_state_edges_model_2 <- function(tumor_name, edge_state_list, gene_gapup_info
     ## find mt(mean tumor value) gene
     for (j in 1:length(gene_arr)) {
       temp_gene = gene_arr[j]
-      if (temp_gene %in% missing_genes) {
-        temp_mt = 0
-      }else {
+      if (temp_gene %in% rownames(temp_all_gene_stat)) {
         temp_mt = temp_all_gene_stat[temp_gene, "mt"]
+      }else {
+        temp_mt = 0
       }
       gene_mt_df[j, "gene"] = temp_gene
       gene_mt_df[j, "mt"] = temp_mt
@@ -577,15 +588,14 @@ get_state_edges_model_2 <- function(tumor_name, edge_state_list, gene_gapup_info
 
     gene_mt_df = gene_mt_df[order(gene_mt_df$mt,decreasing = TRUE),]
     max_mt_gene = gene_mt_df[1, "gene"]
-    if (!(max_mt_gene %in% missing_genes)) {
+    if ((max_mt_gene %in% names(temp_gene_gapup_info))) {
       temp_edge_flux[i, "state"] = temp_gene_gapup_info[[max_mt_gene]]
     }
   }
   return(temp_edge_flux)
 }
 
-# get_cycle_edge_obvs <- function(tumor_name, all_gene_stat, cycle_edge_expression, gene_missing_list, prm_4, prm_5) {
-#   missing_genes = gene_missing_list[["cyc_gene_not_in_tgca"]]
+# get_cycle_edge_obvs <- function(tumor_name, all_gene_stat, cycle_edge_expression, prm_4, prm_5) {
 #   temp_all_gene_stat = all_gene_stat[[tumor_name]]
 #
 #   cycle_edge_obvs = data.frame()
@@ -599,7 +609,7 @@ get_state_edges_model_2 <- function(tumor_name, edge_state_list, gene_gapup_info
 #       temp_gene = gene_arr[j]
 #       temp_pvalue = 0
 #       temp_fc = 0
-#       if (!(temp_gene %in% missing_genes)) {
+#       if (temp_gene %in% rownames(temp_all_gene_stat)) {
 #         temp_pvalue = temp_all_gene_stat[temp_gene,"p.value"]
 #         temp_fc = temp_all_gene_stat[temp_gene,"FC"]
 #         gene_num = gene_num + 1
@@ -617,17 +627,17 @@ get_state_edges_model_2 <- function(tumor_name, edge_state_list, gene_gapup_info
 
 
 ## main function
-get_edge_state_list <- function(edge_expression, tumors_array, all_gene_stat, gene_gapup_info, gene_missing_list, model) {
+get_edge_state_list <- function(edge_expression, tumors_array, all_gene_stat, gene_gapup_info, model) {
   edge_state_list = list()
   for (i in 1:length(tumors_array)) {
     tumor_name = tumors_array[i]
     print(tumor_name)
     edge_state_list[[tumor_name]] = edge_expression
 
-    edge_state_list[[tumor_name]] = get_state_edges(tumor_name, edge_state_list, gene_gapup_info, all_gene_stat, gene_missing_list, model)
-    #edge_state_list[[tumor_name]] = get_mean_fc(tumor_name, edge_state_list, all_gene_stat, gene_missing_list)
+    edge_state_list[[tumor_name]] = get_state_edges(tumor_name, edge_state_list, gene_gapup_info, all_gene_stat, model)
+    #edge_state_list[[tumor_name]] = get_mean_fc(tumor_name, edge_state_list, all_gene_stat)
 
-    # temp_cycle_edge_obvs = get_cycle_edge_obvs(tumor_name, all_gene_stat, edge_expression, gene_missing_list, prm_4, prm_5)
+    # temp_cycle_edge_obvs = get_cycle_edge_obvs(tumor_name, all_gene_stat, edge_expression, prm_4, prm_5)
     # edge_state_list[[tumor_name]][,"DE_cof"] = temp_cycle_edge_obvs$DE_cof
 
   }
@@ -637,12 +647,12 @@ get_edge_state_list <- function(edge_expression, tumors_array, all_gene_stat, ge
 
 #######################################################################################
 # source("3_flux_subnet_add_gap.R")
-subnet_edge_flux_list_main <- function(subnet_edge_expression, gene_missing_list, stat_all, deg_all, input_tumor_name, model) {
+subnet_edge_flux_list_main <- function(subnet_edge_expression, stat_all, deg_all, input_tumor_name, model) {
   print("subnet_edge_flux")
   #init
 
   tumors_array = c(input_tumor_name)
-  subnet_edge_flux_list = get_edge_state_list(subnet_edge_expression, tumors_array, stat_all, deg_all, gene_missing_list, model)
+  subnet_edge_flux_list = get_edge_state_list(subnet_edge_expression, tumors_array, stat_all, deg_all, model)
 
   return(subnet_edge_flux_list)
 }
@@ -650,7 +660,7 @@ subnet_edge_flux_list_main <- function(subnet_edge_expression, gene_missing_list
 
 #######################################################################################
 # source("4_flux_cycle_add_gap.R")
-cycle_edge_flux_list_main <- function(cycle_edge_expression, gene_missing_list, stat_all, deg_all, input_tumor_name, model) {
+cycle_edge_flux_list_main <- function(cycle_edge_expression, stat_all, deg_all, input_tumor_name, model) {
   print("cycle_edge_flux")
   #init
 
@@ -658,7 +668,7 @@ cycle_edge_flux_list_main <- function(cycle_edge_expression, gene_missing_list, 
   tumors_array = c(input_tumor_name)
 
   ##
-  cycle_edge_flux_list = get_edge_state_list(cycle_edge_expression, tumors_array, stat_all, deg_all, gene_missing_list, model)
+  cycle_edge_flux_list = get_edge_state_list(cycle_edge_expression, tumors_array, stat_all, deg_all, model)
 
   return(cycle_edge_flux_list)
 }
@@ -801,32 +811,54 @@ never_considered_comp_names_main <- function(compounds_dict, input_tumor_name) {
 
 #######################################################################################
 # source("7_degnode_add_gap.R")
-cycle_edge_flux_list_in_main <- function(cycle_edgesucs_expression_in, gene_missing_list, stat_all, deg_all, input_tumor_name, model) {
+cycle_edge_flux_list_in_main <- function(cycle_edgesucs_expression_in, stat_all, deg_all, input_tumor_name, model) {
   print("cycle_indegree_flux")
 
   #init
   tumors_array = c(input_tumor_name)
 
   ##
-  cycle_edge_flux_list_in = get_edge_state_list(cycle_edgesucs_expression_in, tumors_array, stat_all, deg_all, gene_missing_list, model)
+  cycle_edge_flux_list_in = get_edge_state_list(cycle_edgesucs_expression_in, tumors_array, stat_all, deg_all, model)
 
   return(cycle_edge_flux_list_in)
 
 }
 
 
-cycle_edge_flux_list_out_main <- function(cycle_edgesucs_expression_out, gene_missing_list, stat_all, deg_all, input_tumor_name, model) {
+cycle_edge_flux_list_out_main <- function(cycle_edgesucs_expression_out, stat_all, deg_all, input_tumor_name, model) {
   print("cycle_outdegree_flux")
 
   #init
   tumors_array = c(input_tumor_name)
 
   ##
-  cycle_edge_flux_list_out = get_edge_state_list(cycle_edgesucs_expression_out, tumors_array, stat_all, deg_all, gene_missing_list, model)
+  cycle_edge_flux_list_out = get_edge_state_list(cycle_edgesucs_expression_out, tumors_array, stat_all, deg_all, model)
 
   return(cycle_edge_flux_list_out)
 }
 
+
+
+#######################################################################################
+
+get_state_rids <- function(sps_net, gene_gapup_info, all_gene_stat, model, input_tumor_name) {
+  rid_net = as.data.frame(sps_net[,c("Rid", "Gene_symbol")])
+  colnames(rid_net) = c("rid", "gene_symbol")
+  state_rids_list = list()
+  tumors_array = c(input_tumor_name)
+  for (i in 1:length(tumors_array)) {
+    tumor_name = tumors_array[i]
+    if (model == 1) {
+      temp_edge_flux = get_state_edges_model_1(tumor_name, rid_net, gene_gapup_info)
+    }else if (model == 2) {
+      temp_edge_flux = get_state_edges_model_2(tumor_name, rid_net, gene_gapup_info, all_gene_stat)
+    }else {
+      temp_edge_flux = get_state_edges_model_1(tumor_name, rid_net, gene_gapup_info)
+    }
+    state_rids_list[[tumor_name]] = temp_edge_flux
+  }
+  return(state_rids_list)
+}
 
 #######################################################################################
 # source("8_my_ug_degnode_1.R")
@@ -1115,7 +1147,11 @@ plot_net_up_cycle<-function(tumor_name, plot_name, cycle_shift_path_df_list, sel
   png(tmp_plot_name, height=png_size, width=png_size, units="in", res=100)
   e <- get.edgelist(g,names=FALSE)
   l <- qgraph.layout.fruchtermanreingold(e,vcount=vcount(g),
-                                         area=(18*vcount(g)^2),repulse.rad=(vcount(g)^3.2))
+                                          area=(18*vcount(g)^2),repulse.rad=(vcount(g)^3.2))
+  #l = layout_nicely(g)
+  #l = layout_with_kk(g)
+  #l = layout_with_graphopt(g)
+
   plot(g, layout=l, vertex.size=2, edge.arrow.size=0.8, edge.width=E(g)$size)
 
   dev.off()
@@ -1272,6 +1308,60 @@ cyc_shift_main <- function(select_ug_indegree_list, select_ug_outdegree_list, ga
 }
 
 
+
+#######################################################################################
+get_cycle_stat_list <- function(cycle_edge_flux_list, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_shift_path_df_list, input_tumor_name) {
+
+  tumors_array = c(input_tumor_name)
+  cycle_stat_list = list()
+  for (i in 1:length(tumors_array)) {
+    tumor_name = tumors_array[i]
+    cycle_edge_flux = cycle_edge_flux_list[[tumor_name]]
+    cycle_edge_flux_in = cycle_edge_flux_list_in[[tumor_name]]
+    cycle_edge_flux_out = cycle_edge_flux_list_out[[tumor_name]]
+    cycle_shift_path = cycle_shift_path_df_list[[tumor_name]]
+
+    cycids = unique(cycle_edge_flux$cycle_id)
+    cycle_stat = data.frame()
+    for (j in 1:length(cycids)) {
+      cycle_id = cycids[j]
+      cycle_df = cycle_edge_flux[which(cycle_edge_flux$cycle_id == cycle_id),]
+      cycle_in_df = cycle_edge_flux_in[which(cycle_edge_flux_in$cycle_id == cycle_id),]
+      cycle_out_df = cycle_edge_flux_out[which(cycle_edge_flux_out$cycle_id == cycle_id),]
+      cycle_shift_df = cycle_shift_path[which(cycle_shift_path$cycle_id == cycle_id),]
+
+      gap_edge = length(which(cycle_df$state == "gap"))
+      up_edge = length(which(cycle_df$state == "up"))
+      no_express_edge = length(which(cycle_df$state == "no_express"))
+      no_change_edge = length(which(cycle_df$state == "no_change"))
+
+      gap_indegree = length(which(cycle_in_df$state == "gap"))
+      up_indegree = length(which(cycle_in_df$state == "up"))
+
+      gap_outdegree = length(which(cycle_out_df$state == "gap"))
+      up_outdegree = length(which(cycle_out_df$state == "up"))
+
+      shift_edge = length(cycle_shift_df$new_path)
+      ##
+      cycle_stat[j, "cycle_id"] = cycle_id
+      cycle_stat[j, "gap_edge"] = gap_edge
+      cycle_stat[j, "up_edge"] = up_edge
+      cycle_stat[j, "no_express_edge"] = no_express_edge
+      cycle_stat[j, "no_change_edge"] = no_change_edge
+      cycle_stat[j, "gap_indegree"] = gap_indegree
+      cycle_stat[j, "up_indegree"] = up_indegree
+      cycle_stat[j, "gap_outdegree"] = gap_outdegree
+      cycle_stat[j, "up_outdegree"] = up_outdegree
+      cycle_stat[j, "shift_edge"] = shift_edge
+    }
+
+    cycle_stat_list[[tumor_name]] = cycle_stat
+  }
+
+  return(cycle_stat_list)
+}
+
+
 #######################################################################################
 # source("12_freq_stat.R")
 #
@@ -1338,9 +1428,9 @@ get_shift_edge_node_freq_list <- function(input_tumor_name, cycle_shift_path_df_
 
 convert_deg <- function(deg) {
   deg_dict = data.frame(
-    "state_value" = c("no_express", "up", "gap", "normal")
+    "state_value" = c("no_express", "up", "gap", "no_change")
   )
-  rownames(deg_dict) = c("00", "01", "10", "11")
+  rownames(deg_dict) = c("-10", "1", "-1", "0")
 
   deg_val = as.character(deg)
   deg_names = names(deg)
@@ -1365,7 +1455,7 @@ loadRData <- function(fileName) {
 #' @param
 #' model:
 #' IF model=1
-#' For an edge, if any gene on the edge is up, the edge is up
+#' For an edge, if any gene on the edge is up, the edge is up, if the edge contains both the gap gene and the up gene, it is regarded as a gap.
 #' IF model=2
 #' For an edge, if the gene with the largest mean of tumor value is up, then the edge is up
 #' @param
@@ -1407,11 +1497,11 @@ getCycleFlux <- function(input_net_file, input_stat_gene_file, input_deg_gene_fi
   input_tumor_name = names(deg_all)
 
   #source("2_get_missing_gene.R")
-  gene_missing_list = get_gene_and_tofind_list_main(subnet_edge_expression, stat_all, deg_all)
+  #gene_missing_list = get_gene_and_tofind_list_main(subnet_edge_expression, stat_all, deg_all)
   #source("3_flux_subnet_add_gap.R")
-  subnet_edge_flux_list = subnet_edge_flux_list_main(subnet_edge_expression, gene_missing_list, stat_all, deg_all, input_tumor_name, model)
+  subnet_edge_flux_list = subnet_edge_flux_list_main(subnet_edge_expression, stat_all, deg_all, input_tumor_name, model)
   #source("4_flux_cycle_add_gap.R")
-  cycle_edge_flux_list = cycle_edge_flux_list_main(cycle_edge_expression, gene_missing_list, stat_all, deg_all, input_tumor_name, model)
+  cycle_edge_flux_list = cycle_edge_flux_list_main(cycle_edge_expression, stat_all, deg_all, input_tumor_name, model)
 
   #source("5_flux_cycle_chain_list.R")
   all_chain_list_cid = get_cycle_chain_list_main(cycle_directed, cycle_edge_flux_list, input_tumor_name)
@@ -1422,8 +1512,8 @@ getCycleFlux <- function(input_net_file, input_stat_gene_file, input_deg_gene_fi
   never_considered_comp_names = never_considered_comp_names_main(compounds_dict, input_tumor_name)
 
   #source("7_degnode_add_gap.R")
-  cycle_edge_flux_list_in = cycle_edge_flux_list_in_main(cycle_edgesucs_expression_in, gene_missing_list, stat_all, deg_all, input_tumor_name, model)
-  cycle_edge_flux_list_out = cycle_edge_flux_list_out_main(cycle_edgesucs_expression_out, gene_missing_list, stat_all, deg_all, input_tumor_name, model)
+  cycle_edge_flux_list_in = cycle_edge_flux_list_in_main(cycle_edgesucs_expression_in, stat_all, deg_all, input_tumor_name, model)
+  cycle_edge_flux_list_out = cycle_edge_flux_list_out_main(cycle_edgesucs_expression_out, stat_all, deg_all, input_tumor_name, model)
 
   #source("8_my_ug_degnode_1.R")
   select_ug_indegree_list = get_ug_indegree(cycle_edge_flux_list_in, cycle_edge_flux_list, gapup_cycle_chain_list, input_tumor_name)
@@ -1445,6 +1535,10 @@ getCycleFlux <- function(input_net_file, input_stat_gene_file, input_deg_gene_fi
     plot_net_cycle(cycle_shift_path_df_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names, input_tumor_name)
   }
 
+  ##
+  rids_state_list = get_state_rids(hsa_net, deg_all, stat_all, model, input_tumor_name)
+  cycle_stat_list = get_cycle_stat_list(cycle_edge_flux_list, cycle_edge_flux_list_in, cycle_edge_flux_list_out, cycle_shift_path_df_list, input_tumor_name)
+
   #source("12_freq_stat.R")
   # gap_cycleid_freq_list = get_gap_cycleid_freq_list(input_tumor_name, cycle_edge_flux_list)
   shift_node_freq_list = get_shift_node_freq_list(input_tumor_name, cycle_shift_path_df_list)
@@ -1452,8 +1546,10 @@ getCycleFlux <- function(input_net_file, input_stat_gene_file, input_deg_gene_fi
 
   result_list = list()
   result_list[["cycle_edge"]] = cycle_edge_flux_list
-  result_list[["cycle_chain"]] = all_chain_list_cid
   result_list[["shift_edge"]] = cycle_shift_path_df_list
+  result_list[["cycle_chain"]] = all_chain_list_cid
+  result_list[["cycle_stat"]] = cycle_stat_list
+  result_list[["rids_state"]] = rids_state_list
   result_list[["shift_edge_freq"]] = shift_node_freq_list
   result_list[["shift_edge_nfreq"]] = shift_edge_node_freq_list
 

@@ -4,10 +4,6 @@ library(devtools)
 
 install_github("zxzhangragnar/CycleFlux")
 
-library(CycleFlux)
-
-?getCycleFlux
-
 # parameter
 
 ## Refer to the data of folder 'example_input'
@@ -17,14 +13,18 @@ net = './hsa_net.RData'
 stat_gene = './TCGA_stat_genes.RData'
 
 deg_gene = './TCGA_deg_genes.RData'
-(no express: 00 up: 01 gap: 10 normal: 11)
+(no_express: -10 up: 1 gap: -1 no_change: 0)
 
 
 
 ## use '?getCycleFlux' to view the meaning of each parameter
 
+library(CycleFlux)
+
+?getCycleFlux
+
 'model':
-IF model=1, For an edge, if any gene on the edge is up(gap), the edge is up(gap).
+For an edge, if any gene on the edge is up, the edge is up; if the edge contains both the gap gene and the up gene, it is regarded as a gap.
 IF model=2, For an edge, if the gene with the largest mean of tumor value is up(gap), then the edge is up(gap).
 
 'single_graph':
