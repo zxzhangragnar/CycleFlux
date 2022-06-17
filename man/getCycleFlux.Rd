@@ -6,32 +6,27 @@
 \usage{
 getCycleFlux(
   basic_cycle_result,
-  input_stat_gene_file,
   input_deg_gene_file,
-  mode = 1,
-  single_graph = TRUE,
-  net_graph = TRUE
+  single_graph = FALSE,
+  net_graph = FALSE
 )
 }
 \arguments{
-\item{mode:}{IF mode=1
-For an edge, if any gene on the edge is up, the edge is up, if the edge contains both the gap gene and the up gene, it is regarded as a gap.
-IF mode=2
-For an edge, if the gene with the largest mean of tumor value is up, then the edge is up}
-
 \item{single_graph:}{If this parameter is TRUE, an image will be generated in this directory for each cycle that matches the shift definition.}
 
 \item{net_graph:}{If this parameter is TRUE, an image containing all cycles that match the shift definition will be generated in this directory.
 Default:
-mode=1
-single_graph=TRUE
-net_graph=TRUE}
+single_graph=FALSE
+net_graph=FALSE}
 }
 \description{
 This function for cycle shift situation
 }
+\details{
+For an edge, if any gene on the edge is up, the edge is up, if the edge contains both the gap gene and the up gene, it is regarded as a gap.
+}
 \examples{
-getCycleFlux(basic_cycle_result, input_stat_gene_file, input_deg_gene_file, 1, TRUE, FALSE)
+getCycleFlux(basic_cycle_result, input_deg_gene_file, FALSE, FALSE)
 
 }
 \keyword{getCycleFlux}
