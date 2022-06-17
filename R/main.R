@@ -1447,6 +1447,45 @@ loadRData <- function(fileName) {
 }
 
 
+
+
+#######################################################################################
+#' getBasicCycle function
+#'
+#' Build a map based on input_net_file, search for basic cycles, and calculate the expression information of these rings
+#' @keywords getBasicCycle
+#' @export
+#' @examples
+#' getBasicCycle(input_net_file)
+#'
+#'
+getBasicCycle <- function(input_net_file) {
+  #source("1_cycle_directed.R")
+  hsa_net = loadRData(file.path(input_net_file))
+  g = build_net(hsa_net)
+  cycle_directed = get_cycle_directed(hsa_net, g)
+  cycle_edge_expression = get_cycle_edge_expression(cycle_directed, g)
+  cycle_directed = rm_disuse_cycle_directed(cycle_edge_expression, cycle_directed)
+  cycle_edge_expression = reid_cycle_edge_expression(cycle_edge_expression)
+
+  subnet_edge_expression = get_subnet_edge_expression(g)
+  cycle_expression = get_cycle_expression(cycle_directed, g)
+  cycle_edgesucs_expression_in = get_cycle_edgesucs_expression_in(cycle_directed, g)
+  cycle_edgesucs_expression_out = get_cycle_edgesucs_expression_out(cycle_directed, g)
+
+  result_list = list()
+  result_list[["hsa_net"]] = hsa_net
+  result_list[["g"]] = g
+  result_list[["cycle_directed"]] = cycle_directed
+  result_list[["cycle_edge_expression"]] = cycle_edge_expression
+  result_list[["subnet_edge_expression"]] = subnet_edge_expression
+  result_list[["cycle_expression"]] = cycle_expression
+  result_list[["cycle_edgesucs_expression_in"]] = cycle_edgesucs_expression_in
+  result_list[["cycle_edgesucs_expression_out"]] = cycle_edgesucs_expression_out
+
+  return(result_list)
+}
+
 #######################################################################################
 #' getCycleFlux function
 #'
@@ -1471,23 +1510,22 @@ loadRData <- function(fileName) {
 #' @keywords getCycleFlux
 #' @export
 #' @examples
-#' getCycleFlux(input_net_file, input_stat_gene_file, input_deg_gene_file, 1, TRUE, FALSE)
+#' getCycleFlux(basic_cycle_result, input_stat_gene_file, input_deg_gene_file, 1, TRUE, FALSE)
 #'
-getCycleFlux <- function(input_net_file, input_stat_gene_file, input_deg_gene_file, mode=1, single_graph=TRUE, net_graph=TRUE) {
+getCycleFlux <- function(basic_cycle_result, input_stat_gene_file, input_deg_gene_file, mode=1, single_graph=TRUE, net_graph=TRUE) {
   #source("1_cycle_directed.R")
+  timestart<-Sys.time()
 
   ##
-  hsa_net = loadRData(file.path(input_net_file))
-  g = build_net(hsa_net)
-  cycle_directed = get_cycle_directed(hsa_net, g)
-  cycle_edge_expression = get_cycle_edge_expression(cycle_directed, g)
-  cycle_directed = rm_disuse_cycle_directed(cycle_edge_expression, cycle_directed)
-  cycle_edge_expression = reid_cycle_edge_expression(cycle_edge_expression)
+  hsa_net = basic_cycle_result[["hsa_net"]]
+  g = basic_cycle_result[["g"]]
+  cycle_directed = basic_cycle_result[["cycle_directed"]]
+  cycle_edge_expression = basic_cycle_result[["cycle_edge_expression"]]
 
-  subnet_edge_expression = get_subnet_edge_expression(g)
-  cycle_expression = get_cycle_expression(cycle_directed, g)
-  cycle_edgesucs_expression_in = get_cycle_edgesucs_expression_in(cycle_directed, g)
-  cycle_edgesucs_expression_out = get_cycle_edgesucs_expression_out(cycle_directed, g)
+  subnet_edge_expression = basic_cycle_result[["subnet_edge_expression"]]
+  cycle_expression = basic_cycle_result[["cycle_expression"]]
+  cycle_edgesucs_expression_in = basic_cycle_result[["cycle_edgesucs_expression_in"]]
+  cycle_edgesucs_expression_out = basic_cycle_result[["cycle_edgesucs_expression_out"]]
 
   ##
   stat_all = loadRData(file.path(input_stat_gene_file))
@@ -1552,6 +1590,11 @@ getCycleFlux <- function(input_net_file, input_stat_gene_file, input_deg_gene_fi
   result_list[["rids_state"]] = rids_state_list
   result_list[["shift_edge_freq"]] = shift_node_freq_list
   result_list[["shift_edge_nfreq"]] = shift_edge_node_freq_list
+
+
+  timeend<-Sys.time()
+  runningtime<-timeend-timestart
+  print(runningtime)
 
   return(result_list)
 }
