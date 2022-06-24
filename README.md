@@ -3,11 +3,9 @@
 library(devtools)  
 install_github("zxzhangragnar/CycleFlux")  
 
-
-# parameter
-
 ## Refer to the data of folder 'example_input'
 net: 'example_input/hsa_net.RData'  
+(the input metabolic network)
 gene_deg: 'example_input/TCGA_deg_genes.RData'  
 (no_express: -10 up: 1 gap: -1 no_change: 0)  
 
@@ -15,6 +13,7 @@ gene_deg: 'example_input/TCGA_deg_genes.RData'
 library(CycleFlux)  
 ?getCycleFlux  
 
+# parameter
 'draw_single_graph':
 If this parameter is TRUE, an image will be generated in this directory for each cycle that matches the shift definition.
 
