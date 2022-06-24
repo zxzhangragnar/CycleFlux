@@ -7,8 +7,8 @@ install_github("zxzhangragnar/CycleFlux")
 # parameter
 
 ## Refer to the data of folder 'example_input'
-net = 'example_input/hsa_net.RData'  
-deg_gene = 'example_input/TCGA_deg_genes.RData'  
+net: 'example_input/hsa_net.RData'  
+gene_deg: 'example_input/TCGA_deg_genes.RData'  
 (no_express: -10 up: 1 gap: -1 no_change: 0)  
 
 ## use '?getCycleFlux' to view the meaning of each parameter
@@ -24,11 +24,11 @@ If this parameter is TRUE, an image containing all cycles that match the shift d
 
 # function
 ## step 1
-load('example_input/hsa_net.RData')
+load('example_input/hsa_net.RData')  
 basic_cycle = getBasicCycle(net)  
 #save(basic_cycle, file="example_input/basic_cycle.RData")  
 
 ## step2
-load('example_input/TCGA_deg_genes.RData')
+load('example_input/TCGA_deg_genes.RData')  
 #load("example_input/basic_cycle.RData")  
 result = getCycleFlux(basic_cycle, gene_deg, FALSE, FALSE)  
