@@ -1036,7 +1036,7 @@ plot_single_cycle <- function(cycle_shift_path_df_list, select_ug_indegree_list,
   tumors_array = c(input_tumor_name)
 
   ##2.each_edge
-  res_sub_path = "single_graphs"
+  res_sub_path = "draw_single_graphs"
   dir.create(file.path(res_sub_path), recursive = TRUE, showWarnings = FALSE)
   res_file_path = file.path(res_sub_path)
 
@@ -1154,7 +1154,7 @@ plot_net_cycle <- function(cycle_shift_path_df_list, select_ug_indegree_list, se
   library(igraph)
   library(qgraph)
   ##2.each_edge
-  res_sub_path = "net_graphs"
+  res_sub_path = "draw_net_graphs"
   dir.create(file.path(res_sub_path), recursive = TRUE, showWarnings = FALSE)
   res_file_path = file.path(res_sub_path)
 
@@ -1429,10 +1429,10 @@ convert_deg <- function(deg) {
 }
 
 
-loadRData <- function(fileName) {
-  load(fileName)
-  get(ls()[ls() != "fileName"])
-}
+# loadRData <- function(fileName) {
+#   load(fileName)
+#   get(ls()[ls() != "fileName"])
+# }
 
 
 
@@ -1440,16 +1440,16 @@ loadRData <- function(fileName) {
 #######################################################################################
 #' getBasicCycle function
 #'
-#' Build a map based on input_net_file, search for basic cycles, and calculate the expression information of these rings
+#' Build a map based on net, search for basic cycles, and calculate the expression information of these cycles
 #' @keywords getBasicCycle
 #' @export
 #' @examples
-#' getBasicCycle(input_net_file)
+#' getBasicCycle(net)
 #'
 #'
-getBasicCycle <- function(input_net_file) {
+getBasicCycle <- function(net) {
   #source("1_cycle_directed.R")
-  hsa_net = loadRData(file.path(input_net_file))
+  hsa_net = net
   g = build_net(hsa_net)
   cycle_directed = get_cycle_directed(hsa_net, g)
   cycle_edge_expression = get_cycle_edge_expression(cycle_directed, g)
@@ -1481,37 +1481,38 @@ getBasicCycle <- function(input_net_file) {
 #'
 #' For an edge, if any gene on the edge is up, the edge is up, if the edge contains both the gap gene and the up gene, it is regarded as a gap.
 #' @param
-#' single_graph:
+#' draw_single_graph:
 #' If this parameter is TRUE, an image will be generated in this directory for each cycle that matches the shift definition.
 #' @param
-#' net_graph:
+#' draw_net_graph:
 #' If this parameter is TRUE, an image containing all cycles that match the shift definition will be generated in this directory.
 #' Default:
-#' single_graph=FALSE
-#' net_graph=FALSE
+#' draw_single_graph=FALSE
+#' draw_net_graph=FALSE
 #' @keywords getCycleFlux
 #' @export
 #' @examples
-#' getCycleFlux(basic_cycle_result, input_deg_gene_file, FALSE, FALSE)
+#' getCycleFlux(basic_cycle, gene_deg, FALSE, FALSE)
 #'
-getCycleFlux <- function(basic_cycle_result, input_deg_gene_file, single_graph=FALSE, net_graph=FALSE) {
+getCycleFlux <- function(basic_cycle, gene_deg, draw_single_graph=FALSE, draw_net_graph=FALSE) {
   #source("1_cycle_directed.R")
   timestart<-Sys.time()
 
   ##
-  hsa_net = basic_cycle_result[["hsa_net"]]
-  g = basic_cycle_result[["g"]]
-  cycle_directed = basic_cycle_result[["cycle_directed"]]
-  cycle_edge_expression = basic_cycle_result[["cycle_edge_expression"]]
+  hsa_net = basic_cycle[["hsa_net"]]
+  g = basic_cycle[["g"]]
+  cycle_directed = basic_cycle[["cycle_directed"]]
+  cycle_edge_expression = basic_cycle[["cycle_edge_expression"]]
 
-  subnet_edge_expression = basic_cycle_result[["subnet_edge_expression"]]
-  cycle_expression = basic_cycle_result[["cycle_expression"]]
-  cycle_edgesucs_expression_in = basic_cycle_result[["cycle_edgesucs_expression_in"]]
-  cycle_edgesucs_expression_out = basic_cycle_result[["cycle_edgesucs_expression_out"]]
+  subnet_edge_expression = basic_cycle[["subnet_edge_expression"]]
+  cycle_expression = basic_cycle[["cycle_expression"]]
+  cycle_edgesucs_expression_in = basic_cycle[["cycle_edgesucs_expression_in"]]
+  cycle_edgesucs_expression_out = basic_cycle[["cycle_edgesucs_expression_out"]]
 
   ##
   #stat_all = loadRData(file.path(input_stat_gene_file))
-  deg_all = loadRData(file.path(input_deg_gene_file))
+  #deg_all = loadRData(file.path(input_deg_gene_file))
+  deg_all = gene_deg
   deg_all = lapply(deg_all, convert_deg)
 
   input_tumor_name = names(deg_all)
@@ -1547,11 +1548,11 @@ getCycleFlux <- function(basic_cycle_result, input_deg_gene_file, single_graph=F
   cycle_shift_path_df_list = cyc_shift_main(select_ug_indegree_list, select_ug_outdegree_list, gapup_cycle_chain_list, input_tumor_name)
 
   #source("9_my_ug_degnode_3.R")
-  if (single_graph) {
+  if (draw_single_graph) {
     plot_single_cycle(cycle_shift_path_df_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names, input_tumor_name)
   }
 
-  if (net_graph) {
+  if (draw_net_graph) {
     plot_net_cycle(cycle_shift_path_df_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names, input_tumor_name)
   }
 

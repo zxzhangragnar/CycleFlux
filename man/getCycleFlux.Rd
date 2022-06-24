@@ -5,19 +5,19 @@
 \title{getCycleFlux function}
 \usage{
 getCycleFlux(
-  basic_cycle_result,
-  input_deg_gene_file,
-  single_graph = FALSE,
-  net_graph = FALSE
+  basic_cycle,
+  gene_deg,
+  draw_single_graph = FALSE,
+  draw_net_graph = FALSE
 )
 }
 \arguments{
-\item{single_graph:}{If this parameter is TRUE, an image will be generated in this directory for each cycle that matches the shift definition.}
+\item{draw_single_graph:}{If this parameter is TRUE, an image will be generated in this directory for each cycle that matches the shift definition.}
 
-\item{net_graph:}{If this parameter is TRUE, an image containing all cycles that match the shift definition will be generated in this directory.
+\item{draw_net_graph:}{If this parameter is TRUE, an image containing all cycles that match the shift definition will be generated in this directory.
 Default:
-single_graph=FALSE
-net_graph=FALSE}
+draw_single_graph=FALSE
+draw_net_graph=FALSE}
 }
 \description{
 This function for cycle shift situation
@@ -26,7 +26,7 @@ This function for cycle shift situation
 For an edge, if any gene on the edge is up, the edge is up, if the edge contains both the gap gene and the up gene, it is regarded as a gap.
 }
 \examples{
-getCycleFlux(basic_cycle_result, input_deg_gene_file, FALSE, FALSE)
+getCycleFlux(basic_cycle, gene_deg, FALSE, FALSE)
 
 }
 \keyword{getCycleFlux}

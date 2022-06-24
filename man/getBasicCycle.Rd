@@ -4,13 +4,13 @@
 \alias{getBasicCycle}
 \title{getBasicCycle function}
 \usage{
-getBasicCycle(input_net_file)
+getBasicCycle(net)
 }
 \description{
-Build a map based on input_net_file, search for basic cycles, and calculate the expression information of these rings
+Build a map based on net, search for basic cycles, and calculate the expression information of these cycles
 }
 \examples{
-getBasicCycle(input_net_file)
+getBasicCycle(net)
 
 
 }
