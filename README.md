@@ -3,7 +3,7 @@
 library(devtools)  
 install_github("zxzhangragnar/CycleFlux")  
 
-## The format of the input data refers to the data infolder 'example_input'
+## the format of the input data refers to the data infolder 'example_input'
 net: 'example_input/hsa_net.RData'  
 (the input metabolic network)  
 gene_deg: 'example_input/TCGA_deg_genes.RData'  
