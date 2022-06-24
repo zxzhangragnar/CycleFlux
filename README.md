@@ -15,21 +15,20 @@ deg_gene = 'example_input/TCGA_deg_genes.RData'
 library(CycleFlux)  
 ?getCycleFlux  
 
-'single_graph':
+'draw_single_graph':
 If this parameter is TRUE, an image will be generated in this directory for each cycle that matches the shift definition.
 
-'net_graph':
+'draw_net_graph':
 If this parameter is TRUE, an image containing all cycles that match the shift definition will be generated in this directory.
 
 
 # function
-
 ## step 1
-net = 'example_input/hsa_net.RData'  
-basic_cycle_result = getBasicCycle(net)  
-#save(basic_cycle_result, file="example_input/basic_cycle_result.RData")  
+load('example_input/hsa_net.RData')
+basic_cycle = getBasicCycle(net)  
+#save(basic_cycle, file="example_input/basic_cycle.RData")  
 
 ## step2
-deg_gene = 'example_input/TCGA_deg_genes.RData'  
-#load("example_input/basic_cycle_result.RData")  
-shift_result = getCycleFlux(basic_cycle_result, deg_gene, FALSE, FALSE)  
+load('example_input/TCGA_deg_genes.RData')
+#load("example_input/basic_cycle.RData")  
+result = getCycleFlux(basic_cycle, gene_deg, FALSE, FALSE)  
