@@ -3,9 +3,9 @@
 library(devtools)  
 install_github("zxzhangragnar/CycleFlux")  
 
-## Refer to the data of folder 'example_input'
+## The format of the input data refers to the data infolder 'example_input'
 net: 'example_input/hsa_net.RData'  
-(the input metabolic network)
+(the input metabolic network)  
 gene_deg: 'example_input/TCGA_deg_genes.RData'  
 (no_express: -10 up: 1 gap: -1 no_change: 0)  
 
