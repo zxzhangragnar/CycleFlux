@@ -986,7 +986,7 @@ plot_up_cycle<-function(tumor_name, plot_name, cycle_shift_path_df_list, select_
     ##shift
     if (length(rownames(shift_df)) > 0) {
       for (j in 1:length(rownames(shift_df))) {
-        new_path = shift_df[j, "new_path"]
+        new_path = shift_df[j, "shift_path"]
         new_path_nodes = unlist(strsplit(new_path, split = " -> "))
         if(length(new_path_nodes) == 5) {
           start_node = new_path_nodes[1]
@@ -1106,7 +1106,7 @@ plot_net_up_cycle<-function(tumor_name, plot_name, cycle_shift_path_df_list, sel
     ##shift
     if (length(rownames(shift_df)) > 0) {
       for (j in 1:length(rownames(shift_df))) {
-        new_path = shift_df[j, "new_path"]
+        new_path = shift_df[j, "shift_path"]
         new_path_nodes = unlist(strsplit(new_path, split = " -> "))
         start_node = new_path_nodes[1]
         shift_node = new_path_nodes[3]
@@ -1215,8 +1215,8 @@ get_tmp_comm_degnode_df <- function(cycle_id, permutation_node, ug_chain, comm_d
     old_path_str = paste(old_path_arr, collapse  = " ; ")
 
     tmp_comm_degnode_df[p, "cycle_id"] = cycle_id
-    tmp_comm_degnode_df[p, "new_path"] = new_path_str
-    tmp_comm_degnode_df[p, "old_path"] = old_path_str
+    tmp_comm_degnode_df[p, "shift_path"] = new_path_str
+    tmp_comm_degnode_df[p, "cycle_gap_path"] = old_path_str
     #tmp_comm_degnode_df[p, "endpoint_node"] = paste0(permutation_node[p,"od"], ";", permutation_node[p,"ind"])
     tmp_comm_degnode_df[p, "start_node"] = permutation_node[p,"ind"]
     tmp_comm_degnode_df[p, "end_node"] = permutation_node[p,"od"]
