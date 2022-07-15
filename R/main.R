@@ -1218,8 +1218,8 @@ get_tmp_comm_degnode_df <- function(cycle_id, permutation_node, ug_chain, comm_d
     tmp_comm_degnode_df[p, "shift_path"] = new_path_str
     tmp_comm_degnode_df[p, "cycle_gap_path"] = old_path_str
     #tmp_comm_degnode_df[p, "endpoint_node"] = paste0(permutation_node[p,"od"], ";", permutation_node[p,"ind"])
-    tmp_comm_degnode_df[p, "start_node"] = permutation_node[p,"ind"]
-    tmp_comm_degnode_df[p, "end_node"] = permutation_node[p,"od"]
+    tmp_comm_degnode_df[p, "start_node"] = permutation_node[p,"od"]
+    tmp_comm_degnode_df[p, "end_node"] = permutation_node[p,"ind"]
     tmp_comm_degnode_df[p, "shift_node"] = comm_degnode
   }
 
