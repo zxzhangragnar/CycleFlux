@@ -1022,7 +1022,12 @@ plot_up_cycle<-function(tumor_name, plot_name, cycle_shift_path_df_list, select_
     e <- get.edgelist(g,names=FALSE)
     l <- qgraph.layout.fruchtermanreingold(e,vcount=vcount(g),
                                            area=(vcount(g)^2),repulse.rad=(vcount(g)^3))
-    plot(g, layout=l, vertex.size=5, edge.arrow.size=0.8, edge.width=E(g)$size)
+
+    #l = layout_nicely(g)
+    #l = layout_with_kk(g)
+    #l = layout_with_graphopt(g)
+
+    plot(g, layout=l, vertex.size=2, edge.arrow.size=0.8, edge.width=E(g)$size)
 
     dev.off()
   }
@@ -1435,7 +1440,76 @@ convert_deg <- function(deg) {
 # }
 
 
+get_cycle_ascend_edge <- function(cycle_id, up_indeg, up_outdeg, ug_chain) {
+  ascend_df = data.frame()
 
+  for (c in 1:length(ug_chain)) {
+    temp_chain_str = ug_chain[c]
+    temp_chain_arr = unlist(strsplit(temp_chain_str,split = " -> "))
+    i = 1
+    while (i <= length(temp_chain_arr)) {
+      if(temp_chain_arr[i] == "U") {
+        upstart_no = i-1
+        for (j in i:length(temp_chain_arr)) {
+          if(temp_chain_arr[j] == "G" | temp_chain_arr[j] == "") {
+            upend_no = j-1
+            break
+          }
+          if(j == length(temp_chain_arr)) {
+            upend_no = j
+          }
+          i = j
+        }
+        #print(paste0(upstart_no,"->",upend_no))
+        upind = up_indeg[which((up_indeg$cycle_id == cycle_id) & (up_indeg$node == temp_chain_arr[upstart_no])), "ind"]
+        upod = up_outdeg[which((up_outdeg$cycle_id == cycle_id) & (up_outdeg$node == temp_chain_arr[upend_no])), "od"]
+
+        #n*m
+        for (ui in upind) {
+          for (uo in upod) {
+            tmp_ascend_df = data.frame()
+            tmp_ascend_df[1, "cycle_id"] = cycle_id
+            tmp_ascend_df[1, "shift_path"] = paste(c(ui, temp_chain_arr[upstart_no:upend_no], uo), collapse = " -> ")
+            tmp_ascend_df[1, "cycle_up_path"] = paste(temp_chain_arr[upstart_no:upend_no], collapse = " -> ")
+            tmp_ascend_df[1, "start_node"] = ui
+            tmp_ascend_df[1, "end_node"] = uo
+            ascend_df = rbind(ascend_df, tmp_ascend_df)
+          }
+        }
+
+      }
+      i = i + 1
+    }
+
+  }
+
+  return(ascend_df)
+}
+
+
+get_ascend_path <- function(select_ug_indegree_list, select_ug_outdegree_list, gapup_cycle_chain_list, input_tumor_name) {
+  all_cycle_ascend_list = list()
+  tumors_array = c(input_tumor_name)
+  for (i in 1:length(tumors_array)) {
+    tumor_name = tumors_array[i]
+    all_cycle_ascend_df = data.frame()
+    ug_indegree = select_ug_indegree_list[[tumor_name]]
+    ug_outdegree = select_ug_outdegree_list[[tumor_name]]
+    ug_c = names(gapup_cycle_chain_list[[tumor_name]])
+    ug_chain_list = gapup_cycle_chain_list[[tumor_name]]
+    for (i in 1:length(ug_c)) {
+      cycle_id = ug_c[i]
+      ug_chain = ug_chain_list[[i]]
+      up_indeg = ug_indegree[which(ug_indegree$cycle_id == cycle_id),]
+      up_outdeg = ug_outdegree[which(ug_outdegree$cycle_id == cycle_id),]
+
+      tmp_cycle_ascend_df = get_cycle_ascend_edge(cycle_id, up_indeg, up_outdeg, ug_chain)
+      all_cycle_ascend_df = rbind(all_cycle_ascend_df, tmp_cycle_ascend_df)
+    }
+    all_cycle_ascend_list[[tumor_name]] = all_cycle_ascend_df
+  }
+  return(all_cycle_ascend_list)
+}
 
 #######################################################################################
 #' getBasicCycle function
@@ -1547,6 +1621,9 @@ getCycleFlux <- function(basic_cycle, gene_deg, draw_single_graph=FALSE, draw_ne
   #source("11_cyc_shift.R")
   cycle_shift_path_df_list = cyc_shift_main(select_ug_indegree_list, select_ug_outdegree_list, gapup_cycle_chain_list, input_tumor_name)
 
+  all_cycle_ascend_list = get_ascend_path(select_ug_indegree_list, select_ug_outdegree_list, gapup_cycle_chain_list, input_tumor_name)
+
+
   #source("9_my_ug_degnode_3.R")
   if (draw_single_graph) {
     plot_single_cycle(cycle_shift_path_df_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names, input_tumor_name)
@@ -1567,12 +1644,13 @@ getCycleFlux <- function(basic_cycle, gene_deg, draw_single_graph=FALSE, draw_ne
 
   result_list = list()
   result_list[["cycle_edge"]] = cycle_edge_flux_list
-  result_list[["shift_edge"]] = cycle_shift_path_df_list
+  result_list[["shift_sewer_edge"]] = all_cycle_ascend_list
+  result_list[["shift_cistern_edge"]] = cycle_shift_path_df_list
   result_list[["cycle_chain"]] = all_chain_list_cid
   result_list[["cycle_stat"]] = cycle_stat_list
   result_list[["rids_state"]] = rids_state_list
-  result_list[["shift_edge_freq"]] = shift_node_freq_list
-  result_list[["shift_edge_nfreq"]] = shift_edge_node_freq_list
+  # result_list[["shift_edge_freq"]] = shift_node_freq_list
+  # result_list[["shift_edge_nfreq"]] = shift_edge_node_freq_list
 
 
   timeend<-Sys.time()
