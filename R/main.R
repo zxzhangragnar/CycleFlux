@@ -1217,7 +1217,9 @@ get_tmp_comm_degnode_df <- function(cycle_id, permutation_node, ug_chain, comm_d
     tmp_comm_degnode_df[p, "cycle_id"] = cycle_id
     tmp_comm_degnode_df[p, "new_path"] = new_path_str
     tmp_comm_degnode_df[p, "old_path"] = old_path_str
-    tmp_comm_degnode_df[p, "endpoint_node"] = paste0(permutation_node[p,"od"], ";", permutation_node[p,"ind"])
+    #tmp_comm_degnode_df[p, "endpoint_node"] = paste0(permutation_node[p,"od"], ";", permutation_node[p,"ind"])
+    tmp_comm_degnode_df[p, "start_node"] = permutation_node[p,"ind"]
+    tmp_comm_degnode_df[p, "end_node"] = permutation_node[p,"od"]
     tmp_comm_degnode_df[p, "shift_node"] = comm_degnode
   }
 
@@ -1398,25 +1400,7 @@ get_shift_node_freq_list <- function(input_tumor_name, cycle_shift_path_df_list)
   return(shift_node_freq_list)
 }
 
-get_shift_edge_node_freq_list <- function(input_tumor_name, cycle_shift_path_df_list) {
-  shift_edge_node_freq_list = list()
-  for (i in 1:length(input_tumor_name)) {
-    tumor_name = input_tumor_name[i]
-    temp_cycle_shift_path_df = cycle_shift_path_df_list[[tumor_name]]
-    shift_edgenode_freq = data.frame()
-    if (length(rownames(temp_cycle_shift_path_df)) != 0) {
-      shift_edgenode_freq = as.data.frame(table(temp_cycle_shift_path_df[,c("endpoint_node","shift_node")]))
-      shift_edgenode_freq = shift_edgenode_freq[order(shift_edgenode_freq$Freq, decreasing = T),]
 
-      colnames(shift_edgenode_freq) = c("edge_node", "node", "shift_freq")
-
-      shift_edgenode_freq = shift_edgenode_freq[which(shift_edgenode_freq$shift_freq != 0),]
-    }
-
-    shift_edge_node_freq_list[[tumor_name]] = shift_edgenode_freq
-  }
-  return(shift_edge_node_freq_list)
-}
 
 
 convert_deg <- function(deg) {
@@ -1639,8 +1623,8 @@ getCycleFlux <- function(basic_cycle, gene_deg, draw_single_graph=FALSE, draw_ne
 
   #source("12_freq_stat.R")
   # gap_cycleid_freq_list = get_gap_cycleid_freq_list(input_tumor_name, cycle_edge_flux_list)
-  shift_node_freq_list = get_shift_node_freq_list(input_tumor_name, cycle_shift_path_df_list)
-  shift_edge_node_freq_list = get_shift_edge_node_freq_list(input_tumor_name, cycle_shift_path_df_list)
+
+  # shift_node_freq_list = get_shift_node_freq_list(input_tumor_name, cycle_shift_path_df_list)
 
   result_list = list()
   result_list[["cycle_edge"]] = cycle_edge_flux_list
