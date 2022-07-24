@@ -14,7 +14,7 @@ library(CycleFlux)
 ?getCycleFlux  
 
 # parameter
-'draw_cycle_graph':
+'draw_single_graph':
 If this parameter is TRUE, an image will be generated in this directory for each cycle that matches the shift definition.
 
 'draw_net_graph':
