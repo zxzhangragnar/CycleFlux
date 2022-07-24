@@ -7,16 +7,16 @@
 getCycleFlux(
   basic_cycle,
   gene_deg,
-  draw_single_graph = FALSE,
+  draw_cycle_graph = FALSE,
   draw_net_graph = FALSE
 )
 }
 \arguments{
-\item{draw_single_graph:}{If this parameter is TRUE, an image will be generated in this directory for each cycle that matches the shift definition.}
+\item{draw_cycle_graph:}{If this parameter is TRUE, an image will be generated in this directory for each cycle that matches the shift definition.}
 
 \item{draw_net_graph:}{If this parameter is TRUE, an image containing all cycles that match the shift definition will be generated in this directory.
 Default:
-draw_single_graph=FALSE
+draw_cycle_graph=FALSE
 draw_net_graph=FALSE}
 }
 \description{

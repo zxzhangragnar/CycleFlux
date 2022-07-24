@@ -1076,7 +1076,7 @@ plot_single_cycle <- function(cycle_shift_path_df_list, all_cycle_ascend_list, s
   tumors_array = c(input_tumor_name)
 
   ##2.each_edge
-  res_sub_path = "single_graphs"
+  res_sub_path = "cycle_graphs"
   dir.create(file.path(res_sub_path), recursive = TRUE, showWarnings = FALSE)
   res_file_path = file.path(res_sub_path)
 
@@ -1573,20 +1573,20 @@ getBasicCycle <- function(net) {
 #'
 #' For an edge, if any gene on the edge is up, the edge is up, if the edge contains both the gap gene and the up gene, it is regarded as a gap.
 #' @param
-#' draw_single_graph:
+#' draw_cycle_graph:
 #' If this parameter is TRUE, an image will be generated in this directory for each cycle that matches the shift definition.
 #' @param
 #' draw_net_graph:
 #' If this parameter is TRUE, an image containing all cycles that match the shift definition will be generated in this directory.
 #' Default:
-#' draw_single_graph=FALSE
+#' draw_cycle_graph=FALSE
 #' draw_net_graph=FALSE
 #' @keywords getCycleFlux
 #' @export
 #' @examples
 #' getCycleFlux(basic_cycle, gene_deg, FALSE, FALSE)
 #'
-getCycleFlux <- function(basic_cycle, gene_deg, draw_single_graph=FALSE, draw_net_graph=FALSE) {
+getCycleFlux <- function(basic_cycle, gene_deg, draw_cycle_graph=FALSE, draw_net_graph=FALSE) {
   #source("1_cycle_directed.R")
   timestart<-Sys.time()
 
@@ -1643,7 +1643,7 @@ getCycleFlux <- function(basic_cycle, gene_deg, draw_single_graph=FALSE, draw_ne
 
 
   #source("9_my_ug_degnode_3.R")
-  if (draw_single_graph) {
+  if (draw_cycle_graph) {
     plot_single_cycle(cycle_shift_path_df_list, all_cycle_ascend_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names, input_tumor_name)
   }
 
@@ -1662,8 +1662,8 @@ getCycleFlux <- function(basic_cycle, gene_deg, draw_single_graph=FALSE, draw_ne
 
   result_list = list()
   result_list[["cycle_edge"]] = cycle_edge_flux_list
-  result_list[["shift_sewer_edge"]] = all_cycle_ascend_list
-  result_list[["shift_cistern_edge"]] = cycle_shift_path_df_list
+  result_list[["shift_sewer_path"]] = all_cycle_ascend_list
+  result_list[["shift_cistern_path"]] = cycle_shift_path_df_list
   result_list[["cycle_chain"]] = all_chain_list_cid
   result_list[["cycle_stat"]] = cycle_stat_list
   result_list[["rids_state"]] = rids_state_list
