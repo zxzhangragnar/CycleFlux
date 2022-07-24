@@ -917,10 +917,11 @@ get_ug_cycle <- function(cycle_edge_flux_list, gapup_cycle_chain_list, input_tum
 
 #e1<--up--(c2<--up--c1)<--up--e1
 
-plot_up_cycle<-function(tumor_name, plot_name, cycle_shift_path_df_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names) {
+plot_up_cycle<-function(tumor_name, plot_name, cycle_shift_path_df_list, all_cycle_ascend_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names) {
   # library(igraph)
   # library(qgraph)
   select_shift_info = cycle_shift_path_df_list[[tumor_name]]
+  select_ascend_info = all_cycle_ascend_list[[tumor_name]]
   select_in_upinfo = select_ug_indegree_list[[tumor_name]]
   select_out_upinfo = select_ug_outdegree_list[[tumor_name]]
   select_ug_cycle = select_ug_cycle_list[[tumor_name]]
@@ -928,16 +929,20 @@ plot_up_cycle<-function(tumor_name, plot_name, cycle_shift_path_df_list, select_
   shift_cycle_ids = unique(select_shift_info$cycle_id)
   for (i in 1:length(shift_cycle_ids)) {
     cycid = shift_cycle_ids[i]
-    ind_df = select_in_upinfo[which(select_in_upinfo$cycle_id == cycid),]
-    od_df = select_out_upinfo[which(select_out_upinfo$cycle_id == cycid),]
+    # ind_df = select_in_upinfo[which(select_in_upinfo$cycle_id == cycid),]
+    # od_df = select_out_upinfo[which(select_out_upinfo$cycle_id == cycid),]
     cycle_df = select_ug_cycle[which(select_ug_cycle$cycle_id == cycid),]
     shift_df = select_shift_info[which(select_shift_info$cycle_id == cycid),]
+    ascend_df = select_ascend_info[which(select_ascend_info$cycle_id == cycid),]
 
     ## nodes
-    ind_node = unique(ind_df$ind)
-    od_node = unique(od_df$od)
+    # ind_node = unique(ind_df$ind)
+    # od_node = unique(od_df$od)
+    start_node = unique(ascend_df$start_node)
+    end_node = unique(ascend_df$end_node)
+    shift_node = unique(shift_df$shift_node)
     cycle_node = union(cycle_df$c_in, cycle_df$c_out)
-    all_node = unique(c(ind_node, od_node, cycle_node))
+    all_node = unique(c(start_node, end_node, shift_node, cycle_node))
 
     g <- make_empty_graph(n = length(all_node))
     g <- set.vertex.attribute(g, "name", value=all_node)
@@ -945,6 +950,11 @@ plot_up_cycle<-function(tumor_name, plot_name, cycle_shift_path_df_list, select_
       if(all_node[j] %in% never_considered_comp_names) {
         V(g)[name==all_node[j]]$color <- "grey"
       }
+    }
+
+    V(g)$size = 2
+    for (j in 1:length(cycle_node)) {
+      V(g)[name==cycle_node[j]]$size <- 9
     }
 
     ##edges
@@ -963,23 +973,45 @@ plot_up_cycle<-function(tumor_name, plot_name, cycle_shift_path_df_list, select_
       }
     }
 
-    for (j in 1:length(rownames(od_df))) {
-      node = od_df[j, "node"]
-      od = od_df[j, "od"]
-      v_node = V(g)[name==node]
-      v_od = V(g)[name==od]
-      if (!are.connected(g, v_node, v_od)) {
-        g <- add_edges(g, c(v_node, v_od), color = "cyan", size = 1)
-      }
-    }
+    # for (j in 1:length(rownames(od_df))) {
+    #   node = od_df[j, "node"]
+    #   od = od_df[j, "od"]
+    #   v_node = V(g)[name==node]
+    #   v_od = V(g)[name==od]
+    #   if (!are.connected(g, v_node, v_od)) {
+    #     g <- add_edges(g, c(v_node, v_od), color = "cyan", size = 1)
+    #   }
+    # }
+    #
+    # for (j in 1:length(rownames(ind_df))) {
+    #   node = ind_df[j, "node"]
+    #   ind = ind_df[j, "ind"]
+    #   v_node = V(g)[name==node]
+    #   v_ind = V(g)[name==ind]
+    #   if (!are.connected(g, v_ind, v_node)) {
+    #     g <- add_edges(g, c(v_ind, v_node), color = "cyan", size = 1)
+    #   }
+    # }
 
-    for (j in 1:length(rownames(ind_df))) {
-      node = ind_df[j, "node"]
-      ind = ind_df[j, "ind"]
-      v_node = V(g)[name==node]
-      v_ind = V(g)[name==ind]
-      if (!are.connected(g, v_ind, v_node)) {
-        g <- add_edges(g, c(v_ind, v_node), color = "cyan", size = 1)
+    ##ascend
+    if (length(rownames(ascend_df)) > 0) {
+      for (j in 1:length(rownames(ascend_df))) {
+        new_path = ascend_df[j, "shift_path"]
+        new_path_nodes = unlist(strsplit(new_path, split = " -> "))
+        if(length(new_path_nodes) > 4) {
+          start_node = new_path_nodes[1]
+          cycle_start_node = new_path_nodes[2]
+          cycle_end_node = new_path_nodes[length(new_path_nodes)-1]
+          end_node = new_path_nodes[length(new_path_nodes)]
+
+          if (!are.connected(g, start_node, cycle_start_node)) {
+            g <- add_edges(g, c(start_node, cycle_start_node), color = "aquamarine", size = 1.5)
+          }
+          if (!are.connected(g, cycle_end_node, end_node)) {
+            g <- add_edges(g, c(cycle_end_node, end_node), color = "aquamarine", size = 1.5)
+          }
+        }
+
       }
     }
 
@@ -994,21 +1026,23 @@ plot_up_cycle<-function(tumor_name, plot_name, cycle_shift_path_df_list, select_
           end_node = new_path_nodes[5]
 
           V(g)[name==shift_node]$color <- "orchid"
-          if (are.connected(g, start_node, shift_node)) {
+          if (!are.connected(g, start_node, shift_node)) {
+            g <- add_edges(g, c(start_node, shift_node), color = "orchid", size = 1.5)
+          }else {
             E(g)[get.edge.ids(g, c(start_node, shift_node))]$color = "orchid"
-            E(g)[get.edge.ids(g, c(start_node, shift_node))]$size = 6
+            E(g)[get.edge.ids(g, c(start_node, shift_node))]$size = 1.5
           }
-          if (are.connected(g, shift_node, end_node)) {
+          if (!are.connected(g, shift_node, end_node)) {
+            g <- add_edges(g, c(shift_node, end_node), color = "orchid", size = 1.5)
+          }else {
             E(g)[get.edge.ids(g, c(shift_node, end_node))]$color = "orchid"
-            E(g)[get.edge.ids(g, c(shift_node, end_node))]$size = 6
+            E(g)[get.edge.ids(g, c(shift_node, end_node))]$size = 1.5
           }
+
         }
 
-
       }
-
     }
-
 
 
     #plot
@@ -1020,34 +1054,35 @@ plot_up_cycle<-function(tumor_name, plot_name, cycle_shift_path_df_list, select_
 
     png(tmp_plot_name, height=png_size, width=png_size, units="in", res=100)
     e <- get.edgelist(g,names=FALSE)
-    l <- qgraph.layout.fruchtermanreingold(e,vcount=vcount(g),
-                                           area=(vcount(g)^2),repulse.rad=(vcount(g)^3))
+    #l <- qgraph.layout.fruchtermanreingold(e,vcount=vcount(g),area=(vcount(g)^2),repulse.rad=(vcount(g)^3))
+    l = layout_with_kk(g)
+    #l <- norm_coords(l, ymin=-1, ymax=1, xmin=-1, xmax=1)
 
     #l = layout_nicely(g)
     #l = layout_with_kk(g)
     #l = layout_with_graphopt(g)
 
-    plot(g, layout=l, vertex.size=2, edge.arrow.size=0.8, edge.width=E(g)$size)
+    plot(g, layout=l, vertex.size=V(g)$size, edge.arrow.size=0.8, edge.width=E(g)$size)
 
     dev.off()
   }
 
 }
 
-plot_single_cycle <- function(cycle_shift_path_df_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names, input_tumor_name) {
+plot_single_cycle <- function(cycle_shift_path_df_list, all_cycle_ascend_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names, input_tumor_name) {
   library(igraph)
   library(qgraph)
   ##select_ug_indegree_list select_ug_outdegree_list
   tumors_array = c(input_tumor_name)
 
   ##2.each_edge
-  res_sub_path = "draw_single_graphs"
+  res_sub_path = "single_graphs"
   dir.create(file.path(res_sub_path), recursive = TRUE, showWarnings = FALSE)
   res_file_path = file.path(res_sub_path)
 
   for (i in 1:length(tumors_array)) {
     tumor_name = tumors_array[i]
-    plot_up_cycle(tumor_name, res_file_path, cycle_shift_path_df_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names)
+    plot_up_cycle(tumor_name, res_file_path, cycle_shift_path_df_list, all_cycle_ascend_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names)
   }
 
 }
@@ -1118,10 +1153,10 @@ plot_net_up_cycle<-function(tumor_name, plot_name, cycle_shift_path_df_list, sel
 
         V(g)[name==shift_node]$color <- "orchid"
         if (!are.connected(g, v_start_node, v_shift_node)) {
-          g <- add_edges(g, c(v_start_node, v_shift_node), color = "orchid", size = 6)
+          g <- add_edges(g, c(v_start_node, v_shift_node), color = "orchid", size = 3)
         }
         if (!are.connected(g, v_shift_node, v_end_node)) {
-          g <- add_edges(g, c(v_shift_node, v_end_node), color = "orchid", size = 6)
+          g <- add_edges(g, c(v_shift_node, v_end_node), color = "orchid", size = 3)
         }
 
       }
@@ -1139,8 +1174,7 @@ plot_net_up_cycle<-function(tumor_name, plot_name, cycle_shift_path_df_list, sel
 
   png(tmp_plot_name, height=png_size, width=png_size, units="in", res=100)
   e <- get.edgelist(g,names=FALSE)
-  l <- qgraph.layout.fruchtermanreingold(e,vcount=vcount(g),
-                                          area=(18*vcount(g)^2),repulse.rad=(vcount(g)^3.2))
+  l <- qgraph.layout.fruchtermanreingold(e,vcount=vcount(g),area=(18*vcount(g)^2),repulse.rad=(vcount(g)^3.2))
   #l = layout_nicely(g)
   #l = layout_with_kk(g)
   #l = layout_with_graphopt(g)
@@ -1159,7 +1193,7 @@ plot_net_cycle <- function(cycle_shift_path_df_list, select_ug_indegree_list, se
   library(igraph)
   library(qgraph)
   ##2.each_edge
-  res_sub_path = "draw_net_graphs"
+  res_sub_path = "net_graphs"
   dir.create(file.path(res_sub_path), recursive = TRUE, showWarnings = FALSE)
   res_file_path = file.path(res_sub_path)
 
@@ -1481,9 +1515,9 @@ get_ascend_path <- function(select_ug_indegree_list, select_ug_outdegree_list, g
     ug_outdegree = select_ug_outdegree_list[[tumor_name]]
     ug_c = names(gapup_cycle_chain_list[[tumor_name]])
     ug_chain_list = gapup_cycle_chain_list[[tumor_name]]
-    for (i in 1:length(ug_c)) {
-      cycle_id = ug_c[i]
-      ug_chain = ug_chain_list[[i]]
+    for (j in 1:length(ug_c)) {
+      cycle_id = ug_c[j]
+      ug_chain = ug_chain_list[[j]]
       up_indeg = ug_indegree[which(ug_indegree$cycle_id == cycle_id),]
       up_outdeg = ug_outdegree[which(ug_outdegree$cycle_id == cycle_id),]
 
@@ -1610,7 +1644,7 @@ getCycleFlux <- function(basic_cycle, gene_deg, draw_single_graph=FALSE, draw_ne
 
   #source("9_my_ug_degnode_3.R")
   if (draw_single_graph) {
-    plot_single_cycle(cycle_shift_path_df_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names, input_tumor_name)
+    plot_single_cycle(cycle_shift_path_df_list, all_cycle_ascend_list, select_ug_indegree_list, select_ug_outdegree_list, select_ug_cycle_list, never_considered_comp_names, input_tumor_name)
   }
 
   if (draw_net_graph) {
